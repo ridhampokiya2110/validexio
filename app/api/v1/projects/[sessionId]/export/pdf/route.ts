@@ -49,6 +49,11 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized access to report" }, { status: 403 });
     }
 
+    const userTier = (sessionAuth.user as any).tier || "FREE";
+    if (userTier === "FREE" || userTier === "STARTER") {
+      return NextResponse.json({ error: "Pro subscription required to export PDF." }, { status: 403 });
+    }
+
     // Create a ReadableStream to stream the PDF directly to the client
     const stream = new ReadableStream({
       start(controller) {

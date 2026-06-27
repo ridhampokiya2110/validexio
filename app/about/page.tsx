@@ -24,7 +24,7 @@ export default function AboutPage() {
         </section>
 
         {/* The Problem Section */}
-        <section className="py-24 bg-white border-y border-[#1B1716]/5 relative overflow-hidden">
+        <section className="py-24 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-cherry/5 rounded-full blur-[150px] pointer-events-none" />
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -38,14 +38,14 @@ export default function AboutPage() {
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="bg-[#FDFCF8] border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl hover:shadow-[0_8px_30px_rgba(117,7,12,0.1)] transition-all">
+                <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl hover:shadow-[0_8px_30px_rgba(117,7,12,0.1)] transition-all">
                   <div className="w-12 h-12 rounded-xl bg-cherry/10 flex items-center justify-center mb-6 border border-cherry/20">
                     <Brain className="w-6 h-6 text-cherry" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-[#1B1716]">AI-Powered Intelligence</h3>
                   <p className="text-[#1B1716]/60 text-sm font-medium">Our models analyze thousands of data points, competitor strategies, and market trends instantly.</p>
                 </div>
-                <div className="bg-[#FDFCF8] border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl sm:translate-y-8 hover:shadow-[0_8px_30px_rgba(117,7,12,0.1)] transition-all">
+                <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl sm:translate-y-8 hover:shadow-[0_8px_30px_rgba(117,7,12,0.1)] transition-all">
                   <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 border border-emerald-500/20">
                     <Target className="w-6 h-6 text-emerald-600" />
                   </div>
@@ -83,7 +83,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="py-24 bg-maroon/5 border-t border-cherry/10">
+        <section className="py-24">
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-5xl font-black text-[#1B1716] mb-6">Ready to face reality?</h2>
             <p className="text-lg text-[#1B1716]/70 mb-10">Stop guessing. Start validating. Get a comprehensive breakdown of your startup idea in 60 seconds.</p>

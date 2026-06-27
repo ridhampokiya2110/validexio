@@ -2,12 +2,31 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const apiKey = process.env.GEMINI_API_KEY || "mock-key";
 const genAI = new GoogleGenerativeAI(apiKey);
 
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(20, "1 m"),
+    analytics: true,
+  });
+}
+
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    if (ratelimit) {
+      const { success } = await ratelimit.limit(`crucible_${ip}`);
+      if (!success) {
+        return NextResponse.json({ error: "Too many requests to the Investor Simulator. Please slow down." }, { status: 429 });
+      }
+    }
+
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -39,13 +58,19 @@ export async function POST(req: Request) {
 
     // Enforce tier limits
     let maxQuestions = 0;
-    if (user.tier === "PRO") maxQuestions = 5;
-    else if (user.tier === "TEAM") maxQuestions = 10;
-    else if (user.tier === "ENTERPRISE") maxQuestions = 20;
-    else return NextResponse.json({ error: "Investor Simulator requires PRO tier or above." }, { status: 403 });
+    if (user.tier === "STARTER") {
+      maxQuestions = 5;
+      if (track !== "VC") {
+        return NextResponse.json({ error: "Starter tier only includes the VC Persona. Upgrade to unlock Technical Architect and more." }, { status: 403 });
+      }
+    }
+    else if (user.tier === "PRO") maxQuestions = 10;
+    else if (user.tier === "TEAM") maxQuestions = 15;
+    else if (user.tier === "ENTERPRISE") maxQuestions = 999;
+    else return NextResponse.json({ error: "Investor Simulator requires STARTER tier or above." }, { status: 403 });
 
     if (previousQuestions.length >= maxQuestions) {
-      return NextResponse.json({ error: "Question limit reached for your tier." }, { status: 403 });
+      return NextResponse.json({ error: `Question limit (${maxQuestions}) reached for your tier.` }, { status: 403 });
     }
 
     // Build context string from the latest validation report

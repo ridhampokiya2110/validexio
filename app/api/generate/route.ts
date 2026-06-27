@@ -3,12 +3,32 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
 import { processValidationJob } from "@/lib/queue/processJob";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
 const generateSchema = z.object({
   ideaId: z.string().cuid(),
 });
 
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(5, "1 h"),
+    analytics: true,
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    if (ratelimit) {
+      const { success } = await ratelimit.limit(`generate_${ip}`);
+      if (!success) {
+        return NextResponse.json({ error: "Generation rate limit exceeded. Please try again later." }, { status: 429 });
+      }
+    }
+
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

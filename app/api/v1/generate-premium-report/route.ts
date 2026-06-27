@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { GoogleGenAI, Type, Schema } from "@google/genai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { auth } from "@/lib/auth";
 
 // Initialize Gemini
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
@@ -114,6 +115,20 @@ export async function POST(req: NextRequest) {
 
     if (!sessionId || !businessIdea) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    const sessionAuth = await auth();
+    if (!sessionAuth?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const sessionRecord = await prisma.validationSession.findUnique({
+      where: { id: sessionId },
+      select: { userId: true }
+    });
+
+    if (!sessionRecord || sessionRecord.userId !== sessionAuth.user.id) {
+       return NextResponse.json({ error: "Unauthorized access to session" }, { status: 403 });
     }
 
     // Prepare geographical constraints

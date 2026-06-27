@@ -73,7 +73,7 @@ function HeroSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
 
         {/* Main Headline */}
-        <h1 className="text-5xl md:text-7xl font-black text-[#1B1716] tracking-tight leading-tight mb-6 animate-fade-in delay-100">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-[#1B1716] tracking-tight leading-tight mb-6 animate-fade-in delay-100">
           Stop <span className="gradient-text">Guessing</span>.
           <br />
           Start <span className="gradient-text">Executing</span>.
@@ -82,7 +82,7 @@ function HeroSection() {
         {/* Subheadline */}
         <p className="text-lg sm:text-xl text-[#1B1716]/65 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
           From Concept to Customer in 60 Seconds. Get brutally honest validation,
-          instant UI/visual mockups, competitor insights, and your first customers before
+          instant technical architecture, competitor insights, and your first customers before
           writing a line of code or buying inventory.
         </p>
 
@@ -102,7 +102,7 @@ function HeroSection() {
         {/* Social Proof */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#1B1716]/45 animate-fade-in delay-400">
           {[
-            "No credit card required",
+            "Secure, one-time payments",
             "Free tier available",
             "Results in under 60 seconds",
           ].map((item, i) => (
@@ -143,7 +143,7 @@ function HeroSection() {
                     </div>
                   </div>
                   <div className="flex items-end gap-2 mb-2">
-                    <span className="text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 tracking-tighter leading-none">88</span>
+                    <span className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 tracking-tighter leading-none">88</span>
                     <span className="text-lg text-emerald-400 font-bold mb-1">/100</span>
                   </div>
                   <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2 py-1 rounded mt-2">
@@ -381,7 +381,7 @@ function PremiumExecutionShowcase() {
               <Lock className="w-3.5 h-3.5" /> Unlock Premium
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-[#111827] mb-6 tracking-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111827] mb-6 tracking-tight">
             The Action <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">Plan</span>
           </h2>
           <p className="text-[#6B7280] text-lg max-w-2xl mx-auto font-medium leading-relaxed">
@@ -524,7 +524,7 @@ function FeaturesSection() {
           <div className="badge badge-cherry inline-flex mb-4">
             Enterprise Intelligence
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             Everything you need to <span className="gradient-text">validate</span>
             <br />
             before you build
@@ -602,7 +602,7 @@ function HowItWorksSection() {
             </span>
             <div className="w-8 h-[1px] bg-[#630102]/30" />
           </div>
-          <h2 className="text-4xl md:text-6xl font-black text-[#111827] tracking-tight mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#111827] tracking-tight mb-6">
             From idea to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">insight</span> in 60 seconds
           </h2>
           <p className="text-[#6B7280] text-lg md:text-xl font-medium max-w-2xl mx-auto">
@@ -619,7 +619,7 @@ function HowItWorksSection() {
               <div className="bg-white border border-[#E5E7EB] rounded-3xl p-10 h-full hover:border-[#630102]/20 transition-all duration-700 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_20px_40px_-12px_rgba(99,1,2,0.08)] relative overflow-hidden">
                 
                 {/* Massive Number Watermark */}
-                <div className="absolute -right-4 -top-8 text-[120px] font-heading font-black text-[#F8F9FA] pointer-events-none group-hover:text-red-50 transition-colors duration-500">
+                <div className="absolute -right-4 -top-8 text-[80px] sm:text-[120px] font-heading font-black text-[#F8F9FA] pointer-events-none group-hover:text-red-50 transition-colors duration-500">
                   {step.number}
                 </div>
 
@@ -786,7 +786,7 @@ function PricingSection() {
             </span>
             <div className="w-8 h-[1px] bg-[#630102]/30" />
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             Simple pricing.
             <br />
             <span className="gradient-text">Extraordinary</span> value.
@@ -911,7 +911,7 @@ function TestimonialsSection() {
             <Star className="w-3 h-3 fill-current" />
             Testimonials
           </div>
-          <h2 className="text-4xl md:text-5xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             Trusted by <span className="gradient-text">founders</span> worldwide
           </h2>
         </div>
@@ -984,7 +984,7 @@ function FAQSection() {
             <MessageSquare className="w-3 h-3 fill-current" />
             FAQ
           </div>
-          <h2 className="text-4xl md:text-5xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">questions</span> founders ask before they execute.
           </h2>
           <p className="text-[#1B1716]/60 text-lg max-w-xl mx-auto">
@@ -1049,7 +1049,7 @@ function CTASection() {
             <Zap className="w-3 h-3" />
             Get Started Today
           </div>
-          <h2 className="text-[#1B1716] mb-6 text-4xl sm:text-5xl">
+          <h2 className="text-[#1B1716] mb-6 text-3xl sm:text-4xl md:text-5xl">
             Your competitors are
             <br />
             <span className="gradient-text">validating</span> right now.
@@ -1064,7 +1064,7 @@ function CTASection() {
             <ArrowRight className="w-5 h-5 ml-2" />
           </Link>
           <p className="mt-4 text-[#1B1716]/35 text-sm">
-            Free tier available · No credit card required · Takes 60 seconds
+            Free tier available · Secure, one-time payments · Takes 60 seconds
           </p>
         </div>
       </div>
@@ -1101,7 +1101,7 @@ function ValueAnchoringSection() {
             <TrendingDown className="w-4 h-4" />
             Cost Comparison
           </div>
-          <h2 className="text-5xl md:text-6xl font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             The Real Cost of <span className="text-transparent bg-clip-text bg-gradient-to-r from-cherry to-red-500">Execution</span>.
           </h2>
           <p className="text-xl text-[#1B1716]/60 max-w-2xl mx-auto font-medium">
@@ -1232,7 +1232,7 @@ function InvestorSimulatorSection() {
             </span>
             <div className="w-8 h-[1px] bg-[#630102]/30" />
           </div>
-          <h2 className="text-5xl md:text-6xl lg:text-7xl font-black text-[#111827] tracking-tight mb-8">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#111827] tracking-tight mb-8">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-[#CE202A]">Investor Simulator</span>
           </h2>
           <p className="text-lg md:text-xl text-[#6B7280] max-w-2xl mx-auto font-medium leading-relaxed">

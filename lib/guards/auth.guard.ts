@@ -46,7 +46,7 @@ export async function verifyPaywallGuard(sessionId: string, userId: string, requ
   // Find Session
   const session = await prisma.validationSession.findUnique({
     where: { id: sessionId },
-    select: { id: true, isUnlocked: true, unlockedTier: true, userId: true },
+    select: { id: true, isUnlocked: true, unlockedTier: true, userId: true, createdAt: true },
   });
 
   if (!session) {
@@ -56,6 +56,26 @@ export async function verifyPaywallGuard(sessionId: string, userId: string, requ
   // IDOR Check: Ensure the user requesting this session is the owner
   if (session.userId !== userId) {
     return { error: NextResponse.json({ error: "Unauthorized access to session" }, { status: 403 }) };
+  }
+
+  // Enforce STARTER 7-Day and 30-Day rules
+  if (session.unlockedTier === "STARTER") {
+    const daysSinceCreation = (Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24);
+    
+    // After 30 days, delete the session data
+    if (daysSinceCreation > 30) {
+      try {
+        await prisma.validationSession.delete({ where: { id: sessionId } });
+      } catch (e) {
+        console.error("Failed to delete expired STARTER session:", e);
+      }
+      return { error: NextResponse.json({ error: "Session Expired. This report has been permanently deleted as per the Starter tier 30-day retention policy." }, { status: 410 }) };
+    }
+
+    // After 7 days, lock it
+    if (daysSinceCreation > 7) {
+      return { error: NextResponse.json({ error: "Access Expired. The Starter tier only includes 7-day access to reports. Upgrade to Pro for lifetime access." }, { status: 403 }) };
+    }
   }
 
   // Paywall checks

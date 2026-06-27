@@ -13,6 +13,9 @@ async function getReport(reportId: string, userId: string) {
   });
 }
 
+import { Lock } from "lucide-react";
+import Link from "next/link";
+
 import { ReportContent } from "@/components/report/ReportContent";
 import DashboardLoading from "../../loading";
 
@@ -40,5 +43,33 @@ async function ReportDataFetcher({ id, userId }: { id: string, userId: string })
   ]);
   
   if (!report) notFound();
+
+  // Handle Starter tier 7-day lock and 30-day auto-delete
+  if (user?.tier === "STARTER") {
+    const daysOld = Math.floor((Date.now() - new Date(report.createdAt).getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (daysOld >= 30) {
+      await prisma.validationReport.delete({ where: { id: report.id } });
+      notFound();
+    }
+
+    if (daysOld >= 7) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-8">
+          <div className="w-16 h-16 bg-cherry/10 rounded-2xl flex items-center justify-center mb-6">
+            <Lock className="w-8 h-8 text-cherry" />
+          </div>
+          <h2 className="text-3xl font-black text-[#1B1716] tracking-tight mb-4">Report Archived</h2>
+          <p className="text-[#1B1716]/60 max-w-md mx-auto mb-8 font-medium">
+            Starter tier reports are securely locked after 7 days and permanently deleted after 30 days. Upgrade to Pro for lifetime access to this and all future intelligence reports.
+          </p>
+          <Link href="/pricing" className="btn-primary">
+            Upgrade to Pro for Lifetime Access
+          </Link>
+        </div>
+      );
+    }
+  }
+
   return <ReportContent report={report} isReadOnly={false} userTier={user?.tier || "STARTER"} />;
 }

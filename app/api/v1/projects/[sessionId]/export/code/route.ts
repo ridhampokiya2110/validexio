@@ -76,8 +76,8 @@ export async function GET(
       }
 
       const userTier = (sessionAuth.user as any).tier || "FREE";
-      if (userTier === "FREE") {
-        return NextResponse.json({ error: "Premium subscription required to download boilerplate." }, { status: 403 });
+      if (userTier === "FREE" || userTier === "STARTER") {
+        return NextResponse.json({ error: "Pro subscription required to download boilerplate." }, { status: 403 });
       }
 
       if (!report.codeBoilerplate) {
