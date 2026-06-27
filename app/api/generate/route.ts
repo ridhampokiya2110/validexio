@@ -1,0 +1,160 @@
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { z } from "zod";
+import { processValidationJob } from "@/lib/queue/processJob";
+const generateSchema = z.object({
+  ideaId: z.string().cuid(),
+});
+
+export async function POST(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+
+    const body = await req.json();
+    const parsed = generateSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: parsed.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const { ideaId } = parsed.data;
+
+    // Fetch the idea
+    const idea = await prisma.idea.findFirst({
+      where: { id: ideaId, userId },
+    });
+
+    if (!idea) {
+      return NextResponse.json({ error: "Idea not found" }, { status: 404 });
+    }
+
+    if (idea.status !== "PENDING" && idea.status !== "FAILED") {
+      return NextResponse.json(
+        { error: "Idea is already being processed or is completed" },
+        { status: 400 }
+      );
+    }
+
+    // === 1. CACHING LAYER ===
+    // Check if an identical idea was already generated successfully
+    const cachedIdea = await prisma.idea.findFirst({
+      where: {
+        title: { equals: idea.title, mode: "insensitive" },
+        industry: { equals: idea.industry, mode: "insensitive" },
+        status: "COMPLETED",
+      },
+      orderBy: { createdAt: "desc" },
+      include: { reports: true },
+    });
+
+    if (cachedIdea && cachedIdea.reports.length > 0) {
+      const existingReport = cachedIdea.reports[0];
+
+      // Clone the report for this user
+      const clonedReport = await prisma.validationReport.create({
+        data: {
+          ideaId: idea.id,
+          userId,
+          validationScore: existingReport.validationScore,
+          marketOpportunity: existingReport.marketOpportunity,
+          productMarketFit: existingReport.productMarketFit,
+          riskScore: existingReport.riskScore,
+          marketAnalysis: existingReport.marketAnalysis as any,
+          swotAnalysis: existingReport.swotAnalysis as any,
+          competitors: existingReport.competitors as any,
+          customerPersonas: existingReport.customerPersonas as any,
+          revenuePotential: existingReport.revenuePotential as any,
+          riskAnalysis: existingReport.riskAnalysis as any,
+          pricingRecommendation: existingReport.pricingRecommendation as any,
+          growthOpportunities: existingReport.growthOpportunities as any,
+          acquisitionStrategy: existingReport.acquisitionStrategy as any,
+          actionPlan: existingReport.actionPlan as any,
+          uiMockupDescriptions: existingReport.uiMockupDescriptions as any,
+          uiMockupImages: existingReport.uiMockupImages as any,
+          landingPageCopy: existingReport.landingPageCopy as any,
+          salesFunnel: existingReport.salesFunnel as any,
+          codeBoilerplate: existingReport.codeBoilerplate as any,
+          processingTime: 0, // 0 indicates it was cached
+          geminiModel: existingReport.geminiModel,
+        },
+      });
+
+      // Update idea status to COMPLETED
+      await prisma.idea.update({
+        where: { id: idea.id },
+        data: { status: "COMPLETED" },
+      });
+
+      // Audit Log
+      await prisma.auditLog.create({
+        data: {
+          userId,
+          action: "IDEA_VALIDATED",
+          resource: "idea",
+          resourceId: idea.id,
+          details: {
+            score: existingReport.validationScore,
+            industry: idea.industry,
+            processingTime: 0,
+            cached: true,
+          },
+        },
+      }).catch(() => {});
+
+      // Return INSTANTLY!
+      return NextResponse.json({
+        success: true,
+        reportId: clonedReport.id,
+        ideaId: idea.id,
+        score: clonedReport.validationScore,
+        cached: true,
+      });
+    }
+
+    // === 2. QUEUE LAYER (OR LOCAL FALLBACK) ===
+    // If no cache, dispatch to BullMQ background worker (or local background execution)
+    
+    // Set status to PROCESSING
+    await prisma.idea.update({
+      where: { id: idea.id },
+      data: { status: "PROCESSING" },
+    });
+
+    console.log("Dispatching validation job to BullMQ queue...");
+    // Import dynamically so it doesn't break Edge runtime if imported globally
+    const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
+    
+    await dispatchValidationJob({
+      sessionId: "system", // Legacy field
+      industry: idea.industry,
+      businessIdea: idea.title,
+      pricingModel: idea.pricingModel || "",
+      // Pass the ideaId and userId so the worker knows what to process
+      ideaId: idea.id,
+      userId: userId
+    } as any);
+
+    return NextResponse.json({
+      success: true,
+      ideaId: idea.id,
+      status: "QUEUED",
+      jobId: idea.id
+    }, { status: 202 });
+
+  } catch (error) {
+    console.error("Generation API error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

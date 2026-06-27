@@ -1,0 +1,691 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================
+// AUTH MODELS
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String? // Hashed with Argon2id
+  provider      String?   @default("email")
+  role          UserRole  @default(USER)
+  tier          UserTier  @default(FREE)
+
+  // Profile
+  phone      String?
+  profession String?
+  bio        String?
+  company    String?
+  website    String?
+  location   String?
+
+  // Security
+  twoFactorEnabled Boolean  @default(false)
+  twoFactorSecret  String? // Encrypted TOTP secret
+  backupCodes      String[] // Hashed backup codes
+  isBanned         Boolean  @default(false)
+
+  // Lemon Squeezy
+  lemonSqueezyCustomerId     String? @unique
+  lemonSqueezySubscriptionId String? @unique
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  lastLoginAt DateTime?
+
+  // Credit System
+  availableCredits Int @default(0)
+
+  // Relations
+  accounts     Account[]
+  sessions     Session[]
+  loginHistory LoginHistory[]
+  ideas        Idea[]
+  auditLogs    AuditLog[]
+  subscription Subscription?
+  mfaConfig    MFAConfig?
+
+  validationSessions ValidationSession[]
+  orders             Order[]
+  consents           UserConsent[]
+  supportTickets     SupportTicket[]
+  affiliateProfile   AffiliateProfile?
+  couponUsages       CouponUsage[]
+
+  @@index([email])
+  @@map("users")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  // Device tracking
+  deviceName String?
+  deviceType String?
+  browser    String?
+  os         String?
+  ipAddress  String?
+  location   String?
+  isCurrent  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model MFAConfig {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  secret    String // Encrypted TOTP secret
+  enabled   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("mfa_configs")
+}
+
+// ============================================
+// SECURITY MODELS
+// ============================================
+
+model LoginHistory {
+  id         String   @id @default(cuid())
+  userId     String
+  ipAddress  String?
+  userAgent  String?
+  browser    String?
+  os         String?
+  device     String?
+  location   String?
+  success    Boolean  @default(true)
+  failReason String?
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("login_history")
+}
+
+model AuditLog {
+  id         String        @id @default(cuid())
+  userId     String?
+  action     String
+  resource   String
+  resourceId String?
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  severity   AuditSeverity @default(INFO)
+  createdAt  DateTime      @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
+
+// ============================================
+// BUSINESS MODELS
+// ============================================
+
+model Idea {
+  id           String     @id @default(cuid())
+  userId       String
+  title        String
+  description  String     @db.Text
+  industry     String
+  targetMarket String?
+  location     String?
+  pricingModel String?
+  stage        IdeaStage  @default(IDEA)
+  status       IdeaStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reports ValidationReport[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("ideas")
+}
+
+model ValidationReport {
+  id     String @id @default(cuid())
+  ideaId String
+  userId String
+
+  // Core Scores
+  validationScore   Int // 0-100
+  marketOpportunity Int // 0-100
+  productMarketFit  Int // 0-100
+  riskScore         Int // 0-100
+
+  // Analysis Data (stored as JSON)
+  marketAnalysis        Json // Market size, TAM/SAM/SOM
+  swotAnalysis          Json // Strengths, Weaknesses, Opportunities, Threats
+  competitors           Json // Array of competitor objects
+  customerPersonas      Json // Array of persona objects
+  revenuePotential      Json // Revenue projections
+  riskAnalysis          Json // Risk factors and mitigation
+  pricingRecommendation Json // Recommended pricing tiers
+  growthOpportunities   Json // Growth tactics array
+  acquisitionStrategy   Json // Customer acquisition plan
+  actionPlan            Json // 30/60/90 day plan
+
+  // AI Generated Content
+  uiMockupDescriptions Json? // AI UI concept descriptions
+  uiMockupImages       Json? // Base64 generated mockup images
+  landingPageCopy      Json? // Generated landing page copy
+  salesFunnel          Json? // Sales funnel stages
+  codeBoilerplate      Json? // Code generation output
+
+  // Metadata
+  processingTime Int? // ms
+  geminiModel    String? // Model used
+  tokensUsed     Int?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  idea  Idea   @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  leads Lead[]
+
+  @@index([ideaId])
+  @@index([userId])
+  @@map("validation_reports")
+}
+
+model Lead {
+  id             String     @id @default(cuid())
+  reportId       String
+  name           String?
+  company        String?
+  title          String?
+  email          String?
+  linkedin       String?
+  website        String?
+  relevanceScore Int // 0-100
+  notes          String?    @db.Text
+  status         LeadStatus @default(NEW)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  report ValidationReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId])
+  @@map("leads")
+}
+
+model ValidationSession {
+  id           String           @id @default(uuid())
+  ipAddress    String
+  status       ValidationStatus @default(PENDING)
+  industry     IndustryType
+  businessIdea String           @db.VarChar(1000)
+  targetScope  String?          @db.VarChar(50) // e.g., "GLOBAL", "COUNTRY", "STATE", "CITY"
+  targetCountry String?         @db.VarChar(100)
+  targetState  String?          @db.VarChar(100)
+  targetCity   String?          @db.VarChar(100)
+  pricingModel PricingModelType
+  jobId        String?
+
+  // User Relation
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Teaser Data
+  viabilityScore Int?
+  antiRoadmap    Json?
+
+  // Execution Deep Data
+  wtpScore      Int?
+  unitEconomics Json?
+
+  // Locked Raw Data (Deprecated generic Json for mockups/code if using Supabase, but kept for backward compatibility)
+  mockups         Json?
+  b2bLeads        Json?
+  financialModel  Json?
+  codeBoilerplate Json?
+
+  // Premium Structured Data (Adaptive Views Dashboard)
+  businessSections Json?
+  executionAssets  Json?
+  marketingAssets  Json?
+  localMarketOverview   Json?
+  opportunityComparison Json?
+
+  // Secure Storage References (Supabase)
+  uiMockups    String[] // Array of Supabase Storage paths
+  codeAssetKey String? // Supabase Storage path for .ZIP
+
+  // Access State
+  isUnlocked   Boolean       @default(false)
+  unlockedTier UnlockedTier?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  transactions Transaction[]
+
+  @@map("validation_sessions")
+}
+
+model Transaction {
+  id              String            @id @default(uuid())
+  sessionId       String
+  stripeSessionId String            @unique
+  amount          Int // in cents
+  status          TransactionStatus @default(PENDING)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  session ValidationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("transactions")
+}
+
+// ============================================
+// BILLING MODELS
+// ============================================
+
+model Subscription {
+  id                     String             @id @default(cuid())
+  userId                 String             @unique
+  stripeSubscriptionId   String             @unique
+  stripePriceId          String
+  stripeCurrentPeriodEnd DateTime
+  status                 SubscriptionStatus @default(ACTIVE)
+  tier                   UserTier           @default(PRO)
+  cancelAtPeriodEnd      Boolean            @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("subscriptions")
+}
+
+model Order {
+  id              String            @id @default(uuid())
+  userId          String
+  stripeSessionId String            @unique
+  packType        CreditPackType
+  creditsAdded    Int
+  status          TransactionStatus @default(PENDING)
+  affiliateId     String?
+  discountAmount  Int               @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  affiliate AffiliateProfile? @relation(fields: [affiliateId], references: [id], onDelete: SetNull)
+
+  @@map("orders")
+}
+
+// ============================================
+// LEGAL MODELS
+// ============================================
+
+enum LegalDocType {
+  TERMS
+  PRIVACY
+  REFUND
+}
+
+model LegalDocument {
+  id          String       @id @default(uuid())
+  type        LegalDocType
+  version     String
+  content     String       @db.Text
+  isActive    Boolean      @default(false)
+  publishedAt DateTime     @default(now())
+
+  consents UserConsent[]
+
+  @@index([type, isActive])
+  @@map("legal_documents")
+}
+
+model UserConsent {
+  id         String   @id @default(uuid())
+  userId     String
+  documentId String
+  ipAddress  String
+  agreedAt   DateTime @default(now())
+
+  user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document LegalDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@map("user_consents")
+}
+
+// ============================================
+// PUBLIC GALLERY MODELS
+// ============================================
+
+model PublicRoast {
+  id      String @id @default(uuid())
+  shareId String @unique
+
+  originalIdea  String @db.VarChar(1000)
+  brutalVerdict String @db.Text
+  capitalSaved  Int
+
+  createdAt DateTime @default(now())
+
+  @@index([createdAt(sort: Desc)])
+  @@map("public_roasts")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum UserTier {
+  FREE
+  STARTER
+  PRO
+  TEAM
+  ENTERPRISE
+}
+
+enum IdeaStage {
+  IDEA
+  VALIDATION
+  MVP
+  LAUNCHED
+}
+
+enum IdeaStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  RESPONDED
+  CONVERTED
+  REJECTED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  INCOMPLETE
+  TRIALING
+}
+
+enum AuditSeverity {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+enum ValidationStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum IndustryType {
+  SaaS
+  D2C
+  Local_Service @map("Local Service")
+}
+
+enum PricingModelType {
+  One_time     @map("One-time")
+  Subscription
+  High_Ticket  @map("High-Ticket")
+}
+
+enum UnlockedTier {
+  STARTER
+  PRO
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum CreditPackType {
+  SINGLE
+  SERIAL
+  AGENCY
+}
+
+enum TicketCategory {
+  BILLING
+  GENERATION
+  ACCESS
+  OTHER
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+model SupportTicket {
+  id       String         @id @default(uuid())
+  userId   String
+  category TicketCategory
+  subject  String         @db.VarChar(150)
+  message  String         @db.Text
+  status   TicketStatus   @default(OPEN)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@map("support_tickets")
+}
+
+// ============================================
+// PARTNER & AFFILIATE MODELS
+// ============================================
+
+model AffiliateProfile {
+  id             String  @id @default(uuid())
+  userId         String  @unique
+  couponCode     String  @unique @db.VarChar(10)
+  payoutEmail    String
+  trafficSource  String?
+  pendingBalance Int     @default(0) // in cents
+  totalEarned    Int     @default(0) // in cents
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orders Order[]
+
+  @@map("affiliate_profiles")
+}
+
+model CouponUsage {
+  id         String   @id @default(uuid())
+  userId     String
+  couponCode String
+  usedAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, couponCode])
+  @@map("coupon_usages")
+}
+
+// ============================================
+// MARKETING & TRACKING MODELS
+// ============================================
+
+model CompetitorMatrix {
+  id                   String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  slug                 String   @unique
+  name                 String
+  basePrice            String
+  dataSourceType       String
+  reportFormatStyle    String
+  primaryStrength      String
+  fatalTradeoff        String
+  verifiableSourcesScore Int
+  hasLiveSources       Boolean  @default(false)
+  hasPivotLogic        Boolean  @default(false)
+  hasNextjsBoilerplate Boolean  @default(false)
+  hasAwsBlueprints     Boolean  @default(false)
+  hasApolloLeads       Boolean  @default(false)
+  specificAttackVector String   @db.Text
+  createdAt            DateTime @default(dbgenerated("TIMEZONE('utc'::text, NOW())")) @db.Timestamptz
+
+  @@map("competitor_matrices")
+}
+
+model InterceptTracking {
+  id                 String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  competitorSlug     String
+  incomingReferrer   String?
+  capturedUtmSource  String?
+  interceptedAt      DateTime @default(dbgenerated("TIMEZONE('utc'::text, NOW())")) @db.Timestamptz
+
+  @@map("market_interceptions")
+}
+
+model FreeToolLead {
+  id                   String   @id @default(uuid())
+  email                String   @unique
+  saasIdea             String   @db.Text
+  generatedCodeSnippet String?  @db.Text
+  sourceUrl            String?
+  createdAt            DateTime @default(now())
+
+  @@map("free_tool_leads")
+}
+
+model SampleReport {
+  id            String   @id @default(uuid())
+  slug          String   @unique
+  projectName   String
+  tagline       String
+  rigorScore    Int
+  tamValuation  String
+  targetPricing String
+  createdAt     DateTime @default(now())
+
+  technicalBlueprint TechnicalBlueprint?
+  gtmAsset           GtmAsset?
+
+  @@map("sample_reports")
+}
+
+model TechnicalBlueprint {
+  id                       String @id @default(uuid())
+  reportId                 String @unique
+  architectureTier         String
+  infrastructureComponents Json
+  sqlSchemaDdl             String @db.Text
+  reactComponentRaw        String @db.Text
+
+  report SampleReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@map("technical_blueprints")
+}
+
+model GtmAsset {
+  id                   String @id @default(uuid())
+  reportId             String @unique
+  apolloSearchCriteria String @db.Text
+  sampleLeads          Json
+  outboundCopy         String @db.Text
+  n8nWebhookJson       Json
+
+  report SampleReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@map("gtm_assets")
+}

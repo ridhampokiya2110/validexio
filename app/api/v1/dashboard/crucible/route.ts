@@ -1,0 +1,258 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+
+const apiKey = process.env.GEMINI_API_KEY || "mock-key";
+const genAI = new GoogleGenerativeAI(apiKey);
+
+export async function POST(req: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { action, track, previousQuestions = [], currentAnswer, currentQuestion } = body;
+
+    if (!action || !track) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    }
+
+    // Fetch user tier and validation report concurrently to save DB latency
+    const [user, latestReport] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { tier: true }
+      }),
+      prisma.validationReport.findFirst({
+        where: { userId: session.user.id },
+        orderBy: { createdAt: "desc" },
+        include: { idea: true }
+      })
+    ]);
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    // Enforce tier limits
+    let maxQuestions = 0;
+    if (user.tier === "PRO") maxQuestions = 5;
+    else if (user.tier === "TEAM") maxQuestions = 10;
+    else if (user.tier === "ENTERPRISE") maxQuestions = 20;
+    else return NextResponse.json({ error: "Investor Simulator requires PRO tier or above." }, { status: 403 });
+
+    if (previousQuestions.length >= maxQuestions) {
+      return NextResponse.json({ error: "Question limit reached for your tier." }, { status: 403 });
+    }
+
+    // Build context string from the latest validation report
+    let contextStr = "No previous context provided.";
+    if (latestReport) {
+      contextStr = `
+IDEA CONTEXT:
+Title: ${(latestReport as any).idea?.title || "Unknown"}
+Description: ${(latestReport as any).idea?.description || "Unknown"}
+Industry: ${(latestReport as any).idea?.industry || "Unknown"}
+Market Size: ${JSON.stringify((latestReport.marketAnalysis as any)?.tam || "Unknown")}
+Target Audience: ${JSON.stringify(latestReport.customerPersonas)}
+Competitors: ${JSON.stringify(latestReport.competitors)}
+Revenue Potential: ${JSON.stringify(latestReport.revenuePotential)}
+`;
+    }
+
+    const textModel = genAI.getGenerativeModel({ 
+      model: "gemini-flash-latest",
+      generationConfig: { maxOutputTokens: 200, temperature: 0.7 } 
+    });
+
+    const evaluationSchema = {
+      type: "object",
+      properties: {
+        score: {
+          type: "integer",
+          description: "A score between 0 and 10 based on how well the user defended their answer.",
+        },
+        critique: {
+          type: "string",
+          description: "A strict 2-sentence critique explaining why their defense passed or failed. Be brutally honest.",
+        },
+        idealAnswer: {
+          type: "string",
+          description: "The 2-sentence ideal expert answer. What should they have said?",
+        },
+      },
+      required: ["score", "critique", "idealAnswer"],
+    };
+
+    const jsonModel = genAI.getGenerativeModel({ 
+      model: "gemini-flash-latest",
+      safetySettings: [
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_NONE,
+        }
+      ],
+      generationConfig: { 
+        maxOutputTokens: 800, 
+        temperature: 0.2,
+        responseMimeType: "application/json",
+        responseSchema: evaluationSchema
+      } 
+    });
+
+    // ROUTING LOGIC
+    if (action === "GENERATE_QUESTION") {
+      const trackPrompt = track === "TECHNICAL_ARCHITECT" 
+        ? "You are a highly critical Principal Cloud Architect. Ask one hyper-specific technical question about their stack, scaling bottlenecks, or infrastructure."
+        : "You are a strict VC/B2B Buyer. Ask one highly-specific business question regarding CAC, LTV, churn, moat, or cash flow.";
+
+      const prompt = `
+ROLE: ${trackPrompt}
+
+TASK: Generate EXACTLY ONE highly-specific, professional interrogation question directed at the founder of this startup.
+
+STARTUP CONTEXT:
+${contextStr}
+
+PREVIOUS QUESTIONS ASKED (Do not repeat these concepts):
+${previousQuestions.length > 0 ? previousQuestions.join("\n") : "None"}
+
+CRITICAL RULES:
+1. Output ONLY the question itself. No prefixes like "Question:", no quotes, no markdown, no conversational filler.
+2. The output MUST be a complete, professional English sentence ending with a question mark (?).
+3. The question MUST specifically challenge the details of their startup context.
+4. Do not just regurgitate their idea; challenge it like an elite industry expert.
+
+EXAMPLE OF A GOOD QUESTION:
+"Given your target audience of enterprise healthcare providers, how exactly are you planning to manage HIPAA-compliant data residency when relying on multi-tenant cloud architecture?"
+`;
+
+      if (process.env.GEMINI_API_KEY) {
+         let question;
+         try {
+           const result = await textModel.generateContent(prompt);
+           question = result.response.text().trim();
+           // Strip out any conversational prefixes or quotes
+           question = question.replace(/^["']|["']$/g, "").replace(/^(Here is the next question:|Next question:|Question:|\* \w+:)/i, "").trim();
+         } catch (apiError) {
+           console.error("Gemini Generate Question Error (429/etc):", apiError);
+           question = track === "TECHNICAL_ARCHITECT" 
+            ? "Your system is under heavy load. How exactly are you preventing cascading failures across your microservices?" 
+            : "If customer acquisition costs double tomorrow, how does your financial model survive the next 12 months?";
+         }
+         return NextResponse.json({ question });
+      } else {
+         // Mock if no API key
+         await new Promise(resolve => setTimeout(resolve, 1000));
+         return NextResponse.json({ question: track === "TECHNICAL_ARCHITECT" ? "How exactly does your database schema handle 10k concurrent writes during a failover event?" : "Your CAC is assumed to be zero initially, how do you mathematically prove you won't bleed cash scaling beyond your immediate network?" });
+      }
+    } 
+    else if (action === "EVALUATE_ANSWER") {
+      if (!currentAnswer || !currentQuestion) {
+        return NextResponse.json({ error: "Missing answer or question context" }, { status: 400 });
+      }
+
+      const trackPrompt = track === "TECHNICAL_ARCHITECT" 
+        ? "You are a highly critical Principal Cloud Architect. Evaluate the user's technical defense."
+        : "You are a strict VC/B2B Buyer. Evaluate the user's business defense.";
+
+      const prompt = `
+${trackPrompt}
+${contextStr}
+
+QUESTION ASKED: ${currentQuestion}
+USER'S ANSWER: ${currentAnswer}
+
+INSTRUCTIONS:
+Evaluate the user's answer critically. 
+You MUST return your response as a raw JSON object and nothing else.
+Do not use markdown code blocks.
+Follow this EXACT format:
+{
+  "score": 5,
+  "critique": "Write your strict 2-sentence critique here explaining why their defense passed or failed. Do not use quotes or special characters.",
+  "idealAnswer": "Write the 2-sentence ideal expert answer here. Do not use quotes or special characters."
+}`;
+
+      if (process.env.GEMINI_API_KEY) {
+        let text = "";
+        try {
+          const result = await jsonModel.generateContent(prompt);
+          text = result.response.text();
+        } catch (apiError) {
+          console.error("Gemini Evaluate Answer Error (429/etc):", apiError);
+          // If we hit a rate limit, return a generic neutral score so they can keep playing
+          return NextResponse.json({
+            score: 5,
+            critique: "The AI evaluator hit a rate limit (Too Many Requests), but your answer was recorded. Try slowing down your responses slightly.",
+            idealAnswer: "A perfect answer would provide exact numbers, clear constraints, and a proven architectural diagram or financial model."
+          });
+        }
+        
+        let evaluation;
+        try {
+          const jsonMatch = text.match(/\{[\s\S]*\}/);
+          if (jsonMatch) {
+            text = jsonMatch[0];
+          }
+          evaluation = JSON.parse(text);
+        } catch (parseError) {
+          console.error("Failed to parse Gemini evaluation JSON:", text);
+          // Write to a local file so I can inspect it
+          require('fs').writeFileSync('gemini-debug.txt', text);
+          
+          // Attempt a manual salvage of the truncated JSON using Regex
+          let salvagedScore = 5;
+          let salvagedCritique = "The AI evaluator returned an invalid response format, but your answer was recorded. Your response lacked definitive proof or hard metrics.";
+          
+          const scoreMatch = text.match(/"score"\s*:\s*(\d+)/);
+          if (scoreMatch && scoreMatch[1]) {
+            salvagedScore = parseInt(scoreMatch[1]);
+          }
+          
+          const critiqueMatch = text.match(/"critique"\s*:\s*"([^"]+)/);
+          if (critiqueMatch && critiqueMatch[1]) {
+            salvagedCritique = critiqueMatch[1].trim();
+          }
+
+          evaluation = {
+            score: salvagedScore,
+            critique: salvagedCritique + (salvagedCritique.endsWith('.') ? '' : '...'),
+            idealAnswer: "A perfect answer would provide exact numbers, clear constraints, and a proven architectural diagram or financial model."
+          };
+        }
+        
+        return NextResponse.json(evaluation);
+      } else {
+         // Mock if no API key
+         await new Promise(resolve => setTimeout(resolve, 1500));
+         return NextResponse.json({
+            score: 4,
+            critique: "Your answer relies on vague hopes of auto-scaling rather than actual mathematical unit economics. You will burn through runway in 3 months with this approach.",
+            idealAnswer: "The ideal approach proves a sub-3 month payback period using highly targeted cold-email bounds, calculating exact server unit costs per user at scale."
+         });
+      }
+    }
+
+    return NextResponse.json({ error: "Invalid action" }, { status: 400 });
+
+  } catch (error) {
+    console.error("Investor Simulator API Error:", error);
+    return NextResponse.json({ error: "Failed to process Investor Simulator request." }, { status: 500 });
+  }
+}

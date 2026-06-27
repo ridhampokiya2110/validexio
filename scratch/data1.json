@@ -1,0 +1,222 @@
+[
+  {
+    "id": "preuve",
+    "name": "Preuve AI",
+    "slug": "preuve",
+    "heroHeadline": "Preuve AI Writes Reports.",
+    "heroSubheadline": "A PDF report won't get you users. Preuve gives you 10 pages of validation analysis. Validexio gives you the exact React codebase and B2B leads to actually launch the product.",
+    "targetOutputCompetitor": "PDF Validation Reports",
+    "pipeline": {
+      "description": "Preuve stops at market analysis. We push you all the way to a live Vercel deployment.",
+      "stages": [
+        { "id": 1, "name": "The Idea", "iconName": "Lightbulb", "competitorHas": true, "validexioHas": true, "description": "You have a concept that needs validation." },
+        { "id": 2, "name": "Market Research", "iconName": "FileText", "competitorHas": true, "validexioHas": true, "description": "Analyzing competitors and viability." },
+        { "id": 3, "name": "Product Code", "iconName": "Code2", "competitorHas": false, "validexioHas": true, "description": "Copy-pasteable Next.js code to build the MVP." },
+        { "id": 4, "name": "First Customers", "iconName": "Users", "competitorHas": false, "validexioHas": true, "description": "10 Verified B2B leads ready for outreach." }
+      ]
+    },
+    "sections": [
+      {
+        "id": "01",
+        "title": "Intelligence & Validation",
+        "subtitle": "Reports vs Blueprints.",
+        "features": [
+          { "name": "Primary Output", "pill": "Data-Driven", "validexio": { "title": "Technical Architecture", "impact": "→ We don't just score ideas. We give you the AWS/Vercel architecture to build it." }, "competitor": { "title": "10-Page PDF Market Report" } },
+          { "name": "Feature Roadmapping", "pill": "Actionable", "validexio": { "title": "Database Schemas", "impact": "→ Stop guessing. We give you the exact Prisma schema for your MVP." }, "competitor": { "title": "Generates a theoretical list of features." } }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "The Execution Payload",
+        "subtitle": "Reading vs Shipping.",
+        "features": [
+          { "name": "Software Engineering", "pill": "Production-Ready", "validexio": { "title": "Next.js / React Codebase", "impact": "→ Don't just read about your startup. Deploy it today." }, "competitor": { "title": "None. Only provides validation text." } },
+          { "name": "Customer Acquisition", "pill": "Verified Leads", "validexio": { "title": "10 B2B Decision Makers", "impact": "→ Start selling immediately with a verified lead list." }, "competitor": { "title": "Provides general marketing advice." } }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "Pricing & Value",
+        "subtitle": "Monthly vs One-Time Execution.",
+        "features": [
+          { "name": "Pricing Model", "pill": "Execution", "validexio": { "title": "INR 1499 Flat Fee", "impact": "→ One payment gets you the code, leads, architecture, and UI." }, "competitor": { "title": "$9-$29 Monthly Subscription" } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dimeadozen",
+    "name": "DimeADozen",
+    "slug": "dimeadozen",
+    "heroHeadline": "DimeADozen Validates.",
+    "heroSubheadline": "Validation is useless without execution. DimeADozen gives you business plans and risk reports. Validexio translates your idea directly into live code, UI designs, and B2B leads.",
+    "targetOutputCompetitor": "Business Validation Reports",
+    "pipeline": {
+      "description": "DimeADozen gives you a 'validation score' and stops. We give you the assets to start building.",
+      "stages": [
+        { "id": 1, "name": "The Idea", "iconName": "Lightbulb", "competitorHas": true, "validexioHas": true, "description": "Formulating the startup concept." },
+        { "id": 2, "name": "Risk Analysis", "iconName": "FileText", "competitorHas": true, "validexioHas": true, "description": "Identifying market risks and competition." },
+        { "id": 3, "name": "Live UI Mockups", "iconName": "Code2", "competitorHas": false, "validexioHas": true, "description": "2 High-Fidelity UI layouts ready for development." },
+        { "id": 4, "name": "Lead Generation", "iconName": "Users", "competitorHas": false, "validexioHas": true, "description": "Verified emails of target customers." }
+      ]
+    },
+    "sections": [
+      {
+        "id": "01",
+        "title": "Intelligence & Validation",
+        "subtitle": "Scores vs Blueprints.",
+        "features": [
+          { "name": "Validation Method", "pill": "Actionable", "validexio": { "title": "Technical Teardowns", "impact": "→ We scrape competitor tech stacks to tell you exactly how to build a better product." }, "competitor": { "title": "Generates a 50-page text analysis report." } }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "The Execution Payload",
+        "subtitle": "Paperwork vs Code.",
+        "features": [
+          { "name": "Engineering Assets", "pill": "Production-Ready", "validexio": { "title": "Copy-Pasteable React Code", "impact": "→ Turn your validated idea into a live Vercel app instantly." }, "competitor": { "title": "Provides business plans but zero code." } },
+          { "name": "Brand & Design", "pill": "High-Fidelity UI", "validexio": { "title": "2 Complete UI Layouts", "impact": "→ Get the actual frontend interface designed." }, "competitor": { "title": "Text-based wireframe descriptions." } }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "Pricing & Value",
+        "subtitle": "Credits vs Flat Fee.",
+        "features": [
+          { "name": "Asset Value", "pill": "Execution", "validexio": { "title": "INR 1499 (~$18) Flat Fee", "impact": "→ The complete package: Code, Leads, and Architecture." }, "competitor": { "title": "$39 per report or monthly subscriptions." } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "pitchbob",
+    "name": "PitchBob.io",
+    "slug": "pitchbob",
+    "heroHeadline": "PitchBob Builds Decks.",
+    "heroSubheadline": "Investors invest in traction, not just slides. PitchBob generates presentations; Validexio generates the actual React code, database schemas, and B2B leads to get your first paying customers.",
+    "targetOutputCompetitor": "Pitch Decks",
+    "pipeline": {
+      "description": "PitchBob preps you for a VC meeting. We prep you to launch and acquire actual users.",
+      "stages": [
+        { "id": 1, "name": "The Idea", "iconName": "Lightbulb", "competitorHas": true, "validexioHas": true, "description": "Structuring the business concept." },
+        { "id": 2, "name": "The Pitch", "iconName": "FileText", "competitorHas": true, "validexioHas": true, "description": "Formulating the narrative and presentation." },
+        { "id": 3, "name": "Product Code", "iconName": "Code2", "competitorHas": false, "validexioHas": true, "description": "Next.js codebase to show investors a live product." },
+        { "id": 4, "name": "First Customers", "iconName": "Users", "competitorHas": false, "validexioHas": true, "description": "10 Verified B2B leads to show real traction." }
+      ]
+    },
+    "sections": [
+      {
+        "id": "01",
+        "title": "Intelligence & Validation",
+        "subtitle": "Slides vs Strategy.",
+        "features": [
+          { "name": "Core Focus", "pill": "Actionable", "validexio": { "title": "Tech Blueprints", "impact": "→ Don't just talk about the tech. We give you the API routes and DB schemas to build it." }, "competitor": { "title": "Focuses purely on slide content and design." } }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "The Execution Payload",
+        "subtitle": "Presenting vs Building.",
+        "features": [
+          { "name": "Software Engineering", "pill": "Production-Ready", "validexio": { "title": "Live Developer Dashboard", "impact": "→ Walk into a pitch meeting with a live prototype built from our code." }, "competitor": { "title": "Exports to PowerPoint/Keynote." } },
+          { "name": "Traction Generation", "pill": "Verified Leads", "validexio": { "title": "10 B2B Leads Ready for Outreach", "impact": "→ Prove market demand by emailing real potential buyers today." }, "competitor": { "title": "Zero lead generation." } }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "Pricing & Value",
+        "subtitle": "Presenting vs Executing.",
+        "features": [
+          { "name": "Value Proposition", "pill": "Execution", "validexio": { "title": "INR 1499 Flat Fee", "impact": "→ Get code, leads, and architecture." }, "competitor": { "title": "Starts at $19.90, scales to $59.90 for full decks." } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "ideaproof",
+    "name": "IdeaProof.io",
+    "slug": "ideaproof",
+    "heroHeadline": "IdeaProof Builds Waitlists.",
+    "heroSubheadline": "A 'Coming Soon' page is not a product. IdeaProof generates simple landing pages to collect emails. Validexio gives you the full-stack React codebase, database schemas, and actual B2B leads to launch the real thing.",
+    "targetOutputCompetitor": "Waitlist Pages",
+    "pipeline": {
+      "description": "IdeaProof builds an email capture box. We give you the fully authenticated SaaS boilerplate.",
+      "stages": [
+        { "id": 1, "name": "The Idea", "iconName": "Lightbulb", "competitorHas": true, "validexioHas": true, "description": "Formulating the business concept." },
+        { "id": 2, "name": "Landing Page", "iconName": "FileText", "competitorHas": true, "validexioHas": true, "description": "A basic page to capture interest." },
+        { "id": 3, "name": "Backend Auth & DB", "iconName": "Code2", "competitorHas": false, "validexioHas": true, "description": "Actual Supabase/AWS schemas and React code." },
+        { "id": 4, "name": "Active Outreach", "iconName": "Users", "competitorHas": false, "validexioHas": true, "description": "Don't wait for signups. We give you 10 B2B leads." }
+      ]
+    },
+    "sections": [
+      {
+        "id": "01",
+        "title": "Intelligence & Validation",
+        "subtitle": "Passive vs Active Validation.",
+        "features": [
+          { "name": "Validation Approach", "pill": "Actionable", "validexio": { "title": "Live Competitor Teardowns", "impact": "→ We reverse-engineer your competitors' tech stacks so you can build." }, "competitor": { "title": "Waits for users to stumble upon a landing page." } }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "The Execution Payload",
+        "subtitle": "Email Boxes vs SaaS Apps.",
+        "features": [
+          { "name": "Engineering Assets", "pill": "Production-Ready", "validexio": { "title": "Next.js Application Code", "impact": "→ Build the actual dashboard your users will log into." }, "competitor": { "title": "Only generates a frontend 'Coming Soon' page." } },
+          { "name": "Customer Acquisition", "pill": "Verified Leads", "validexio": { "title": "10 Verified B2B Leads", "impact": "→ Stop waiting. Email 10 target buyers right now." }, "competitor": { "title": "Rely entirely on organic traffic to the waitlist." } }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "Pricing & Value",
+        "subtitle": "Subscriptions vs Execution.",
+        "features": [
+          { "name": "Pricing Model", "pill": "Execution", "validexio": { "title": "INR 1499 Flat Fee", "impact": "→ One payment for full execution assets." }, "competitor": { "title": "$15/month for active landing pages." } }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "verdikt",
+    "name": "FounderVerdict",
+    "slug": "verdikt",
+    "heroHeadline": "Verdikt Analyzes.",
+    "heroSubheadline": "Analysis paralysis kills startups. Verdikt gives you a PDF score on your idea. Validexio skips the grading and hands you the React code, API architecture, and UI mockups to immediately start building.",
+    "targetOutputCompetitor": "PDF Analysis Reports",
+    "pipeline": {
+      "description": "Verdikt stops at a PDF score. We hand you the code repository.",
+      "stages": [
+        { "id": 1, "name": "The Idea", "iconName": "Lightbulb", "competitorHas": true, "validexioHas": true, "description": "Formulating the business concept." },
+        { "id": 2, "name": "Analysis & Scoring", "iconName": "FileText", "competitorHas": true, "validexioHas": true, "description": "Grading the idea out of 100." },
+        { "id": 3, "name": "React Codebase", "iconName": "Code2", "competitorHas": false, "validexioHas": true, "description": "Actual production-ready frontend code." },
+        { "id": 4, "name": "Outreach Leads", "iconName": "Users", "competitorHas": false, "validexioHas": true, "description": "10 B2B buyers ready to purchase." }
+      ]
+    },
+    "sections": [
+      {
+        "id": "01",
+        "title": "Intelligence & Validation",
+        "subtitle": "Scoring vs Blueprinting.",
+        "features": [
+          { "name": "Output Strategy", "pill": "Actionable", "validexio": { "title": "Technical Blueprints", "impact": "→ We tell you the exact AWS services and DB schemas you need." }, "competitor": { "title": "Provides a 1-100 score and qualitative feedback." } }
+        ]
+      },
+      {
+        "id": "02",
+        "title": "The Execution Payload",
+        "subtitle": "Reading vs Shipping.",
+        "features": [
+          { "name": "Product Code", "pill": "Production-Ready", "validexio": { "title": "Live Developer Dashboard", "impact": "→ Copy and paste real React UI components to Vercel." }, "competitor": { "title": "None. Only provides a PDF report." } }
+        ]
+      },
+      {
+        "id": "03",
+        "title": "Pricing & Value",
+        "subtitle": "Per Report vs Full Execution.",
+        "features": [
+          { "name": "Pricing Model", "pill": "Execution", "validexio": { "title": "INR 1499 Flat Fee", "impact": "→ Complete technical and sales payload." }, "competitor": { "title": "Charges ~$15 per PDF analysis report." } }
+        ]
+      }
+    ]
+  }
+]
