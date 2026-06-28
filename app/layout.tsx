@@ -31,7 +31,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   verification: {
-    google: "google71adb939518d27d4",
+    google: "xKEVoUsWNnXp1j3W",
     yandex: undefined,
     yahoo: undefined,
   },
