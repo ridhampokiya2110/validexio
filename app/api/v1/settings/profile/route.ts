@@ -15,6 +15,7 @@ export async function GET() {
         name: true,
         email: true,
         availableCredits: true,
+        tier: true,
       },
     });
 

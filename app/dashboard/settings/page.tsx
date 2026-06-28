@@ -11,6 +11,7 @@ interface UserProfile {
   name: string;
   email: string;
   availableCredits: number;
+  tier: string;
 }
 
 export default function SettingsPage() {
@@ -142,11 +143,13 @@ export default function SettingsPage() {
                 </button>
               );
             })}
-            <div className="md:mt-8 md:pt-4 md:border-t border-[#1B1716]/10 ml-auto md:ml-0 flex items-center">
-              <Link href="/dashboard/settings/affiliate" className="text-xs font-semibold text-[#1B1716]/70 hover:text-cherry transition-colors flex items-center px-4 py-3 md:py-0 whitespace-nowrap">
-                Partner Program
-              </Link>
-            </div>
+            {profile && ["PRO", "TEAM", "ENTERPRISE"].includes(profile.tier) && (
+              <div className="md:mt-8 md:pt-4 md:border-t border-[#1B1716]/10 ml-auto md:ml-0 flex items-center">
+                <Link href="/dashboard/settings/affiliate" className="text-xs font-semibold text-[#1B1716]/70 hover:text-cherry transition-colors flex items-center px-4 py-3 md:py-0 whitespace-nowrap">
+                  Partner Program
+                </Link>
+              </div>
+            )}
           </div>
         </nav>
 

@@ -34,7 +34,7 @@ export default function AboutPage() {
                   Most startups fail not because they couldn't build the product, but because they built something the market didn't need. They spend 6 months coding, launch to crickets, and wonder what went wrong.
                 </p>
                 <p className="text-[#1B1716]/70 text-lg leading-relaxed font-medium">
-                  Validexio completely flips this model. By leveraging advanced AI, competitor intelligence, and hard unit economics, we simulate the first 6 months of your startup in exactly 60 seconds. We validate the market before you write a single line of code.
+                  Validexio completely flips this model. By leveraging advanced data analytics, competitor intelligence, and hard unit economics, we simulate the first 6 months of your startup in exactly 60 seconds. We validate the market before you write a single line of code.
                 </p>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -42,8 +42,8 @@ export default function AboutPage() {
                   <div className="w-12 h-12 rounded-xl bg-cherry/10 flex items-center justify-center mb-6 border border-cherry/20">
                     <Brain className="w-6 h-6 text-cherry" />
                   </div>
-                  <h3 className="text-xl font-bold mb-3 text-[#1B1716]">AI-Powered Intelligence</h3>
-                  <p className="text-[#1B1716]/60 text-sm font-medium">Our models analyze thousands of data points, competitor strategies, and market trends instantly.</p>
+                  <h3 className="text-xl font-bold mb-3 text-[#1B1716]">Data-Driven Intelligence</h3>
+                  <p className="text-[#1B1716]/60 text-sm font-medium">Our algorithms analyze thousands of data points, competitor strategies, and market trends instantly.</p>
                 </div>
                 <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl sm:translate-y-8 hover:shadow-[0_8px_30px_rgba(117,7,12,0.1)] transition-all">
                   <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 border border-emerald-500/20">

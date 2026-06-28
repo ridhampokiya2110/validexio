@@ -50,7 +50,7 @@ export function CompetitorComparison() {
           </p>
         </div>
 
-        <div className="overflow-x-auto pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-x">
+        <div className="overflow-x-auto pb-8 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden touch-pan-y">
           <div className="min-w-[800px] grid grid-cols-12 gap-4 items-end mb-10 px-4 relative z-10">
             <div className="col-span-4" />
             <div className="col-span-4 text-center flex flex-col items-center justify-center gap-3">

@@ -524,10 +524,10 @@ function FeaturesSection() {
           <div className="badge badge-cherry inline-flex mb-4">
             Enterprise Intelligence
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight text-center mx-auto">
             Everything you need to <span className="gradient-text">validate</span>
-            <br />
-            before you build
+            <br className="hidden sm:block" />
+            <span className="sm:hidden"> </span>before you build
           </h2>
           <p className="text-[#1B1716]/60 text-lg max-w-xl mx-auto">
             Stop wasting months building products nobody wants. Get AI-powered validation and production-ready code in 60 seconds.
@@ -602,7 +602,7 @@ function HowItWorksSection() {
             </span>
             <div className="w-8 h-[1px] bg-[#630102]/30" />
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#111827] tracking-tight mb-6">
+          <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#111827] tracking-tight mb-6 text-center mx-auto">
             From idea to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">insight</span> in 60 seconds
           </h2>
           <p className="text-[#6B7280] text-lg md:text-xl font-medium max-w-2xl mx-auto">
@@ -619,7 +619,7 @@ function HowItWorksSection() {
               <div className="bg-white border border-[#E5E7EB] rounded-3xl p-10 h-full hover:border-[#630102]/20 transition-all duration-700 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_20px_40px_-12px_rgba(99,1,2,0.08)] relative overflow-hidden">
                 
                 {/* Massive Number Watermark */}
-                <div className="absolute -right-4 -top-8 text-[80px] sm:text-[120px] font-heading font-black text-[#F8F9FA] pointer-events-none group-hover:text-red-50 transition-colors duration-500">
+                <div className="absolute right-0 top-0 sm:-right-4 sm:-top-8 text-[80px] sm:text-[120px] font-heading font-black text-[#F8F9FA] pointer-events-none group-hover:text-red-50 transition-colors duration-500 leading-none">
                   {step.number}
                 </div>
 
@@ -796,7 +796,7 @@ function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 md:gap-6 max-w-5xl mx-auto items-stretch">
           {homePlans.map((plan) => (
             <PricingCard key={plan.name} plan={plan} currency={currency} />
           ))}
@@ -1016,9 +1016,9 @@ function FAQSection() {
                 </button>
                 
                 <div 
-                  className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-48 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
+                  className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[1000px] pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
                 >
-                  <div className="pl-14 text-[#1B1716]/65 leading-relaxed font-medium">
+                  <div className="pl-0 sm:pl-14 text-[#1B1716]/65 leading-relaxed font-medium">
                     {faq.answer}
                   </div>
                 </div>
@@ -1142,11 +1142,11 @@ function ValueAnchoringSection() {
             </ul>
             
             <div className="pt-6 border-t border-gray-200">
-              <div className="flex justify-between items-end mb-2">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-1 sm:gap-0">
                 <span className="text-gray-900 font-bold text-lg">Total Estimated Cost</span>
                 <span className="font-mono text-gray-900 font-black text-3xl tracking-tight">{anchorCosts.totalAgencies[currency]}</span>
               </div>
-              <div className="flex justify-between items-center mt-4 bg-orange-50/50 px-4 py-3 rounded-lg border border-orange-100">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-4 bg-orange-50/50 px-4 py-3 rounded-lg border border-orange-100 gap-1 sm:gap-0">
                 <span className="text-orange-800 text-sm uppercase tracking-wider font-bold">Time to deliver</span>
                 <span className="text-orange-900 font-black text-sm">2 to 4 weeks</span>
               </div>
@@ -1190,11 +1190,11 @@ function ValueAnchoringSection() {
             </ul>
             
             <div className="pt-6 border-t border-cherry/10 relative z-10">
-              <div className="flex justify-between items-end mb-2">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-1 sm:gap-0">
                 <span className="text-[#1B1716] font-bold text-lg">Total Cost</span>
                 <span className="font-mono text-[#1B1716] font-black text-4xl tracking-tight">{anchorCosts.validexioEngine[currency]}</span>
               </div>
-              <div className="flex justify-between items-center mt-4 bg-green-50 px-4 py-3 rounded-lg border border-green-100">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-4 bg-green-50 px-4 py-3 rounded-lg border border-green-100 gap-1 sm:gap-0">
                 <span className="text-green-800 text-sm uppercase tracking-wider font-bold">Time to deliver</span>
                 <span className="text-green-700 font-black text-sm flex items-center gap-1.5">
                   <span className="relative flex h-2.5 w-2.5">

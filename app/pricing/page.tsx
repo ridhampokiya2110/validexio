@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useCurrency } from "@/hooks/useCurrency";
-import { CheckCircle, ArrowLeft, ArrowRight } from "lucide-react";
+import { CheckCircle, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
@@ -21,8 +23,8 @@ const fullPlans = [
       "Advanced Financial Forecasting (Locked)",
       "Instantaneous Report Delivery"
     ],
-    cta: "Start Free",
     href: "/register",
+    tierKey: "FREE",
     featured: false,
   },
   {
@@ -40,8 +42,8 @@ const fullPlans = [
       "Standard processing time (24h)",
       "7-Day access to the report"
     ],
-    cta: "Buy Starter Credit",
     href: "/register?plan=starter",
+    tierKey: "STARTER",
     featured: false,
   },
   {
@@ -62,8 +64,8 @@ const fullPlans = [
       "Export to Notion / PDF",
       "Investor Simulator (All Personas, 10 QA Rounds)"
     ],
-    cta: "Unlock Execution Pro",
     href: "/register?plan=pro",
+    tierKey: "PRO",
     featured: true,
   },
   {
@@ -84,8 +86,8 @@ const fullPlans = [
       "Shared Team Workspace (Coming soon)",
       "Investor Simulator (All Personas, 15 QA Rounds + PDF)"
     ],
-    cta: "Buy Credit Bundle",
     href: "/register?plan=team",
+    tierKey: "TEAM",
     featured: false,
   },
   {
@@ -106,13 +108,13 @@ const fullPlans = [
       "24/7 Priority SLA Support",
       "Investor Simulator (All Personas, Unlimited QA + API)"
     ],
-    cta: "Buy Enterprise Hub",
     href: "/contact",
+    tierKey: "ENTERPRISE",
     featured: false,
   },
 ];
 
-function PricingCard({ plan, currency }: { plan: any; currency: string }) {
+function PricingCard({ plan, currency, handleCheckout, loading }: { plan: any; currency: string; handleCheckout: (plan: any) => void; loading: string | null }) {
   return (
     <div
       className={`relative p-6 sm:p-8 lg:p-10 flex flex-col lg:flex-row items-center lg:items-stretch w-full rounded-[2rem] transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
@@ -155,9 +157,10 @@ function PricingCard({ plan, currency }: { plan: any; currency: string }) {
       </div>
 
       <div className="flex-shrink-0 w-full lg:w-[240px] flex items-center justify-center border-t lg:border-t-0 border-[#E5E7EB]/80 pt-8 mt-8 lg:pt-0 lg:mt-0 lg:pl-8">
-        <Link
-          href={plan.href}
-          className={`w-full block text-center py-4 px-6 rounded-2xl font-semibold text-[16px] tracking-tight transition-all duration-700 overflow-hidden relative group/btn ${
+        <button
+          onClick={() => handleCheckout(plan)}
+          disabled={loading === plan.tierKey}
+          className={`w-full block text-center py-4 px-6 rounded-2xl font-semibold text-[16px] tracking-tight transition-all duration-700 overflow-hidden relative group/btn disabled:opacity-70 disabled:cursor-not-allowed ${
             plan.featured
               ? "bg-gradient-to-r from-[#630102] via-[#A80205] to-[#630102] bg-[length:200%_auto] text-white shadow-[0_8px_20px_-6px_rgba(99,1,2,0.5)] hover:shadow-[0_15px_30px_-8px_rgba(99,1,2,0.7)] hover:bg-[position:right_center] hover:-translate-y-1 ring-2 ring-transparent hover:ring-[#630102]/40 ring-offset-2 ring-offset-[#FDF8F8]"
               : "bg-gradient-to-b from-[#FFF8F8] to-[#FFF0F0] text-[#8C0203] border-[1.5px] border-[#FFE4E4] shadow-[0_4px_12px_-4px_rgba(99,1,2,0.1)] hover:shadow-[0_12px_24px_-6px_rgba(99,1,2,0.15)] hover:from-[#FFF0F0] hover:to-[#FFE4E4] hover:border-[#FFC2C2] hover:-translate-y-1"
@@ -165,10 +168,16 @@ function PricingCard({ plan, currency }: { plan: any; currency: string }) {
         >
           <div className={`absolute inset-0 w-full h-full transform -translate-x-full group-hover/btn:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent ${plan.featured ? "via-white/20" : "via-white/60"} to-transparent pointer-events-none`} />
           <span className="relative z-10 flex items-center justify-center gap-2">
-            {plan.cta}
-            <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+            {loading === plan.tierKey ? (
+              <Loader2 className="w-5 h-5 animate-spin mx-auto" />
+            ) : (
+              <>
+                {plan.cta}
+                <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
+              </>
+            )}
           </span>
-        </Link>
+        </button>
       </div>
     </div>
   );
@@ -176,13 +185,52 @@ function PricingCard({ plan, currency }: { plan: any; currency: string }) {
 
 export default function PricingPage() {
   const { currency } = useCurrency();
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [loading, setLoading] = useState<string | null>(null);
+
+  const handleCheckout = async (plan: any) => {
+    if (plan.tierKey === "FREE" || plan.tierKey === "ENTERPRISE") {
+      router.push(plan.href);
+      return;
+    }
+
+    if (!session?.user) {
+      router.push(`/register?plan=${plan.tierKey.toLowerCase()}`);
+      return;
+    }
+
+    setLoading(plan.tierKey);
+    try {
+      const res = await fetch("/api/lemonsqueezy/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: plan.tierKey }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || "Failed to create checkout");
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to initiate checkout. Please try again.");
+    } finally {
+      setLoading(null);
+    }
+  };
 
   return (
     <main className="min-h-screen flex flex-col">
       <Navbar />
       
-      <div className="flex-1 bg-[#FDFDFD] relative pt-32 pb-24">
+      <div className="flex-1 bg-[#FDFDFD] relative pt-32 pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-grid opacity-[0.03]" />
+        
+        {/* Abstract shapes for improved visual appeal */}
+        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-cherry/5 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
         
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative">
           <div className="mb-8">
@@ -211,7 +259,7 @@ export default function PricingPage() {
 
           <div className="flex flex-col gap-6 lg:gap-8 w-full max-w-[1200px] mx-auto mt-12">
             {fullPlans.map((plan) => (
-              <PricingCard key={plan.name} plan={plan} currency={currency} />
+              <PricingCard key={plan.name} plan={plan} currency={currency} handleCheckout={handleCheckout} loading={loading} />
             ))}
           </div>
         </div>

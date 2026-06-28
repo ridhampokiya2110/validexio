@@ -172,15 +172,15 @@ function AuthPageContent() {
         
         <div className="w-full max-w-md">
           {/* Logo */}
-          <div className="flex flex-col items-center mb-10">
-            <Link href="/" className="inline-block mb-5 relative group">
+          <div className="flex flex-col items-center justify-center text-center w-full mb-10">
+            <Link href="/" className="inline-block mb-5 relative group mx-auto">
               <div className="absolute inset-0 bg-gradient-to-b from-[#75070C]/10 to-transparent rounded-full blur-xl group-hover:bg-[#75070C]/20 transition-all duration-500"></div>
               <img src="/logo-icon-noir.png" alt="Validexio" className="w-24 h-24 object-contain relative z-10 drop-shadow-md group-hover:scale-105 transition-transform duration-500" />
             </Link>
             <h2 className="text-3xl font-black uppercase tracking-[0.25em] text-[#1B1716] ml-3 drop-shadow-sm">
               Validexio
             </h2>
-            <div className="flex items-center gap-3 mt-3">
+            <div className="flex items-center justify-center w-full gap-3 mt-3">
               <div className="h-px w-6 bg-[#1B1716]/10"></div>
               <span className="text-[10px] font-bold tracking-[0.3em] text-[#75070C]/70 uppercase">Founder's Portal</span>
               <div className="h-px w-6 bg-[#1B1716]/10"></div>

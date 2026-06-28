@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createCheckout } from "@lemonsqueezy/lemonsqueezy.js";
+import { createCheckout, lemonSqueezySetup } from "@lemonsqueezy/lemonsqueezy.js";
 
 export async function POST(req: Request) {
   try {
+    lemonSqueezySetup({ apiKey: process.env.LEMON_SQUEEZY_API_KEY || "" });
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -12,11 +13,23 @@ export async function POST(req: Request) {
 
     const { tier } = await req.json();
     
-    // Determine Lemon Squeezy Variant ID based on selected tier
-    // Make sure these are set in .env.local
-    const variantId = tier === "PRO" 
-      ? process.env.LEMON_SQUEEZY_PRO_VARIANT_ID 
-      : process.env.LEMON_SQUEEZY_TEAM_VARIANT_ID;
+    let variantId;
+    switch (tier) {
+      case "STARTER":
+        variantId = process.env.LEMON_SQUEEZY_STARTER_VARIANT_ID;
+        break;
+      case "PRO":
+        variantId = process.env.LEMON_SQUEEZY_PRO_VARIANT_ID;
+        break;
+      case "TEAM":
+        variantId = process.env.LEMON_SQUEEZY_TEAM_VARIANT_ID;
+        break;
+      case "ENTERPRISE":
+        variantId = process.env.LEMON_SQUEEZY_ENTERPRISE_VARIANT_ID;
+        break;
+      default:
+        return NextResponse.json({ error: "Invalid pricing tier selected." }, { status: 400 });
+    }
 
     if (!variantId) {
       return NextResponse.json({ error: "Pricing not configured correctly." }, { status: 500 });

@@ -250,20 +250,16 @@ export default async function BillingPage() {
                 <button disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
                   Current Plan
                 </button>
-              ) : plan.name === "Team" ? (
-                <Link href="/contact" className="btn-secondary w-full justify-center text-sm py-3">
-                  Contact Sales
-                </Link>
-              ) : plan.name === "Pro" ? (
+              ) : plan.name === "Free" ? (
+                <button disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
+                  Downgrade to Free
+                </button>
+              ) : (
                 <CheckoutButton
                   isCurrentPlan={plan.current}
                   tierName={plan.name}
                   isFeatured={plan.featured}
                 />
-              ) : (
-                <button className="btn-secondary w-full justify-center text-sm py-3">
-                  Switch Plan
-                </button>
               )}
             </div>
           </div>

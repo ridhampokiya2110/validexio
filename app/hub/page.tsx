@@ -2,10 +2,35 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Zap, User, LogOut, ExternalLink, ArrowRight, ShieldCheck, CreditCard, Rocket } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Zap, User, LogOut, ExternalLink, ArrowRight, ShieldCheck, CreditCard, Rocket, Loader2 } from "lucide-react";
 
 export default function FoundersHub() {
   const [showPricing, setShowPricing] = useState(false);
+  const [loadingCheckout, setLoadingCheckout] = useState<string | null>(null);
+  const router = useRouter();
+
+  const handleCheckout = async (tierKey: string) => {
+    setLoadingCheckout(tierKey);
+    try {
+      const res = await fetch("/api/lemonsqueezy/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: tierKey }),
+      });
+      const data = await res.json();
+      
+      if (!res.ok) throw new Error(data.error || "Failed to create checkout");
+      if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to initiate checkout. Please try again.");
+    } finally {
+      setLoadingCheckout(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#FDFCF8] text-[#1B1716] font-sans selection:bg-cherry/40 selection:text-[#1B1716]">
@@ -75,9 +100,9 @@ export default function FoundersHub() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Pack 1 */}
               <div className="glass-card p-8 flex flex-col transition-all hover:border-cherry/30 hover:shadow-md">
-                <h3 className="text-lg font-bold text-[#1B1716] mb-1">Single Run</h3>
+                <h3 className="text-lg font-bold text-[#1B1716] mb-1">Starter Pack</h3>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-3xl font-black text-[#1B1716]">$49</span>
+                  <span className="text-3xl font-black text-[#1B1716]">$19</span>
                   <span className="text-[#1B1716]/40 text-sm">/pack</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
@@ -90,8 +115,12 @@ export default function FoundersHub() {
                     Standard Delivery
                   </li>
                 </ul>
-                <button className="w-full py-3 bg-transparent border border-cherry text-cherry hover:bg-cherry hover:text-white rounded font-bold text-sm transition-colors">
-                  Select Pack
+                <button 
+                  onClick={() => handleCheckout("STARTER")}
+                  disabled={loadingCheckout === "STARTER"}
+                  className="w-full py-3 bg-transparent border border-cherry text-cherry hover:bg-cherry hover:text-white rounded font-bold text-sm transition-colors flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loadingCheckout === "STARTER" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Select Pack"}
                 </button>
               </div>
 
@@ -100,15 +129,15 @@ export default function FoundersHub() {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-cherry text-white text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-[#a10505]">
                   Most Popular
                 </div>
-                <h3 className="text-lg font-bold text-cherry mb-1">Serial Founder</h3>
+                <h3 className="text-lg font-bold text-cherry mb-1">Pro Founder</h3>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-4xl font-black text-[#1B1716]">$129</span>
+                  <span className="text-4xl font-black text-[#1B1716]">$39</span>
                   <span className="text-[#1B1716]/40 text-sm">/pack</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-start gap-2 text-sm text-[#1B1716]/90 font-medium">
                     <div className="w-1.5 h-1.5 rounded-full bg-cherry mt-1.5 flex-shrink-0" />
-                    3 Validation Credits
+                    1 Full Execution Credit
                   </li>
                   <li className="flex items-start gap-2 text-sm text-[#1B1716]/90 font-medium">
                     <div className="w-1.5 h-1.5 rounded-full bg-cherry mt-1.5 flex-shrink-0" />
@@ -119,30 +148,38 @@ export default function FoundersHub() {
                     Export to PDF enabled
                   </li>
                 </ul>
-                <button className="w-full py-3 bg-cherry hover:bg-[#910505] text-white rounded font-bold text-sm transition-all shadow-lg shadow-cherry/20">
-                  Select Pack
+                <button 
+                  onClick={() => handleCheckout("PRO")}
+                  disabled={loadingCheckout === "PRO"}
+                  className="w-full py-3 bg-cherry hover:bg-[#910505] text-white rounded font-bold text-sm transition-all shadow-lg shadow-cherry/20 flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loadingCheckout === "PRO" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Select Pack"}
                 </button>
               </div>
 
               {/* Pack 3 */}
               <div className="glass-card p-8 flex flex-col transition-all hover:border-cherry/30 hover:shadow-md">
-                <h3 className="text-lg font-bold text-[#1B1716] mb-1">Agency Scale</h3>
+                <h3 className="text-lg font-bold text-[#1B1716] mb-1">Team Bundle</h3>
                 <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-3xl font-black text-[#1B1716]">$399</span>
+                  <span className="text-3xl font-black text-[#1B1716]">$89</span>
                   <span className="text-[#1B1716]/40 text-sm">/pack</span>
                 </div>
                 <ul className="space-y-4 mb-8 flex-1">
                   <li className="flex items-start gap-2 text-sm text-[#1B1716]/80">
                     <div className="w-1.5 h-1.5 rounded-full bg-cherry mt-1.5 flex-shrink-0" />
-                    10 Validation Credits
+                    3 Full Execution Credits
                   </li>
                   <li className="flex items-start gap-2 text-sm text-[#1B1716]/80">
                     <div className="w-1.5 h-1.5 rounded-full bg-cherry mt-1.5 flex-shrink-0" />
                     White-label Reports
                   </li>
                 </ul>
-                <button className="w-full py-3 bg-transparent border border-cherry text-cherry hover:bg-cherry hover:text-white rounded font-bold text-sm transition-colors">
-                  Select Pack
+                <button 
+                  onClick={() => handleCheckout("TEAM")}
+                  disabled={loadingCheckout === "TEAM"}
+                  className="w-full py-3 bg-transparent border border-cherry text-cherry hover:bg-cherry hover:text-white rounded font-bold text-sm transition-colors flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                  {loadingCheckout === "TEAM" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Select Pack"}
                 </button>
               </div>
             </div>
