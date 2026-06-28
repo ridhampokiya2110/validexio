@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import NextTopLoader from "nextjs-toploader";
 import { PwaRegistry } from "@/components/pwa-registry";
+import { Providers } from "@/components/providers";
 import type { Viewport } from "next";
 
 const inter = Inter({
@@ -135,21 +136,23 @@ export default function RootLayout({
         />
       </head>
       <body className={`${inter.variable} ${outfit.variable} font-sans bg-[#FDFCF8] text-[#1B1716] antialiased overflow-x-hidden selection:bg-cherry/20 selection:text-cherry`}>
-        <PwaRegistry />
-        <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />
-        {children}
-        <Toaster
-          theme="dark"
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: "rgba(27, 23, 22, 0.95)",
-              border: "1px solid rgba(27, 23, 22, 0.1)",
-              color: "#EDEBDE",
-              backdropFilter: "blur(20px)",
-            },
-          }}
-        />
+        <Providers>
+          <PwaRegistry />
+          <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />
+          {children}
+          <Toaster
+            theme="dark"
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: "rgba(27, 23, 22, 0.95)",
+                border: "1px solid rgba(27, 23, 22, 0.1)",
+                color: "#EDEBDE",
+                backdropFilter: "blur(20px)",
+              },
+            }}
+          />
+        </Providers>
       </body>
     </html>
   );
