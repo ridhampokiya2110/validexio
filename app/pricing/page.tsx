@@ -236,11 +236,13 @@ export default function PricingPage() {
       if (!res.ok) throw new Error(data.error || "Failed to create checkout");
       if (data.url) {
         window.location.href = data.url;
+        // Do not clear loading state, let the browser navigate
+      } else {
+        setLoading(null);
       }
     } catch (error) {
       console.error(error);
       alert("Failed to initiate checkout. Please try again.");
-    } finally {
       setLoading(null);
     }
   };
@@ -305,22 +307,7 @@ export default function PricingPage() {
             ))}
           </div>
 
-          {isIndianUser && !isAffiliate && (
-            <div className="mt-12 max-w-2xl mx-auto bg-gradient-to-r from-orange-50 to-orange-100/50 border border-orange-200 p-6 rounded-2xl shadow-sm">
-              <div className="flex items-start gap-4">
-                <div className="text-2xl mt-1">🇮🇳</div>
-                <div>
-                  <h4 className="text-orange-900 font-bold mb-1">Notice for Customers in India</h4>
-                  <p className="text-orange-800/80 text-[15px] mb-3 leading-relaxed">
-                    Due to RBI banking regulations, please ensure <strong>International Transactions</strong> are enabled on your Visa/Mastercard before upgrading.
-                  </p>
-                  <p className="text-orange-800/90 text-[15px] font-medium">
-                    Card declining? Want to pay with UPI? <Link href="/contact" className="text-[#630102] font-bold hover:underline decoration-2 underline-offset-2">Contact us here</Link> and we'll send you a direct payment link!
-                  </p>
-                </div>
-              </div>
-            </div>
-          )}
+
         </div>
       </div>
 

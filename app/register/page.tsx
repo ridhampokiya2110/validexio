@@ -94,6 +94,7 @@ function RegisterPageContent() {
         } else {
           setErrors({ general: data.error || "Registration failed" });
         }
+        setLoading(false);
         return;
       }
 
@@ -108,12 +109,13 @@ function RegisterPageContent() {
         toast.success("Account created! Welcome to Validexio.");
         router.push("/dashboard");
         router.refresh();
+        // Do not clear loading state here, let the redirect happen
       } else {
         setSuccess(true);
+        setLoading(false);
       }
     } catch {
       setErrors({ general: "Something went wrong. Please try again." });
-    } finally {
       setLoading(false);
     }
   };

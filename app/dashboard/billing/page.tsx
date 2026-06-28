@@ -265,6 +265,12 @@ export default async function BillingPage() {
           </div>
         ))}
       </div>
+
+      {countryCode === "IN" && (
+        <div className="mt-8 text-center text-sm text-[#1B1716]/70 bg-orange-50/50 border border-orange-200/50 p-4 rounded-xl">
+          🇮🇳 Based in India? Please ensure <strong>International Transactions</strong> are enabled on your Visa/Mastercard. Having trouble? <Link href="/contact" className="text-cherry font-bold hover:underline">Contact us for UPI options</Link>.
+        </div>
+      )}
     </div>
   );
 }
