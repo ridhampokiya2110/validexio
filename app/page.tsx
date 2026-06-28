@@ -4,6 +4,7 @@ import Link from "next/link";
 import { RuthlessStats } from "@/components/RuthlessStats";
 import { useCurrency } from "@/hooks/useCurrency";
 import { CompetitorComparison } from "@/components/CompetitorComparison";
+import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
 import { useState, useEffect, useRef } from "react";
 import GlobalCompetitorsGlobe from "@/components/marketing/GlobalCompetitorsGlobe";
 import {
@@ -113,6 +114,7 @@ function HeroSection() {
           ))}
         </div>
 
+        {/* Payment Methods Badge */}
         {/* Dashboard Preview */}
         <div className="mt-20 relative animate-fade-in delay-500 hover:-translate-y-2 transition-transform duration-700 ease-out">
           <div className="glass-card p-2 sm:p-3 max-w-5xl mx-auto shadow-2xl shadow-black/5 ring-1 ring-black/5">
@@ -803,7 +805,8 @@ function PricingSection() {
         </div>
 
         <div className="mt-16 text-center">
-          <Link href="/pricing" className="btn-secondary px-8 py-3.5 inline-flex items-center gap-2">
+          <SecureCheckoutBadge />
+          <Link href="/pricing" className="btn-secondary px-8 py-3.5 inline-flex items-center gap-2 mt-4">
             View all 5 plans
             <ArrowRight className="w-4 h-4" />
           </Link>
