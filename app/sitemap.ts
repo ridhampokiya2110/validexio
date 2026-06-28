@@ -16,6 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'startupdeckai',
     'bizplanaiprofocus',
     'pitchdesk',
+    'ideabrowser',
+    'venturai'
   ];
 
   const comparePages: MetadataRoute.Sitemap = competitors.map((slug) => ({

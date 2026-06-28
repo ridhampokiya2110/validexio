@@ -75,7 +75,7 @@ export const competitors: Competitor[] = [
   {
     "id": "preuve",
     "name": "Preuve AI",
-    "slug": "preuve",
+    "slug": "preuve-ai",
     "website": "https://preuve.ai",
     "heroHeadline": "Preuve Analyzes.",
     "validexioHeadline": "Validexio <span class=\"gradient-text\">Builds</span>.",
@@ -1970,7 +1970,7 @@ export const competitors: Competitor[] = [
   {
     "id": "pitchdesk-in",
     "name": "PitchDesk.in",
-    "slug": "pitchdesk-in",
+    "slug": "pitchdesk",
     "website": "https://pitchdesk.in",
     "heroHeadline": "PitchDesk Aids Fundraising.",
     "validexioHeadline": "Validexio <span class=\"gradient-text\">Aids Revenue</span>.",
