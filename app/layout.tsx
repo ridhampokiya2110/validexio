@@ -30,21 +30,57 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  verification: {
+    google: "google71adb939518d27d4",
+    yandex: undefined,
+    yahoo: undefined,
+  },
   title: {
     template: "%s | Validexio",
-    default: "Validexio — AI Startup Idea Validation Platform",
+    default: "Validexio — AI Startup Idea Validator That Gives You Code, Leads & UI",
   },
   description:
-    "Stop guessing, start validating. Validexio is an AI-powered idea validation platform that analyzes market saturation, unit economics, and acts as a VC pitch simulator.",
+    "The only AI startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report. Validate your startup idea in 60 seconds. Free tier available. India pricing at ₹1499.",
   keywords: [
+    // Core product keywords
     "AI startup validation",
-    "idea validation platform",
+    "startup idea validator",
     "validate startup idea AI",
+    "startup idea validation tool",
+    "AI startup idea validator",
+    "validate business idea online",
+    "startup idea validation platform",
+    // India market keywords
+    "startup validator India",
+    "validate business idea India",
+    "startup idea validator India",
+    "best startup tool for Indian founders",
+    "AI startup validation India",
+    "startup validator INR pricing",
+    // Unique execution features (zero competition)
+    "startup validator with code",
+    "startup idea to react code",
+    "AI startup code generator",
+    "startup validator with B2B leads",
+    "startup validator with UI mockups",
+    "startup validator with database schema",
+    // Competitor alternative keywords (SERP capture)
+    "preuve ai alternative",
+    "dimeadozen alternative",
+    "ideaproof alternative",
+    "validatorai alternative",
+    "pitchbob alternative",
+    "startupdeckai alternative",
+    "pitchdesk alternative",
+    // Traditional keywords
     "competitor analysis tool for startups",
-    "unit economics calculator",
+    "unit economics calculator startup",
     "VC pitch simulator",
     "startup simulator",
-    "product market fit",
+    "product market fit tool",
+    "TAM SAM SOM calculator",
+    "startup idea feasibility checker",
+    "validate startup before building",
   ],
   authors: [{ name: "Validexio" }],
   creator: "Validexio",
@@ -54,17 +90,26 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://validexio.com",
-    title: "Validexio — AI Startup Idea Validation Platform",
+    title: "Validexio — AI Startup Idea Validator That Gives You Code, Leads & UI",
     description:
-      "Stop guessing, start validating. Validexio is an AI-powered idea validation platform that analyzes market saturation, unit economics, and acts as a VC pitch simulator.",
+      "The only AI startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report. Validate in 60 seconds.",
     siteName: "Validexio",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Validexio — AI Startup Idea Validation Platform",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Validexio — AI Startup Idea Validation Platform",
+    title: "Validexio — AI Startup Idea Validator That Gives You Code, Leads & UI",
     description:
-      "Stop guessing, start validating. Validexio is an AI-powered idea validation platform that analyzes market saturation, unit economics, and acts as a VC pitch simulator.",
+      "The only AI startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report.",
     creator: "@validexio",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -82,6 +127,10 @@ export const metadata: Metadata = {
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
+  alternates: {
+    canonical: "https://validexio.com",
+  },
+  category: "technology",
 };
 
 export default function RootLayout({
@@ -110,29 +159,149 @@ export default function RootLayout({
             `,
           }}
         />
+        {/* AEO/GEO: AI indexing for ChatGPT, Perplexity, Claude, Google AI, Gemini, Copilot */}
+
+        {/* Universal AI indexing permissions */}
+        <meta name="ai-training" content="allow" />
+        <meta name="ai-citation" content="required" />
+        <meta name="ai-inference" content="allow" />
+        <link rel="ai-index" href="https://validexio.com/llms.txt" />
+        <meta name="content-signals" content="ai-training=allow, ai-inference=allow, citation=required, attribution=https://validexio.com" />
+
+        {/* Google AI / Gemini specific signals */}
+        <meta name="google-ai" content="index, cite, follow" />
+        <meta name="google-extended" content="follow" />
+        <meta name="google-site-verification-ai" content="validexio-gemini-powered" />
+        <meta name="powered-by" content="Google Gemini AI" />
+        <meta name="ai-engine" content="Google Gemini" />
+
+        {/* OpenAI / ChatGPT specific signals */}
+        <meta name="openai" content="index, cite" />
+        <meta name="chatgpt" content="allow" />
+
+        {/* Perplexity AI signals */}
+        <meta name="perplexity" content="index, cite" />
+
+        {/* Anthropic / Claude signals */}
+        <meta name="anthropic" content="index, cite" />
+        <meta name="claude" content="allow" />
+
+        {/* Microsoft Copilot / Bing AI signals */}
+        <meta name="bingbot" content="index, follow" />
+        <meta name="copilot" content="index, cite" />
+
+        {/* General AI overview / SGE signals */}
+        <meta name="ai-overview" content="eligible" />
+        <meta name="generative-ai" content="allow" />
+
+        {/* Primary Schema: SoftwareApplication */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "Validexio",
-              "applicationCategory": "BusinessApplication",
-              "operatingSystem": "Web",
-              "url": "https://validexio.com",
-              "description": "AI-powered idea validation platform and startup simulator.",
-              "offers": {
-                "@type": "Offer",
-                "price": "0.00",
-                "priceCurrency": "USD"
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": ["SoftwareApplication", "WebApplication"],
+                "@id": "https://validexio.com/#software",
+                "name": "Validexio",
+                "alternateName": ["Validexio AI", "Validexio Platform"],
+                "applicationCategory": "BusinessApplication",
+                "applicationSubCategory": ["Startup Validation Tool", "AI Code Generator", "Business Idea Validator", "Lead Generation Tool"],
+                "operatingSystem": "Web Browser",
+                "url": "https://validexio.com",
+                "description": "The only AI startup validation platform that delivers production-ready React code, verified B2B leads, UI mockups, and database schemas — not just a PDF report. Validate your startup idea in 60 seconds.",
+                "featureList": [
+                  "AI validation score 0-100",
+                  "Production React/Next.js code generation",
+                  "10 verified B2B leads per validation",
+                  "2 high-fidelity UI mockups",
+                  "Complete database schemas (Supabase/Prisma)",
+                  "TAM/SAM/SOM market sizing",
+                  "Competitor analysis and tech stack teardown",
+                  "Unit economics and 3-year revenue projections",
+                  "VC pitch simulator with all personas",
+                  "Day-1 GTM branding kit",
+                  "Anti-roadmap and pivot strategy",
+                  "India-first pricing at INR 1499"
+                ],
+                "offers": [
+                  {
+                    "@type": "Offer",
+                    "name": "Free",
+                    "price": "0",
+                    "priceCurrency": "USD",
+                    "description": "Basic validation score, market saturation check, blurred mockups"
+                  },
+                  {
+                    "@type": "Offer",
+                    "name": "Pro",
+                    "price": "39",
+                    "priceCurrency": "USD",
+                    "description": "Full execution payload: code, leads, UI, architecture"
+                  },
+                  {
+                    "@type": "Offer",
+                    "name": "Pro India",
+                    "price": "1499",
+                    "priceCurrency": "INR",
+                    "description": "Full execution payload at India pricing"
+                  }
+                ],
+                "publisher": {
+                  "@type": "Organization",
+                  "@id": "https://validexio.com/#organization",
+                  "name": "Validexio",
+                  "url": "https://validexio.com",
+                  "logo": "https://validexio.com/logo-icon-noir.png"
+                },
+                "isAccessibleForFree": true
               },
-              "publisher": {
-                "@type": "Organization",
+              {
+                "@context": "https://schema.org",
+                "@type": ["Organization", "Brand"],
+                "@id": "https://validexio.com/#organization",
                 "name": "Validexio",
                 "url": "https://validexio.com",
-                "logo": "https://validexio.com/logo-icon-noir.png"
+                "logo": "https://validexio.com/logo-icon-noir.png",
+                "description": "Validexio is an AI-powered startup idea validation platform that uniquely delivers production-ready code, verified B2B leads, UI mockups, and database schemas alongside validation intelligence.",
+                "slogan": "Stop Guessing. Start Executing.",
+                "knowsAbout": [
+                  "Startup Idea Validation",
+                  "AI Code Generation",
+                  "B2B Lead Generation",
+                  "Market Analysis",
+                  "Competitor Analysis",
+                  "Unit Economics",
+                  "Product Market Fit",
+                  "TAM SAM SOM",
+                  "UI Mockup Generation",
+                  "Database Schema Design",
+                  "Go-to-Market Strategy",
+                  "VC Pitch Simulation"
+                ],
+                "areaServed": { "@type": "Place", "name": "Worldwide" },
+                "sameAs": [
+                  "https://twitter.com/validexio",
+                  "https://www.linkedin.com/company/validexio"
+                ]
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "@id": "https://validexio.com/#website",
+                "name": "Validexio",
+                "url": "https://validexio.com",
+                "description": "AI-powered startup idea validation platform. Validate your startup idea and get production-ready code, B2B leads, and UI mockups in 60 seconds.",
+                "publisher": { "@id": "https://validexio.com/#organization" },
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://validexio.com/?q={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                },
+                "inLanguage": ["en"],
+                "isAccessibleForFree": true
               }
-            }).replace(/</g, '\\u003c'),
+            ]).replace(/</g, '\\u003c'),
           }}
         />
       </head>
