@@ -13,7 +13,7 @@ export function ComparisonTracker({ competitorSlug }: { competitorSlug: string }
       const url = `/api/compare/${competitorSlug}?${searchParams.toString()}`;
       
       // Fire and forget
-      fetch(url).catch(console.error);
+      fetch(url, { method: "POST" }).catch(console.error);
     }
   }, [competitorSlug]);
 

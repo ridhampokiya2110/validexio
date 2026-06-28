@@ -98,10 +98,12 @@ function AuthPageContent() {
           } else {
             setErrors({ general: "Invalid credentials or login failed." });
           }
+          setLoading(false);
         } else {
           toast.success("Welcome back!");
           router.push("/dashboard");
           router.refresh();
+          return; // Exit early to keep loading state true during navigation
         }
       } else {
         // Real sign up flow
@@ -125,6 +127,7 @@ function AuthPageContent() {
           } else {
             setErrors({ general: data.error || "Registration failed" });
           }
+          setLoading(false);
           return;
         }
 
@@ -139,14 +142,15 @@ function AuthPageContent() {
           toast.success("Account created successfully! Welcome to Validexio.");
           router.push("/dashboard");
           router.refresh();
+          return; // Exit early to keep loading state true during navigation
         } else {
           toast.success("Account created! Please sign in.");
           setActiveTab("signin");
+          setLoading(false);
         }
       }
     } catch {
       setErrors({ general: "Something went wrong. Please try again." });
-    } finally {
       setLoading(false);
     }
   };

@@ -12,13 +12,25 @@ export const metadata = { title: "Billing" };
 
 async function getCountryCode() {
   const headersList = await headers();
-  // Vercel header for country
+  
+  // Try Vercel edge header
   const vercelCountry = headersList.get("x-vercel-ip-country");
   if (vercelCountry) return vercelCountry;
   
+  // Try Cloudflare header
+  const cfCountry = headersList.get("cf-ipcountry");
+  if (cfCountry) return cfCountry;
+  
+  // Extract client IP
+  const forwardedFor = headersList.get("x-forwarded-for");
+  const realIp = headersList.get("x-real-ip");
+  const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : realIp?.trim();
+  
+  if (!ip) return "US";
+  
   // Fallback if not on Vercel or running locally
   try {
-    const res = await fetch("https://api.country.is/", { next: { revalidate: 3600 } });
+    const res = await fetch(`https://api.country.is/${ip}`);
     if (!res.ok) return "US";
     const data = await res.json();
     return data.country || "US";

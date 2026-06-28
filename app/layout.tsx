@@ -129,9 +129,10 @@ export default function RootLayout({
               "publisher": {
                 "@type": "Organization",
                 "name": "Validexio",
-                "url": "https://validexio.com"
+                "url": "https://validexio.com",
+                "logo": "https://validexio.com/logo-icon-noir.png"
               }
-            })
+            }).replace(/</g, '\\u003c'),
           }}
         />
       </head>

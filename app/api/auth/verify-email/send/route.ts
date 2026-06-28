@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     });
 
     // Send email via Nodemailer using Gmail SMTP
-    const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/api/auth/verify-email/confirm?token=${token}&email=${encodeURIComponent(email)}`;
+    const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/verify-email?token=${token}`;
 
     if (process.env.EMAIL_SERVER_USER && process.env.EMAIL_SERVER_PASSWORD) {
       const transporter = nodemailer.createTransport({

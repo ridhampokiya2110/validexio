@@ -6,26 +6,26 @@ export const metadata: Metadata = {
   keywords: ["pricing", "idea validation pricing", "startup simulator cost", "validation tool"],
 };
 
-export default function PricingLayout({ children }: { children: React.ReactNode }) {
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    "name": "Validexio Reports",
-    "description": "AI-powered idea validation reports and startup simulation tools.",
-    "offers": {
-      "@type": "AggregateOffer",
-      "lowPrice": "0",
-      "highPrice": "249",
-      "priceCurrency": "USD",
-      "offerCount": "4"
-    }
-  };
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Validexio Reports",
+  "description": "AI-powered idea validation reports and startup simulation tools.",
+  "offers": {
+    "@type": "AggregateOffer",
+    "lowPrice": "0",
+    "highPrice": "249",
+    "priceCurrency": "USD",
+    "offerCount": "4"
+  }
+};
 
+export default function PricingLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
       />
       {children}
     </>

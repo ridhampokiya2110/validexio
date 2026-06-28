@@ -5,7 +5,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY || "mock-key");
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 const redis = process.env.UPSTASH_REDIS_REST_URL 
   ? new Redis({
@@ -59,7 +59,7 @@ export async function POST() {
     const resetUrl = `${baseUrl}/reset-password?token=secure-token-placeholder`;
 
     // Only send the email if the Resend API key is configured
-    if (process.env.RESEND_API_KEY) {
+    if (resend) {
       await resend.emails.send({
         from: process.env.RESEND_FROM_EMAIL || "security@validexio.com",
         to: user.email,

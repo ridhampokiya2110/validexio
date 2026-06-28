@@ -9,10 +9,15 @@ import { auth } from "@/lib/auth";
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY as string });
 
 // Initialize Upstash Redis & Rate Limiter (2 requests per day)
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || "https://fake-url.upstash.io",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || "fake-token",
-});
+const redis = process.env.UPSTASH_REDIS_REST_URL
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN as string,
+    })
+  : ({
+      sadd: async () => 1,
+      eval: async () => [0, 0],
+    } as any);
 
 const ratelimit = new Ratelimit({
   redis,

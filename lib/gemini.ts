@@ -5,8 +5,8 @@ import {
 } from "@google/generative-ai";
 import { z } from "zod";
 
-const apiKey = process.env.GEMINI_API_KEY || "mock-key";
-const genAI = new GoogleGenerativeAI(apiKey);
+const apiKey = process.env.GEMINI_API_KEY as string;
+const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : (null as unknown as GoogleGenerativeAI);
 
 // Safety settings for business use
 const safetySettings = [

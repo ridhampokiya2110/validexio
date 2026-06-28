@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db';
 
-export async function GET(
+export async function POST(
   request: Request,
   { params }: { params: Promise<{ competitor: string }> }
 ) {

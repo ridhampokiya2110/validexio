@@ -6,23 +6,23 @@ export const metadata: Metadata = {
   keywords: ["contact validexio", "support", "enterprise sales"],
 };
 
-export default function ContactLayout({ children }: { children: React.ReactNode }) {
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "ContactPage",
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "https://validexio.com/contact"
-    },
-    "name": "Contact Validexio",
-    "description": "Get in touch with the Validexio team."
-  };
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://validexio.com/contact"
+  },
+  "name": "Contact Validexio",
+  "description": "Get in touch with the Validexio team."
+};
 
+export default function ContactLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
       />
       {children}
     </>

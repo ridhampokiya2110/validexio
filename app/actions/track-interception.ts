@@ -2,9 +2,13 @@
 
 import { prisma } from "@/lib/db";
 import { headers } from "next/headers";
+import { auth } from "@/lib/auth";
 
 export async function trackInterception(competitorTargeted: string) {
   try {
+    const session = await auth();
+    if (!session) return { success: false, error: "Unauthorized" };
+
     const headersList = await headers();
     const referrer = headersList.get("referer") || "Direct";
     

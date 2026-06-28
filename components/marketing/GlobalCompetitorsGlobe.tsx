@@ -105,7 +105,7 @@ export default function GlobalCompetitorsGlobe() {
           }
       }
     }
-  }, [isClient, globeRef.current, countries]);
+  }, [isClient, countries]);
 
   if (!isClient) {
     return (

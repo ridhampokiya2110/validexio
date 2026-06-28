@@ -151,7 +151,7 @@ export default async function ComparePage({ params }: PageProps) {
               },
               "description": "Validexio is an elite execution engine that translates your startup idea into live React code, UI designs, and B2B leads."
             }
-          })
+          }).replace(/</g, '\\u003c')
         }}
       />
 

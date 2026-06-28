@@ -34,8 +34,8 @@ const nextAuthResult = NextAuth({
     }),
 
     Resend({
-      apiKey: process.env.RESEND_API_KEY || "re_dummy_key_for_build",
-      from: process.env.RESEND_FROM_EMAIL || "dummy@example.com",
+      apiKey: process.env.RESEND_API_KEY as string,
+      from: process.env.RESEND_FROM_EMAIL as string,
     }),
 
     Credentials({
