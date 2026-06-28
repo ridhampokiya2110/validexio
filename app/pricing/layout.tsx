@@ -1,16 +1,26 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing | Idea Validation Platform",
-  description: "Transparent pricing for AI-powered startup validation. Get instant competitor analysis, unit economics, and pitch simulation.",
-  keywords: ["pricing", "idea validation pricing", "startup simulator cost", "validation tool"],
+  title: "Pricing — Validexio AI Startup Validator | Free, Pro ₹1499, Team ₹2999",
+  description: "Simple one-time pricing. Free startup validation forever. Pro plan at ₹1499 ($39) includes React code, 10 B2B leads, UI mockups, and full market analysis.",
+  keywords: [
+    "Validexio pricing",
+    "startup validator India rupees",
+    "startup validator INR pricing",
+    "free startup idea validation",
+    "AI startup validator free",
+    "validate business idea cost"
+  ],
+  alternates: {
+    canonical: "https://validexio.com/pricing",
+  }
 };
 
 const schema = {
   "@context": "https://schema.org",
   "@type": "Product",
-  "name": "Validexio Reports",
-  "description": "AI-powered idea validation reports and startup simulation tools.",
+  "name": "Validexio Validation Execution Engine",
+  "description": "AI-powered startup validation that generates production-ready code, B2B leads, and UI mockups.",
   "offers": {
     "@type": "AggregateOffer",
     "lowPrice": "0",
