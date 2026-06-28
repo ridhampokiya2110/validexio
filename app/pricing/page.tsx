@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCurrency } from "@/hooks/useCurrency";
 import { CheckCircle, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
@@ -189,6 +189,28 @@ export default function PricingPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [isIndianUser, setIsIndianUser] = useState(false);
+  const [isAffiliate, setIsAffiliate] = useState(false);
+
+  useEffect(() => {
+    // Check for Indian IP
+    fetch('https://ipapi.co/json/')
+      .then(res => res.json())
+      .then(data => {
+        if (data.country_code === 'IN') {
+          setIsIndianUser(true);
+        }
+      })
+      .catch(err => console.error("Error fetching location", err));
+
+    // Check for affiliate parameter in URL
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('aff')) {
+        setIsAffiliate(true);
+      }
+    }
+  }, []);
 
   const handleCheckout = async (plan: any) => {
     if (plan.tierKey === "FREE" || plan.tierKey === "ENTERPRISE") {
@@ -206,7 +228,10 @@ export default function PricingPage() {
       const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: plan.tierKey }),
+        body: JSON.stringify({ 
+          tier: plan.tierKey,
+          discountCode: isAffiliate ? "PARTNER10" : undefined 
+        }),
       });
       const data = await res.json();
       
@@ -259,10 +284,45 @@ export default function PricingPage() {
           </div>
 
           <div className="flex flex-col gap-6 lg:gap-8 w-full max-w-[1200px] mx-auto mt-12">
+            
+            {/* VIP Affiliate Banner */}
+            {isAffiliate && (
+              <div className="mb-4 max-w-3xl mx-auto w-full bg-gradient-to-r from-[#630102] via-[#8C0203] to-[#630102] p-[1.5px] rounded-2xl shadow-2xl animate-[shimmer_2s_infinite] bg-[length:200%_auto]">
+                <div className="bg-white/95 backdrop-blur-md rounded-[15px] p-6 text-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#630102]/5 to-transparent pointer-events-none" />
+                  <div className="relative z-10 flex flex-col items-center justify-center gap-2">
+                    <div className="inline-flex items-center justify-center bg-[#FFE4E4] text-[#630102] px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase mb-2">
+                      Special Offer
+                    </div>
+                    <h3 className="text-2xl font-black text-[#111827]">
+                      You've unlocked a <span className="text-[#630102]">10% VIP Discount</span>!
+                    </h3>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {fullPlans.map((plan) => (
               <PricingCard key={plan.name} plan={plan} currency={currency} handleCheckout={handleCheckout} loading={loading} />
             ))}
           </div>
+
+          {isIndianUser && !isAffiliate && (
+            <div className="mt-12 max-w-2xl mx-auto bg-gradient-to-r from-orange-50 to-orange-100/50 border border-orange-200 p-6 rounded-2xl shadow-sm">
+              <div className="flex items-start gap-4">
+                <div className="text-2xl mt-1">🇮🇳</div>
+                <div>
+                  <h4 className="text-orange-900 font-bold mb-1">Notice for Customers in India</h4>
+                  <p className="text-orange-800/80 text-[15px] mb-3 leading-relaxed">
+                    Due to RBI banking regulations, please ensure <strong>International Transactions</strong> are enabled on your Visa/Mastercard before upgrading.
+                  </p>
+                  <p className="text-orange-800/90 text-[15px] font-medium">
+                    Card declining? Want to pay with UPI? <Link href="/contact" className="text-[#630102] font-bold hover:underline decoration-2 underline-offset-2">Contact us here</Link> and we'll send you a direct payment link!
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       

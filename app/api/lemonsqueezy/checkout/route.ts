@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { tier } = await req.json();
+    const { tier, discountCode } = await req.json();
     
     let variantId;
     switch (tier) {
@@ -45,15 +45,21 @@ export async function POST(req: Request) {
       where: { id: session.user.id }
     });
 
+    const checkoutData: any = {
+      email: user?.email,
+      custom: {
+        user_id: user?.id,
+        tier: tier
+      }
+    };
+
+    if (discountCode) {
+      checkoutData.discount_code = discountCode;
+    }
+
     // Create a Lemon Squeezy checkout
     const checkout = await createCheckout(storeId, variantId, {
-      checkoutData: {
-        email: user?.email,
-        custom: {
-          user_id: user?.id,
-          tier: tier
-        }
-      },
+      checkoutData: checkoutData,
       productOptions: {
         redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgrade=success`
       }
