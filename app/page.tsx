@@ -528,8 +528,8 @@ function FeaturesSection() {
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight text-center mx-auto">
             Everything you need to <span className="gradient-text">validate</span>
-            <br className="hidden sm:block" />
-            <span className="sm:hidden"> </span>before you build
+            <br />
+            before you build
           </h2>
           <p className="text-[#1B1716]/60 text-lg max-w-xl mx-auto">
             Stop wasting months building products nobody wants. Get AI-powered validation and production-ready code in 60 seconds.
@@ -605,7 +605,7 @@ function HowItWorksSection() {
             <div className="w-8 h-[1px] bg-[#630102]/30" />
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#111827] tracking-tight mb-6 text-center mx-auto">
-            From idea to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">insight</span> in 60 seconds
+            From idea to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">insight</span><br className="sm:hidden" /> in 60 seconds
           </h2>
           <p className="text-[#6B7280] text-lg md:text-xl font-medium max-w-2xl mx-auto">
             Three simple steps to validate your startup idea with enterprise-grade AI.
@@ -621,7 +621,7 @@ function HowItWorksSection() {
               <div className="bg-white border border-[#E5E7EB] rounded-3xl p-10 h-full hover:border-[#630102]/20 transition-all duration-700 ease-out hover:-translate-y-1 hover:scale-[1.01] hover:shadow-[0_20px_40px_-12px_rgba(99,1,2,0.08)] relative overflow-hidden">
                 
                 {/* Massive Number Watermark */}
-                <div className="absolute right-0 top-0 sm:-right-4 sm:-top-8 text-[80px] sm:text-[120px] font-heading font-black text-[#F8F9FA] pointer-events-none group-hover:text-red-50 transition-colors duration-500 leading-none">
+                <div className="absolute right-2 top-2 sm:-right-4 sm:-top-8 text-[60px] sm:text-[120px] font-heading font-black text-[#F8F9FA] pointer-events-none group-hover:text-red-50 transition-colors duration-500 leading-none">
                   {step.number}
                 </div>
 
@@ -1021,7 +1021,7 @@ function FAQSection() {
                 <div 
                   className={`px-6 overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[1000px] pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
                 >
-                  <div className="pl-0 sm:pl-14 text-[#1B1716]/65 leading-relaxed font-medium">
+                  <div className="pt-2 sm:pt-0 sm:pl-14 text-[#1B1716]/65 leading-relaxed font-medium">
                     {faq.answer}
                   </div>
                 </div>
@@ -1061,10 +1061,10 @@ function CTASection() {
             Don&apos;t build in the dark. Get AI-powered clarity in 60 seconds and
             start executing with confidence.
           </p>
-          <Link href="/register" className="btn-primary text-base px-10 py-4 inline-flex">
-            <Rocket className="w-5 h-5 mr-2" />
-            Start Validating for Free
-            <ArrowRight className="w-5 h-5 ml-2" />
+          <Link href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center w-full sm:w-auto text-center mx-auto">
+            <Rocket className="w-5 h-5 mr-2 shrink-0" />
+            <span>Start Validating for Free</span>
+            <ArrowRight className="w-5 h-5 ml-2 shrink-0" />
           </Link>
           <p className="mt-4 text-[#1B1716]/35 text-sm">
             Free tier available · Secure, one-time payments · Takes 60 seconds
@@ -1145,9 +1145,9 @@ function ValueAnchoringSection() {
             </ul>
             
             <div className="pt-6 border-t border-gray-200">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-1 sm:gap-0">
-                <span className="text-gray-900 font-bold text-lg">Total Estimated Cost</span>
-                <span className="font-mono text-gray-900 font-black text-3xl tracking-tight">{anchorCosts.totalAgencies[currency]}</span>
+              <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-2 sm:gap-0">
+                <span className="text-gray-900 font-bold text-xl sm:text-lg">Total Estimated Cost</span>
+                <span className="font-mono text-gray-900 font-black text-[28px] sm:text-4xl tracking-tight leading-none text-center sm:text-right">{anchorCosts.totalAgencies[currency]}</span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-4 bg-orange-50/50 px-4 py-3 rounded-lg border border-orange-100 gap-1 sm:gap-0">
                 <span className="text-orange-800 text-sm uppercase tracking-wider font-bold">Time to deliver</span>
@@ -1193,9 +1193,9 @@ function ValueAnchoringSection() {
             </ul>
             
             <div className="pt-6 border-t border-cherry/10 relative z-10">
-              <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-1 sm:gap-0">
-                <span className="text-[#1B1716] font-bold text-lg">Total Cost</span>
-                <span className="font-mono text-[#1B1716] font-black text-4xl tracking-tight">{anchorCosts.validexioEngine[currency]}</span>
+              <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-2 sm:gap-0">
+                <span className="text-[#1B1716] font-bold text-xl sm:text-lg">Total Cost</span>
+                <span className="font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-cherry to-red-600 text-[28px] sm:text-4xl tracking-tight leading-none text-center sm:text-right">{anchorCosts.validexioEngine[currency]}</span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-4 bg-green-50 px-4 py-3 rounded-lg border border-green-100 gap-1 sm:gap-0">
                 <span className="text-green-800 text-sm uppercase tracking-wider font-bold">Time to deliver</span>

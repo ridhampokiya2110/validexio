@@ -127,7 +127,7 @@ export default function GlobalCompetitorsGlobe() {
           className="text-center mb-16"
         >
           <div className="flex items-center justify-center gap-2 mb-4">
-            <div className="badge badge-cherry flex items-center gap-1.5 whitespace-normal text-center text-[10px] sm:text-xs">
+            <div className="badge badge-cherry flex items-center gap-1.5 whitespace-nowrap text-[10px] sm:text-xs mx-auto">
               <GlobeIcon className="w-3.5 h-3.5 shrink-0" /> <span>Real-Time Global Intelligence</span>
             </div>
           </div>

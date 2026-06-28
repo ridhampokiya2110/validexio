@@ -254,11 +254,12 @@ export default function PricingPage() {
       <div className="flex-1 bg-[#FDFDFD] relative pt-32 pb-24 overflow-hidden">
         <div className="absolute inset-0 bg-grid opacity-[0.03]" />
 
-        {/* Abstract shapes for improved visual appeal */}
-        <div className="absolute top-1/4 left-0 w-[500px] h-[500px] bg-cherry/5 rounded-full blur-[100px] pointer-events-none" />
-        <div className="absolute bottom-1/4 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[100px] pointer-events-none" />
+        {/* Dynamic bright shapes for premium visual appeal */}
+        <div className="absolute top-1/4 left-[-10%] w-[600px] h-[600px] bg-gradient-to-br from-cherry/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute bottom-1/4 right-[-10%] w-[600px] h-[600px] bg-gradient-to-tl from-orange-500/10 to-transparent rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-red-400/5 rounded-full blur-[120px] pointer-events-none" />
 
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative z-10">
           <div className="mb-8">
             <Link href="/" className="inline-flex items-center text-sm font-semibold text-[#6B7280] hover:text-[#111827] transition-colors">
               <ArrowLeft className="w-4 h-4 mr-1.5" />
@@ -283,7 +284,7 @@ export default function PricingPage() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-6 lg:gap-8 w-full max-w-[1200px] mx-auto mt-12">
+          <div className="flex flex-col gap-8 lg:gap-8 w-full max-w-[1200px] mx-auto mt-12">
 
             {/* VIP Affiliate Banner */}
             {isAffiliate && (

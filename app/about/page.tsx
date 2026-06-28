@@ -43,7 +43,7 @@ export default function AboutPage() {
                     <Brain className="w-6 h-6 text-cherry" />
                   </div>
                   <h3 className="text-xl font-bold mb-3 text-[#1B1716]">Data-Driven Intelligence</h3>
-                  <p className="text-[#1B1716]/60 text-sm font-medium">Our algorithms analyze thousands of data points, competitor strategies, and market trends instantly.</p>
+                  <p className="text-[#1B1716]/60 text-sm font-medium">Our proprietary engine analyzes thousands of data points, competitor strategies, and market trends instantly.</p>
                 </div>
                 <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl sm:translate-y-8 hover:shadow-[0_8px_30px_rgba(117,7,12,0.1)] transition-all">
                   <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-6 border border-emerald-500/20">
