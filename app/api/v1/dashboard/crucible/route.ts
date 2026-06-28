@@ -58,15 +58,15 @@ export async function POST(req: Request) {
 
     // Enforce tier limits
     let maxQuestions = 0;
-    if (user.tier === "STARTER") {
+    if ((user.tier as string) === "STARTER") {
       maxQuestions = 5;
       if (track !== "VC") {
         return NextResponse.json({ error: "Starter tier only includes the VC Persona. Upgrade to unlock Technical Architect and more." }, { status: 403 });
       }
     }
-    else if (user.tier === "PRO") maxQuestions = 10;
-    else if (user.tier === "TEAM") maxQuestions = 15;
-    else if (user.tier === "ENTERPRISE") maxQuestions = 999;
+    else if ((user.tier as string) === "PRO") maxQuestions = 10;
+    else if ((user.tier as string) === "TEAM") maxQuestions = 15;
+    else if ((user.tier as string) === "ENTERPRISE") maxQuestions = 999;
     else return NextResponse.json({ error: "Investor Simulator requires STARTER tier or above." }, { status: 403 });
 
     if (previousQuestions.length >= maxQuestions) {
@@ -136,7 +136,7 @@ Revenue Potential: ${JSON.stringify(latestReport.revenuePotential)}
         maxOutputTokens: 800, 
         temperature: 0.2,
         responseMimeType: "application/json",
-        responseSchema: evaluationSchema
+        responseSchema: evaluationSchema as any
       } 
     });
 

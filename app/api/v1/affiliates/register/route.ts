@@ -29,8 +29,8 @@ export async function POST(req: Request) {
     const profile = await prisma.affiliateProfile.create({
       data: {
         userId: session.user.id,
-        paypalEmail: paypalEmail || session.user.email,
-        websiteUrl: websiteUrl || null,
+        payoutEmail: paypalEmail || session.user.email,
+        trafficSource: websiteUrl || null,
         couponCode,
       }
     });

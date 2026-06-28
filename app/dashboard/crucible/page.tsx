@@ -26,10 +26,10 @@ async function CrucibleDataLoader({ userId }: { userId: string }) {
   }
 
   let maxQuestions = 0;
-  if (user.tier === "STARTER") maxQuestions = 5;
-  else if (user.tier === "PRO") maxQuestions = 10;
-  else if (user.tier === "TEAM") maxQuestions = 15;
-  else if (user.tier === "ENTERPRISE") maxQuestions = 999;
+  if ((user.tier as string) === "STARTER") maxQuestions = 5;
+  else if ((user.tier as string) === "PRO") maxQuestions = 10;
+  else if ((user.tier as string) === "TEAM") maxQuestions = 15;
+  else if ((user.tier as string) === "ENTERPRISE") maxQuestions = 999;
 
   if (maxQuestions === 0) {
     redirect("/pricing");

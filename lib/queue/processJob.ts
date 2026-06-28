@@ -29,16 +29,16 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
   let maxLeads = 0;
   let maxCompetitors = 3;
 
-  if (tier === "PRO") {
+  if ((tier as string) === "PRO") {
     maxLeads = 5;
     maxCompetitors = 5;
-  } else if (tier === "TEAM") {
+  } else if ((tier as string) === "TEAM") {
     maxLeads = 8;
     maxCompetitors = 7;
-  } else if (tier === "ENTERPRISE") {
+  } else if ((tier as string) === "ENTERPRISE") {
     maxLeads = 8;
     maxCompetitors = 10;
-  } else if (tier === "STARTER") {
+  } else if ((tier as string) === "STARTER") {
     maxLeads = 0;
     maxCompetitors = 3;
   }
@@ -50,7 +50,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     console.log(`[Job ${jobId}] Firing parallel data gathering requests...`);
     
     const tavilyPromise = (async () => {
-      if (tier === "FREE") return "No real-time market data available.";
+      if ((tier as string) === "FREE") return "No real-time market data available.";
       try {
         const { fetchCompetitorIntel } = await import("../api/tavily");
         return await fetchCompetitorIntel(idea.title, idea.industry);
@@ -61,7 +61,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const serpApiPromise = (async () => {
-      if (tier === "FREE") return "No real-time local competitor data available.";
+      if ((tier as string) === "FREE") return "No real-time local competitor data available.";
       try {
         const { fetchRealCompetitors } = await import("../api/serpapi");
         return await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors);
@@ -72,7 +72,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const hnPromise = (async () => {
-      if (tier === "FREE") return "";
+      if ((tier as string) === "FREE") return "";
       try {
         const { fetchHNSentiment } = await import("../api/hackernews");
         return await fetchHNSentiment(idea.title, idea.industry);
@@ -83,7 +83,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const redditPromise = (async () => {
-      if (tier === "FREE") return "";
+      if ((tier as string) === "FREE") return "";
       try {
         const { fetchRedditFrustrations } = await import("../api/reddit");
         return await fetchRedditFrustrations(idea.title, idea.industry);
@@ -106,7 +106,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const mockupPromise = (async () => {
-      if (tier === "FREE" || tier === "STARTER") return [];
+      if ((tier as string) === "FREE" || (tier as string) === "STARTER") return [];
       try {
         const { generateUIMockups } = await import("../api/mockupEngine");
         return await generateUIMockups(idea.title, idea.industry, 2);
@@ -146,7 +146,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       codeBoilerplate: "/* Locked - Upgrade to Premium */"
     };
 
-    if (tier === "FREE") {
+    if ((tier as string) === "FREE") {
       console.log(`[Job ${jobId}] Calling generateFreeStartupMarket for FREE tier...`);
       const { generateFreeStartupMarket } = await import("../gemini");
       marketResult = await generateFreeStartupMarket(payload);
@@ -165,7 +165,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       productResult = await generateStartupProduct(payload, marketSummary);
       
       // Enforce Starter tier limitations on code
-      if (tier === "STARTER") {
+      if ((tier as string) === "STARTER") {
         productResult.codeBoilerplate = "/* Code Boilerplate is locked on the Starter plan. Upgrade to Pro to get full Fake Door code. */";
       }
     }

@@ -43,7 +43,7 @@ const MAP_LABELS = [
 ];
 
 export default function GlobalCompetitorsGlobe() {
-  const globeRef = useRef<any>();
+  const globeRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [isClient, setIsClient] = useState(false);
   const [countries, setCountries] = useState<any>({ features: [] });

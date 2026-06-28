@@ -8,10 +8,7 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  defs,
-  linearGradient,
-  stop
+  ResponsiveContainer
 } from "recharts";
 
 interface PremiumRevenueChartProps {
@@ -134,7 +131,7 @@ export function PremiumRevenueChart({ year1, year2, year3 }: PremiumRevenueChart
               strokeWidth={4}
               fillOpacity={1} 
               fill="url(#colorRevenue)" 
-              activeDot={{ r: 8, fill: "#630102", stroke: "#FFFFFF", strokeWidth: 3, shadow: '0 4px 10px rgba(99,1,2,0.4)' }}
+              activeDot={{ r: 8, fill: "#630102", stroke: "#FFFFFF", strokeWidth: 3 }}
               animationDuration={1500}
               animationEasing="ease-out"
             />

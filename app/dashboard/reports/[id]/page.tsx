@@ -45,7 +45,7 @@ async function ReportDataFetcher({ id, userId }: { id: string, userId: string })
   if (!report) notFound();
 
   // Handle Starter tier 7-day lock and 30-day auto-delete
-  if (user?.tier === "STARTER") {
+  if ((user?.tier as string) === "STARTER") {
     const daysOld = Math.floor((Date.now() - new Date(report.createdAt).getTime()) / (1000 * 60 * 60 * 24));
     
     if (daysOld >= 30) {
