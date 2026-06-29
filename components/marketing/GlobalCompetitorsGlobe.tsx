@@ -182,8 +182,8 @@ export default function GlobalCompetitorsGlobe() {
                     
                     <!-- Sticker Profile Base -->
                     <div class="relative w-12 h-12 md:w-16 md:h-16 bg-white rounded-full p-[3px] shadow-[0_8px_20px_rgba(0,0,0,0.15)] ring-1 ring-black/5 z-20 transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_12px_30px_rgba(0,0,0,0.2)]">
-                      <div class="w-full h-full rounded-full overflow-hidden border border-gray-100 bg-[#FDFCF8]">
-                        <img src="${d.avatar}" class="w-full h-full object-cover scale-[1.1] translate-y-1" alt="Competitor" />
+                      <div class="w-full h-full rounded-full overflow-hidden border border-gray-100 bg-[#FDFCF8] flex items-center justify-center">
+                        <img src="${d.avatar}" class="w-full h-full object-cover object-center" alt="Competitor" />
                       </div>
                     </div>
 
