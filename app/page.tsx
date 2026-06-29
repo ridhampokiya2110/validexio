@@ -523,16 +523,16 @@ function FeaturesSection() {
       <div className="absolute inset-0 bg-grid opacity-20" />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="badge badge-cherry inline-flex mb-4">
+        <div className="flex flex-col items-center text-center mb-12 sm:mb-16">
+          <div className="badge badge-cherry inline-flex mb-4 mx-auto">
             Enterprise Intelligence
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight text-center mx-auto">
-            Everything you need to <span className="gradient-text">validate</span>
-            <br />
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-4 sm:mb-6 tracking-tight leading-tight max-w-4xl">
+            Everything you need to <span className="gradient-text">validate</span>{" "}
+            <br className="hidden sm:block" />
             before you build
           </h2>
-          <p className="text-[#1B1716]/60 text-lg max-w-xl mx-auto">
+          <p className="text-[#1B1716]/60 text-base sm:text-lg max-w-xl mx-auto px-4 sm:px-0">
             Stop wasting months building products nobody wants. Get AI-powered validation and production-ready code in 60 seconds.
           </p>
         </div>

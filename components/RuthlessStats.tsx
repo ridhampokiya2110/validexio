@@ -12,7 +12,8 @@ export function RuthlessStats() {
 
           <div className="relative z-10 grid md:grid-cols-2 gap-12 items-center">
             {/* Copy Side */}
-            <div>
+            {/* Copy Side */}
+            <div className="flex flex-col items-center md:items-start text-center md:text-left">
               <div className="inline-flex items-center gap-2 bg-cherry/10 px-3 py-1.5 rounded-full mb-6 border border-cherry/20">
                 <span className="w-2 h-2 bg-cherry rounded-full animate-pulse" />
                 <span className="text-xs font-bold text-cherry tracking-widest uppercase">
