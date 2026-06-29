@@ -202,6 +202,9 @@ model Idea {
   stage        IdeaStage  @default(IDEA)
   status       IdeaStatus @default(PENDING)
 
+  // Uploaded document context (PDF/PPT pitch deck data)
+  documentContext Json?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

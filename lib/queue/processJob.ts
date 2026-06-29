@@ -136,6 +136,8 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       marketContext: marketContext !== "No real-time market data available." ? marketContext : undefined,
       competitorContext: competitorContext !== "No real-time local competitor data available." ? competitorContext : undefined,
       socialProofContext: socialProofContext || undefined,
+      // Pass uploaded document context if exists
+      documentContext: (idea as any).documentContext || undefined,
     };
     
     // 3. Call Gemini (Part 1: Market Analysis)

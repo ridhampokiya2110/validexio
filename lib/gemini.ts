@@ -217,6 +217,11 @@ export type ValidationReport = MarketAnalysisReport & ProductStrategyReport & {
   lead_generation_contacts?: any[]; // Now fetched via Apollo
 };
 
+export interface DocumentContext {
+  documentTypeLabel: string;
+  extractedText: string;
+}
+
 export interface IdeaInput {
   title: string;
   description: string;
@@ -229,6 +234,7 @@ export interface IdeaInput {
   marketContext?: string; // Tavily
   competitorContext?: string; // SerpAPI
   socialProofContext?: string; // Reddit & HackerNews
+  documentContext?: DocumentContext; // Uploaded PDF/PPT
 }
 
 const COMMON_SYSTEM_PROMPT = `You are a startup advisor. 
@@ -324,6 +330,13 @@ export async function analyzeStartupMarket(idea: IdeaInput): Promise<MarketAnaly
     ? `\nREAL SOCIAL PROOF & FRUSTRATIONS (REDDIT & HACKERNEWS):\n${idea.socialProofContext}`
     : "";
 
+  // Build document context string if a PDF/PPT was uploaded
+  let documentContextString = "";
+  if (idea.documentContext && idea.documentContext.extractedText) {
+    const docCtx = idea.documentContext;
+    documentContextString = `\n\nFOUNDER'S UPLOADED ${docCtx.documentTypeLabel.toUpperCase()} (READ THIS CAREFULLY - USE THIS AS PRIMARY CONTEXT):\n\nFull Document Content:\n${docCtx.extractedText.slice(0, 5000)}\n\nINSTRUCTION: The founder has uploaded a ${docCtx.documentTypeLabel}. Use the document content above as the PRIMARY source of truth for the idea description, financial figures, market claims, and business model. Cross-reference any numbers against real market benchmarks. Point out any inconsistencies between their claims and market reality in your analysis (e.g. unrealistic $500M Year 1 revenue). Include these red flags explicitly in your risk analysis and swot analysis.`;
+  }
+
   const prompt = `Analyze this startup market and business model:
 
 STARTUP IDEA:
@@ -332,7 +345,7 @@ STARTUP IDEA:
 - Industry: ${idea.industry}
 - Target Market: ${idea.targetMarket || "Not specified"}
 - Location/Geography: ${idea.location || "Global"}
-- Pricing Model: ${idea.pricingModel || "Not specified"}${pricingContext}${marketContextString}${competitorContextString}${socialProofString}
+- Pricing Model: ${idea.pricingModel || "Not specified"}${pricingContext}${marketContextString}${competitorContextString}${socialProofString}${documentContextString}
 
 Return the exact JSON structure required. Use real competitors from the SerpAPI data if provided.`;
 

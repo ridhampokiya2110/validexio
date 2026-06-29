@@ -62,7 +62,7 @@ const nextConfig: NextConfig = {
   },
 
   // Performance
-  serverExternalPackages: ["pdfkit"],
+  serverExternalPackages: ["pdfkit", "pdf2json"],
   compress: true,
   poweredByHeader: false,
 

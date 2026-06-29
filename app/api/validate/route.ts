@@ -19,6 +19,10 @@ const validateSchema = z.object({
   pricingModel: z.string().optional(),
   priceTarget: z.string().optional(),
   billingFrequency: z.string().optional(),
+  documentContext: z.object({
+    documentTypeLabel: z.string(),
+    extractedText: z.string().max(8000),
+  }).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -66,7 +70,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { title, description, industry, targetMarket, targetScope, targetCountry, targetState, targetCity, pricingModel, priceTarget, billingFrequency } = parsed.data;
+    const { title, description, industry, targetMarket, targetScope, targetCountry, targetState, targetCity, pricingModel, priceTarget, billingFrequency, documentContext } = parsed.data;
 
     // Sanitize inputs
     const sanitizedData = {
@@ -113,6 +117,8 @@ export async function POST(req: NextRequest) {
         location: locationString,
         pricingModel: pricingDetails,
         status: "PENDING",
+        // Store document context if provided
+        ...(documentContext ? { documentContext: documentContext as any } : {}),
       },
     });
 
