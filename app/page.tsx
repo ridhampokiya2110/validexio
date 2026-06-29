@@ -127,36 +127,36 @@ function HeroSection() {
             </div>
 
             {/* Dashboard Preview Layout */}
-            <div className="rounded-2xl overflow-hidden bg-white/50 backdrop-blur-3xl border border-white/60 p-4 sm:p-6 grid grid-cols-12 gap-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
+            <div className="rounded-2xl overflow-hidden bg-white/50 backdrop-blur-3xl border border-white/60 p-3 sm:p-6 grid grid-cols-12 gap-3 sm:gap-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
               
               {/* Top Left: Score */}
-              <div className="col-span-12 md:col-span-4 rounded-2xl bg-gradient-to-br from-[#1B1716] to-[#3a312e] p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-between">
+              <div className="col-span-12 md:col-span-4 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#1B1716] to-[#3a312e] p-4 sm:p-6 text-white shadow-lg relative overflow-hidden flex flex-col justify-between">
                 <div className="absolute -top-10 -right-10 opacity-20 pointer-events-none">
                   <Brain className="w-40 h-40" />
                 </div>
-                <div className="relative z-10 mb-6">
-                  <div className="flex justify-between items-center mb-6">
-                    <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold">AI Validation Score</p>
-                    <div className="flex items-center gap-1.5 text-[10px] bg-white/10 px-2.5 py-1 rounded-full text-white font-medium border border-white/10">
+                <div className="relative z-10 sm:mb-6">
+                  <div className="flex justify-between items-center mb-3 sm:mb-6">
+                    <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/60 font-bold">AI Validation Score</p>
+                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-white font-medium border border-white/10">
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       LIVE
                     </div>
                   </div>
-                  <div className="flex items-end gap-2 mb-2">
-                    <span className="text-5xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 tracking-tighter leading-none">88</span>
-                    <span className="text-lg text-emerald-400 font-bold mb-1">/100</span>
+                  <div className="flex items-end gap-2 sm:mb-2">
+                    <span className="text-4xl sm:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-white/70 tracking-tighter leading-none">88</span>
+                    <span className="text-sm sm:text-lg text-emerald-400 font-bold mb-0.5 sm:mb-1">/100</span>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-xs font-bold px-2 py-1 rounded mt-2">
-                    <TrendingUp className="w-3.5 h-3.5" /> Exceptional Market Fit
+                  <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 text-[10px] sm:text-xs font-bold px-2 py-1 rounded mt-2">
+                    <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> Exceptional Market Fit
                   </div>
                 </div>
-                <p className="text-xs text-white/60 leading-relaxed relative z-10 border-t border-white/10 pt-4">
+                <p className="text-[10px] sm:text-xs text-white/60 leading-relaxed relative z-10 border-t border-white/10 pt-3 sm:pt-4 mt-3 sm:mt-0">
                   High demand speed detected with lower-than-average difficulty getting customers. Clear path to profitability.
                 </p>
               </div>
 
               {/* Top Right: Metrics */}
-              <div className="col-span-12 md:col-span-8 grid grid-cols-2 lg:grid-cols-3 gap-3">
+              <div className="col-span-12 md:col-span-8 flex flex-col sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
                 {[
                   { label: "Total Market Size", value: "$4.2B", trend: "+12.4% YoY Growth", icon: Globe, color: "text-blue-600", bg: "bg-blue-600/10" },
                   { label: "Target Market Size", value: "$850M", trend: "Divided market", icon: Target, color: "text-emerald-600", bg: "bg-emerald-600/10" },
@@ -165,51 +165,54 @@ function HeroSection() {
                   { label: "Time to Launch", value: "3 Weeks", trend: "Low technical complexity", icon: Rocket, color: "text-orange-600", bg: "bg-orange-600/10" },
                   { label: "Project Risk", value: "Medium-Low", trend: "Marketing intensive", icon: Shield, color: "text-yellow-600", bg: "bg-yellow-600/10" },
                 ].map((metric, idx) => (
-                  <div key={metric.label} className="col-span-1 bg-white border border-[#1B1716]/5 p-4 rounded-xl flex flex-col justify-between shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex justify-between items-start mb-3">
-                      <div className={`w-8 h-8 rounded-lg ${metric.bg} flex items-center justify-center`}>
-                        <metric.icon className={`w-4 h-4 ${metric.color}`} />
+                  <div key={metric.label} className="col-span-1 bg-white border border-[#1B1716]/5 p-2.5 sm:p-4 rounded-lg sm:rounded-xl flex flex-row sm:flex-col justify-between items-center sm:items-start shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-2.5 sm:w-full sm:justify-between sm:mb-3">
+                      <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-md sm:rounded-lg ${metric.bg} flex items-center justify-center shrink-0`}>
+                        <metric.icon className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${metric.color}`} />
                       </div>
-                      <span className="text-[10px] font-bold text-[#1B1716]/30">0{idx + 1}</span>
+                      <p className="sm:hidden text-[10px] font-bold text-[#1B1716]/70 uppercase tracking-wider leading-tight w-24">{metric.label}</p>
+                      <span className="hidden sm:block text-[10px] font-bold text-[#1B1716]/30">0{idx + 1}</span>
                     </div>
-                    <div>
-                      <p className="text-[11px] font-semibold text-[#1B1716]/50 uppercase tracking-wider mb-1">{metric.label}</p>
-                      <p className="text-xl font-black text-[#1B1716] tracking-tight">{metric.value}</p>
-                      <p className="text-[10px] font-medium text-[#1B1716]/40 mt-1">{metric.trend}</p>
+                    <div className="flex flex-col items-end sm:items-start text-right sm:text-left shrink-0">
+                      <p className="hidden sm:block text-[11px] font-semibold text-[#1B1716]/50 uppercase tracking-wider mb-1">{metric.label}</p>
+                      <div className="flex flex-col sm:block items-end sm:items-start">
+                        <p className="text-sm sm:text-xl font-black text-[#1B1716] tracking-tight leading-none mb-0.5 sm:mb-0">{metric.value}</p>
+                        <p className="text-[9px] sm:text-[10px] font-medium text-[#1B1716]/40 mt-0 sm:mt-1 max-w-[120px] sm:max-w-none truncate">{metric.trend}</p>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
               {/* Bottom Left: Competitors */}
-              <div className="col-span-12 lg:col-span-7 bg-white border border-[#1B1716]/5 p-5 rounded-xl shadow-sm">
-                <div className="flex justify-between items-center mb-5 border-b border-[#1B1716]/5 pb-3">
-                  <p className="text-xs font-bold text-[#1B1716]/80 uppercase tracking-widest flex items-center gap-2">
-                    <Users className="w-4 h-4 text-cherry" />
+              <div className="col-span-12 lg:col-span-7 bg-white border border-[#1B1716]/5 p-3 sm:p-5 rounded-xl shadow-sm">
+                <div className="flex justify-between items-center mb-3 sm:mb-5 border-b border-[#1B1716]/5 pb-2 sm:pb-3">
+                  <p className="text-[10px] sm:text-xs font-bold text-[#1B1716]/80 uppercase tracking-widest flex items-center gap-1.5 sm:gap-2">
+                    <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cherry" />
                     Competitor Research
                   </p>
-                  <span className="text-[10px] bg-[#1B1716]/5 text-[#1B1716]/60 px-2 py-1 rounded font-bold uppercase tracking-wider">Top 3 Threats</span>
+                  <span className="text-[9px] sm:text-[10px] bg-[#1B1716]/5 text-[#1B1716]/60 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-bold uppercase tracking-wider">Top 3 Threats</span>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-2 sm:space-y-4">
                   {[
                     { name: "LegacyCorp Inc.", share: 65, price: "$99/mo", weakness: "Outdated UX, slow support", color: "bg-red-500" },
                     { name: "Goliath Solutions", share: 25, price: "$250/mo", weakness: "Enterprise only, high friction", color: "bg-orange-500" },
                     { name: "StartupX", share: 10, price: "$15/mo", weakness: "Feature incomplete, buggy", color: "bg-blue-500" },
                   ].map(comp => (
-                    <div key={comp.name} className="flex items-center gap-4 group">
-                      <div className="w-10 h-10 rounded-lg bg-[#1B1716]/5 flex items-center justify-center font-black text-sm text-[#1B1716]/40 group-hover:bg-[#1B1716]/10 transition-colors">
+                    <div key={comp.name} className="flex items-center gap-3 sm:gap-4 group">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#1B1716]/5 flex items-center justify-center font-black text-xs sm:text-sm text-[#1B1716]/40 group-hover:bg-[#1B1716]/10 transition-colors shrink-0">
                         {comp.name[0]}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex justify-between items-baseline mb-1.5">
-                          <span className="text-sm font-bold text-[#1B1716]">{comp.name}</span>
-                          <span className="text-xs font-semibold text-[#1B1716]/60">{comp.price}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-baseline mb-1 sm:mb-1.5">
+                          <span className="text-xs sm:text-sm font-bold text-[#1B1716] truncate pr-2">{comp.name}</span>
+                          <span className="text-[10px] sm:text-xs font-semibold text-[#1B1716]/60 shrink-0">{comp.price}</span>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex-1 h-2 bg-[#1B1716]/5 rounded-full overflow-hidden relative">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="hidden sm:block flex-1 h-1.5 sm:h-2 bg-[#1B1716]/5 rounded-full overflow-hidden relative">
                             <div className={`absolute top-0 left-0 h-full rounded-full ${comp.color}`} style={{ width: `${comp.share}%` }} />
                           </div>
-                          <span className="text-[10px] font-medium text-cherry bg-cherry/10 px-1.5 py-0.5 rounded truncate max-w-[120px]">
+                          <span className="text-[9px] sm:text-[10px] font-medium text-cherry bg-cherry/10 px-1.5 py-0.5 rounded truncate max-w-full sm:max-w-[120px]">
                             Weakness: {comp.weakness}
                           </span>
                         </div>
@@ -220,35 +223,35 @@ function HeroSection() {
               </div>
 
               {/* Bottom Right: Action Plan */}
-              <div className="col-span-12 lg:col-span-5 flex flex-col gap-4">
-                <div className="flex-1 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-xl p-5 relative overflow-hidden group">
+              <div className="col-span-12 lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-4">
+                <div className="flex-1 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-lg sm:rounded-xl p-3 sm:p-5 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
-                  <p className="text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
-                    <CheckCircle className="w-4 h-4" /> Your Advantage
+                  <p className="text-[10px] sm:text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-2 sm:mb-4 flex items-center gap-1.5 sm:gap-2 relative z-10">
+                    <CheckCircle className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Your Advantage
                   </p>
-                  <ul className="space-y-3 relative z-10">
-                    <li className="text-sm text-emerald-900/80 leading-relaxed font-medium flex items-start gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
+                  <ul className="space-y-1.5 sm:space-y-3 relative z-10">
+                    <li className="text-[11px] sm:text-sm text-emerald-900/80 leading-snug sm:leading-relaxed font-medium flex items-start gap-2">
+                      <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-emerald-500 mt-1.5 sm:mt-2 flex-shrink-0" />
                       Divided market with no clear modern, design-first leader.
                     </li>
-                    <li className="text-sm text-emerald-900/80 leading-relaxed font-medium flex items-start gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 flex-shrink-0" />
+                    <li className="text-[11px] sm:text-sm text-emerald-900/80 leading-snug sm:leading-relaxed font-medium flex items-start gap-2">
+                      <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-emerald-500 mt-1.5 sm:mt-2 flex-shrink-0" />
                       Strong margins possible due to low costs to grow.
                     </li>
                   </ul>
                 </div>
-                <div className="flex-1 bg-gradient-to-br from-cherry/10 to-cherry/5 border border-cherry/20 rounded-xl p-5 relative overflow-hidden group">
+                <div className="flex-1 bg-gradient-to-br from-cherry/10 to-cherry/5 border border-cherry/20 rounded-lg sm:rounded-xl p-3 sm:p-5 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-cherry/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
-                  <p className="text-[11px] font-black text-cherry uppercase tracking-widest mb-4 flex items-center gap-2 relative z-10">
-                    <Zap className="w-4 h-4" /> Action Plan
+                  <p className="text-[10px] sm:text-[11px] font-black text-cherry uppercase tracking-widest mb-2 sm:mb-4 flex items-center gap-1.5 sm:gap-2 relative z-10">
+                    <Zap className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Action Plan
                   </p>
-                  <ul className="space-y-3 relative z-10">
-                    <li className="text-sm text-cherry/90 leading-relaxed font-medium flex items-start gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-cherry mt-2 flex-shrink-0" />
+                  <ul className="space-y-1.5 sm:space-y-3 relative z-10">
+                    <li className="text-[11px] sm:text-sm text-cherry/90 leading-snug sm:leading-relaxed font-medium flex items-start gap-2">
+                      <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cherry mt-1.5 sm:mt-2 flex-shrink-0" />
                       Target frustrated lower-end users of Goliath Solutions with a self-serve $29/mo tier.
                     </li>
-                    <li className="text-sm text-cherry/90 leading-relaxed font-medium flex items-start gap-2.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-cherry mt-2 flex-shrink-0" />
+                    <li className="text-[11px] sm:text-sm text-cherry/90 leading-snug sm:leading-relaxed font-medium flex items-start gap-2">
+                      <div className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-cherry mt-1.5 sm:mt-2 flex-shrink-0" />
                       Launch MVP via ProductHunt focusing strictly on the core USP.
                     </li>
                   </ul>
@@ -256,60 +259,60 @@ function HeroSection() {
               </div>
 
               {/* Third Row: New AI Capabilities Showcase */}
-              <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mt-0 sm:mt-2">
                 {/* Psych Profile */}
-                <div className="col-span-1 bg-white border border-[#1B1716]/5 p-4 rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
+                <div className="col-span-1 bg-white border border-[#1B1716]/5 p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
                   <div className="absolute top-0 right-0 w-24 h-24 bg-cherry/10 rounded-full blur-2xl group-hover:scale-150 transition-all duration-700" />
                   <div>
-                    <p className="text-[10px] font-bold text-cherry uppercase tracking-widest flex items-center gap-2 mb-3 relative z-10">
+                    <p className="text-[9px] sm:text-[10px] font-bold text-cherry uppercase tracking-widest flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 relative z-10">
                       <Target className="w-3 h-3" /> Customer Mindset
                     </p>
-                    <div className="space-y-2 relative z-10">
-                      <p className="text-[11px] text-[#1B1716]/50 font-semibold uppercase tracking-wider">Main Problem</p>
-                      <p className="text-xs font-bold text-[#1B1716]">Spending 10+ hrs/week on manual data entry.</p>
-                      <div className="h-px w-full bg-[#1B1716]/5 my-2" />
-                      <p className="text-[11px] text-[#1B1716]/50 font-semibold uppercase tracking-wider">Email Subject</p>
-                      <p className="text-xs font-bold text-cherry italic">"Are you tired of losing track of $10k+ invoices?"</p>
+                    <div className="space-y-1 sm:space-y-2 relative z-10">
+                      <p className="text-[10px] sm:text-[11px] text-[#1B1716]/50 font-semibold uppercase tracking-wider">Main Problem</p>
+                      <p className="text-[11px] sm:text-xs font-bold text-[#1B1716]">Spending 10+ hrs/week on manual data entry.</p>
+                      <div className="h-px w-full bg-[#1B1716]/5 my-1.5 sm:my-2" />
+                      <p className="text-[10px] sm:text-[11px] text-[#1B1716]/50 font-semibold uppercase tracking-wider">Email Subject</p>
+                      <p className="text-[11px] sm:text-xs font-bold text-cherry italic">"Are you tired of losing track of $10k+ invoices?"</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Tech Architecture */}
-                <div className="col-span-1 bg-white border border-[#1B1716]/5 p-4 rounded-xl shadow-sm flex flex-col justify-between">
+                <div className="col-span-1 bg-white border border-[#1B1716]/5 p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-sm flex flex-col justify-between">
                   <div>
-                    <p className="text-[10px] font-bold text-[#1B1716]/80 uppercase tracking-widest flex items-center gap-2 mb-3">
+                    <p className="text-[9px] sm:text-[10px] font-bold text-[#1B1716]/80 uppercase tracking-widest flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3">
                       <Zap className="w-3 h-3 text-emerald-600" /> Tech Setup
                     </p>
-                    <div className="space-y-2">
+                    <div className="space-y-1.5 sm:space-y-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-emerald-600/10 flex items-center justify-center">
-                          <Globe className="w-3 h-3 text-emerald-600" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-emerald-600/10 flex items-center justify-center">
+                          <Globe className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-600" />
                         </div>
-                        <p className="text-xs font-bold text-[#1B1716]">Next.js + Tailwind</p>
+                        <p className="text-[11px] sm:text-xs font-bold text-[#1B1716]">Next.js + Tailwind</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-blue-600/10 flex items-center justify-center">
-                          <BarChart3 className="w-3 h-3 text-blue-600" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-blue-600/10 flex items-center justify-center">
+                          <BarChart3 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-blue-600" />
                         </div>
-                        <p className="text-xs font-bold text-[#1B1716]">Node.js + Supabase</p>
+                        <p className="text-[11px] sm:text-xs font-bold text-[#1B1716]">Node.js + Supabase</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded bg-orange-600/10 flex items-center justify-center">
-                          <Rocket className="w-3 h-3 text-orange-600" />
+                        <div className="w-5 h-5 sm:w-6 sm:h-6 rounded bg-orange-600/10 flex items-center justify-center">
+                          <Rocket className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-orange-600" />
                         </div>
-                        <p className="text-xs font-bold text-[#1B1716]">Deploy on Vercel</p>
+                        <p className="text-[11px] sm:text-xs font-bold text-[#1B1716]">Deploy on Vercel</p>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Test Landing Page Code */}
-                <div className="col-span-1 bg-white border border-[#1B1716]/5 p-4 rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between">
+                <div className="col-span-1 bg-white border border-[#1B1716]/5 p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-butter/20 rounded-full blur-3xl" />
-                  <p className="text-[10px] font-bold text-orange-600 uppercase tracking-widest flex items-center gap-2 mb-3 relative z-10">
+                  <p className="text-[9px] sm:text-[10px] font-bold text-orange-600 uppercase tracking-widest flex items-center gap-1.5 sm:gap-2 mb-2 sm:mb-3 relative z-10">
                     <Lightbulb className="w-3 h-3" /> Test Landing Page
                   </p>
-                  <div className="font-mono text-[9px] text-[#1B1716]/70 bg-[#1B1716]/5 p-2.5 rounded border border-[#1B1716]/5 relative z-10 leading-relaxed overflow-hidden">
+                  <div className="font-mono text-[8px] sm:text-[9px] text-[#1B1716]/70 bg-[#1B1716]/5 p-2 sm:p-2.5 rounded border border-[#1B1716]/5 relative z-10 leading-relaxed overflow-hidden">
                     <span className="text-purple-600">export default</span> <span className="text-blue-600">function</span> <span className="text-orange-600 font-bold">Waitlist</span>() {'{\n'}
                     {'  '}<span className="text-purple-600">return</span> (<br/>
                     {'    '}&lt;<span className="text-blue-600">div</span> <span className="text-emerald-600">className</span>=<span className="text-emerald-700">"bg-black p-8"</span>&gt;<br/>
