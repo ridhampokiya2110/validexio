@@ -41,15 +41,18 @@ export default function AdminConsole() {
   const [loading, setLoading] = useState(true);
   const [activeModalTicket, setActiveModalTicket] = useState<Ticket | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "support">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "support" | "settings">("overview");
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [loadingMaintenance, setLoadingMaintenance] = useState(false);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [kpiRes, userRes, ticketRes] = await Promise.all([
-        fetch("/api/v1/admin/kpis"),
-        fetch("/api/v1/admin/users?limit=20"),
-        fetch("/api/v1/admin/tickets?status=OPEN"),
+      const [kpiRes, userRes, ticketRes, maintenanceRes] = await Promise.all([
+        fetch("/api/v1/admin/kpis", { cache: "no-store" }),
+        fetch("/api/v1/admin/users?limit=100", { cache: "no-store" }),
+        fetch("/api/v1/admin/tickets?status=OPEN", { cache: "no-store" }),
+        fetch("/api/admin/maintenance", { cache: "no-store" }),
       ]);
 
       if (kpiRes.status === 404) {
@@ -61,10 +64,12 @@ export default function AdminConsole() {
       const kpiData = await kpiRes.json();
       const userData = await userRes.json();
       const ticketData = await ticketRes.json();
+      const maintenanceData = await maintenanceRes.json();
 
       setKpis(kpiData);
       setUsers(userData.users || []);
       setTickets(ticketData.tickets || []);
+      setMaintenanceMode(maintenanceData.enabled || false);
     } catch (error) {
       console.error("Fetch error", error);
       toast.error("Failed to load admin data");
@@ -143,6 +148,26 @@ export default function AdminConsole() {
     }
   };
 
+  const handleToggleMaintenance = async () => {
+    try {
+      setLoadingMaintenance(true);
+      const res = await fetch("/api/admin/maintenance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ enabled: !maintenanceMode }),
+      });
+      if (!res.ok) throw new Error("Failed to toggle maintenance mode");
+      
+      const data = await res.json();
+      setMaintenanceMode(data.enabled);
+      toast.success(data.enabled ? "Maintenance Mode Enabled" : "Maintenance Mode Disabled");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoadingMaintenance(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -191,6 +216,15 @@ export default function AdminConsole() {
           >
             <MessageSquare className="w-4 h-4" />
             Support Queue
+          </button>
+          <button 
+            onClick={() => setActiveTab("settings")}
+            className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
+              activeTab === "settings" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
+            }`}
+          >
+            <ShieldAlert className="w-4 h-4" />
+            System Settings
           </button>
         </nav>
         <div className="p-4 border-t border-[#1B1716]/10 flex flex-col gap-2">
@@ -357,6 +391,40 @@ export default function AdminConsole() {
                 ))}
               </div>
             )}
+          </section>
+        )}
+
+        {/* SECTION D: SYSTEM SETTINGS */}
+        {activeTab === "settings" && (
+          <section className="animate-fade-in-scale">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1B1716]">
+              <ShieldAlert className="w-5 h-5 text-cherry" />
+              System Settings
+            </h2>
+            <div className="bg-white border border-[#1B1716]/10 rounded-xl p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-[#1B1716]">Maintenance Mode</h3>
+                  <p className="text-sm text-[#1B1716]/60 mt-1 max-w-lg">
+                    When enabled, all public routes will redirect to the maintenance page. 
+                    Only users accessing <code className="bg-[#1B1716]/5 px-1 py-0.5 rounded text-xs">/admin</code> will be able to bypass it.
+                  </p>
+                </div>
+                <button
+                  onClick={handleToggleMaintenance}
+                  disabled={loadingMaintenance}
+                  className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none ${
+                    maintenanceMode ? "bg-red-600" : "bg-gray-300"
+                  } disabled:opacity-50`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                      maintenanceMode ? "translate-x-8" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+            </div>
           </section>
         )}
 

@@ -82,9 +82,7 @@ function HeroSection() {
 
         {/* Subheadline */}
         <p className="text-lg sm:text-xl text-[#1B1716]/65 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
-          From Concept to Customer in 60 Seconds. Get brutally honest validation,
-          instant technical architecture, competitor insights, and your first customers before
-          writing a line of code or buying inventory.
+          From Concept to Customer in 60 Seconds.
         </p>
 
         {/* CTA Group */}

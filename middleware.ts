@@ -1,18 +1,70 @@
 import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { Redis } from "@upstash/redis";
+import { Ratelimit } from "@upstash/ratelimit";
 
-export default auth((req) => {
+const redis = process.env.UPSTASH_REDIS_REST_URL
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
+    })
+  : null;
+
+const ratelimit = redis
+  ? new Ratelimit({
+      redis: redis,
+      limiter: Ratelimit.slidingWindow(5, "5 m"), // Max 5 login attempts per 5 minutes per IP
+      analytics: false,
+    })
+  : null;
+
+export default auth(async (req) => {
   const { nextUrl, auth: session } = req;
   const isLoggedIn = !!session;
+
+  const isMaintenanceRoute = nextUrl.pathname.startsWith("/maintenance");
+  const isApiRoute = nextUrl.pathname.startsWith("/api");
+  const isAdminRoute = nextUrl.pathname.startsWith("/admin");
+  const isAuthRoute = ["/login", "/register", "/forgot-password", "/verify-email"].some(
+    (path) => nextUrl.pathname.startsWith(path)
+  );
+
+  // BRUTE FORCE PROTECTION (Rate limit logins)
+  if (req.method === "POST" && nextUrl.pathname === "/api/auth/callback/credentials") {
+    if (ratelimit) {
+      const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+      const { success } = await ratelimit.limit(`login_attempt_${ip}`);
+      if (!success) {
+        // Redirect back to login with a generic error parameter to avoid giving away details
+        return NextResponse.redirect(new URL("/login?error=AccessDenied", nextUrl));
+      }
+    }
+  }
+
+  // MAINTENANCE MODE CHECK
+  if (redis) {
+    try {
+      const maintenanceModeEnabled = await redis.get("maintenance_mode_enabled");
+      const isEnabled = maintenanceModeEnabled === "true" || maintenanceModeEnabled === true;
+
+      // If maintenance is enabled, redirect non-essential routes to /maintenance
+      if (isEnabled && !isMaintenanceRoute && !isAdminRoute && !isAuthRoute && !isApiRoute) {
+        return NextResponse.redirect(new URL("/maintenance", nextUrl));
+      }
+
+      // If maintenance is disabled but user is on /maintenance, redirect home
+      if (!isEnabled && isMaintenanceRoute) {
+        return NextResponse.redirect(new URL("/", nextUrl));
+      }
+    } catch (e) {
+      console.error("Middleware Redis Error:", e);
+    }
+  }
 
   const isProtectedRoute = ["/dashboard", "/hub", "/admin"].some(
     (path) => nextUrl.pathname.startsWith(path)
   );
-  const isAuthRoute = ["/login", "/register", "/forgot-password", "/verify-email"].some(
-    (path) => nextUrl.pathname.startsWith(path)
-  );
-  const isApiRoute = nextUrl.pathname.startsWith("/api");
 
   // Redirect unauthenticated users from protected routes
   if (isProtectedRoute && !isLoggedIn) {
@@ -38,6 +90,11 @@ export default auth((req) => {
   response.headers.set("X-Content-Type-Options", "nosniff");
   response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   response.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+
+  // Hide admin routes from search engines
+  if (isAdminRoute) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
 
   // CSP
   const csp = [

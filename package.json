@@ -1,7 +1,7 @@
 {
   "name": "validexio",
-  "version": "1.0.0",
-  "description": "From Concept to Customer in 60 Seconds - AI-powered startup validation platform",
+  "version": "0.1.0",
+  "description": "From Concept to Customer in 60 Seconds.",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
