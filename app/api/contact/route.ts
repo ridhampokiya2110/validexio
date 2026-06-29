@@ -25,8 +25,8 @@ export async function POST(req: Request) {
 
     if (resend) {
       await resend.emails.send({
-        from: "Validexio Contact <onboarding@resend.dev>", // Or update to a verified domain like support@validexio.com
-        to: "validexio1@gmail.com",
+        from: "Validexio Contact <support@validexio.com>",
+        to: "support@validexio.com",
         replyTo: email,
         subject: `Validexio Inquiry: ${firstName} ${lastName}`,
         html: htmlContent,

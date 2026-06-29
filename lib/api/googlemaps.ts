@@ -1,3 +1,5 @@
+import { extractCompetitorWebsites } from "./tavily";
+
 /**
  * Fetches real, ground-level competitor data using the Google Maps Places API (New).
  * This guarantees 100% verified local businesses and eliminates fake data.
@@ -47,11 +49,27 @@ export async function fetchGoogleMapsCompetitors(industry: string, location: str
     const data = await response.json();
 
     if (data.places && data.places.length > 0) {
+      // 1. Gather all website URIs
+      const urlsToScrape: string[] = [];
+      data.places.forEach((place: any) => {
+        if (place.websiteUri) urlsToScrape.push(place.websiteUri);
+      });
+
+      // 2. Scrape them in parallel using Tavily Extract
+      const scrapedWebsites = await extractCompetitorWebsites(urlsToScrape);
+
+      // 3. Format the output
       const competitors = data.places.map((place: any, index: number) => {
         let details = `Competitor ${index + 1}: ${place.displayName?.text || 'Unknown'}`;
         if (place.rating) details += ` | Rating: ${place.rating} (${place.userRatingCount} reviews)`;
         if (place.websiteUri) details += ` | Website: ${place.websiteUri}`;
         if (place.formattedAddress) details += ` | Address: ${place.formattedAddress}`;
+        
+        // Append scraped website content if available
+        if (place.websiteUri && scrapedWebsites.has(place.websiteUri)) {
+          details += `\n   -> Scraped Website Content (USE THIS FOR ANALYSIS): ${scrapedWebsites.get(place.websiteUri)}`;
+        }
+        
         return details;
       });
 

@@ -1,12 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { randomBytes } from "crypto";
-import dns from "dns";
+import { Resend } from "resend";
 
-// Fix for Node 17+ IPv6 preference causing 'queryA ETIMEOUT'
-dns.setDefaultResultOrder("ipv4first");
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(req: Request) {
   try {
@@ -46,25 +44,12 @@ export async function POST(req: Request) {
       },
     });
 
-    // Send email via Nodemailer using Gmail SMTP
+    // Send email via Resend
     const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/verify-email?token=${token}`;
 
-    if (process.env.EMAIL_SERVER_USER && process.env.EMAIL_SERVER_PASSWORD) {
-      const transporter = nodemailer.createTransport({
-        host: "74.125.143.108", // Hardcoded IP to bypass ProtonVPN DNS timeout
-        port: 465,
-        secure: true,
-        tls: {
-          servername: "smtp.gmail.com",
-        },
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      });
-
-      transporter.sendMail({
-        from: `"Validexio Security" <${process.env.EMAIL_SERVER_USER}>`,
+    if (resend) {
+      resend.emails.send({
+        from: "Validexio Security <support@validexio.com>",
         to: email,
         subject: "Verify your email address - Validexio",
         html: `
@@ -80,7 +65,7 @@ export async function POST(req: Request) {
         `,
       }).catch(err => console.error("Non-blocking email send error:", err));
     } else {
-      console.log("Mock Email Sent (No EMAIL_SERVER_USER configured). Verification Link:", confirmLink);
+      console.log("Mock Email Sent (No RESEND_API_KEY configured). Verification Link:", confirmLink);
     }
 
     return NextResponse.json({ success: true });

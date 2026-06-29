@@ -57,7 +57,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-[#1B1716]">Email Us</h3>
                 <p className="text-[#1B1716]/60 text-sm font-medium mb-4">For general inquiries and support.</p>
-                <a href="mailto:validexio1@gmail.com" className="text-cherry font-semibold hover:underline">validexio1@gmail.com</a>
+                <a href="mailto:support@validexio.com" className="text-cherry font-semibold hover:underline">support@validexio.com</a>
               </div>
 
               <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl">
@@ -66,7 +66,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-[#1B1716]">Enterprise Sales</h3>
                 <p className="text-[#1B1716]/60 text-sm font-medium mb-4">Looking for bulk reports or API access?</p>
-                <a href="mailto:validexio1@gmail.com" className="text-emerald-600 font-semibold hover:underline">validexio1@gmail.com</a>
+                <a href="mailto:support@validexio.com" className="text-emerald-600 font-semibold hover:underline">support@validexio.com</a>
               </div>
             </div>
 

@@ -1,5 +1,6 @@
 import { fetchOverpassCompetitors } from "./overpass";
 import { fetchGoogleMapsCompetitors } from "./googlemaps";
+import { extractCompetitorWebsites } from "./tavily";
 
 /**
  * Fetches real, ground-level competitor data.
@@ -74,8 +75,26 @@ export async function fetchRealCompetitors(idea: string, industry: string, locat
     const data = await response.json();
     
     if (data.organic_results && data.organic_results.length > 0) {
-      const competitors = data.organic_results.slice(0, limit).map((result: any, index: number) => {
-        return `Competitor ${index + 1}: ${result.title} | Website: ${result.link} | Description: ${result.snippet}`;
+      const topResults = data.organic_results.slice(0, limit);
+      
+      // Gather URLs to scrape
+      const urlsToScrape: string[] = [];
+      topResults.forEach((result: any) => {
+        if (result.link) urlsToScrape.push(result.link);
+      });
+
+      // Scrape them in parallel using Tavily Extract
+      const scrapedWebsites = await extractCompetitorWebsites(urlsToScrape);
+
+      const competitors = topResults.map((result: any, index: number) => {
+        let details = `Competitor ${index + 1}: ${result.title} | Website: ${result.link} | Description: ${result.snippet}`;
+        
+        // Append scraped website content if available
+        if (result.link && scrapedWebsites.has(result.link)) {
+          details += `\n   -> Scraped Website Content (USE THIS FOR ANALYSIS): ${scrapedWebsites.get(result.link)}`;
+        }
+        
+        return details;
       });
       return `Real Competitors found via Google Search in ${location}:\n\n` + competitors.join('\n\n');
     }

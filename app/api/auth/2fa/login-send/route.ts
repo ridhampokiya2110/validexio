@@ -1,9 +1,8 @@
 import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
-import dns from "dns";
+import { Resend } from "resend";
 
-dns.setDefaultResultOrder("ipv4first");
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export async function POST(req: Request) {
   try {
@@ -40,23 +39,10 @@ export async function POST(req: Request) {
       },
     });
 
-    // Send email
-    if (process.env.EMAIL_SERVER_USER && process.env.EMAIL_SERVER_PASSWORD) {
-      const transporter = nodemailer.createTransport({
-        host: "74.125.143.108",
-        port: 465,
-        secure: true,
-        tls: {
-          servername: "smtp.gmail.com",
-        },
-        auth: {
-          user: process.env.EMAIL_SERVER_USER,
-          pass: process.env.EMAIL_SERVER_PASSWORD,
-        },
-      });
-
-      transporter.sendMail({
-        from: `"Validexio Security" <${process.env.EMAIL_SERVER_USER}>`,
+    // Send email via Resend
+    if (resend) {
+      resend.emails.send({
+        from: "Validexio Security <support@validexio.com>",
         to: email,
         subject: "Your Login Security Code",
         html: `
@@ -71,6 +57,8 @@ export async function POST(req: Request) {
           </div>
         `,
       }).catch(err => console.error("Non-blocking email send error:", err));
+    } else {
+      console.warn("RESEND_API_KEY is missing. Login 2FA email not sent.");
     }
 
     return NextResponse.json({
