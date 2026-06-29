@@ -82,7 +82,7 @@ export default function LegalPage() {
                 
                 <section>
                   <h3 className="text-xl font-bold text-[#1B1716] mb-4">1. Acceptance of Terms</h3>
-                  <p>Validexio provides AI-driven validation reports and market analysis tools designed specifically for founders. Your access to and use of the platform is conditioned on your acceptance of and compliance with these Terms.</p>
+                  <p>Validexio provides data-driven validation reports and market analysis tools designed specifically for founders. Your access to and use of the platform is conditioned on your acceptance of and compliance with these Terms.</p>
                 </section>
                 
                 <section>
@@ -163,7 +163,7 @@ export default function LegalPage() {
               <p className="text-sm text-[#75070C] font-bold mb-10 uppercase tracking-widest">Last Updated: June 2026</p>
               
               <div className="space-y-8 text-[#1B1716]/80 leading-[1.7]">
-                <p className="font-medium">We are committed to delivering the highest quality market validation reports. However, due to the compute-intensive nature of our AI architecture, we maintain a strict policy regarding credits and report purchases.</p>
+                <p className="font-medium">We are committed to delivering the highest quality market validation reports. However, due to the compute-intensive nature of our data architecture, we maintain a strict policy regarding credits and report purchases.</p>
                 
                 <section>
                   <h3 className="text-xl font-bold text-[#1B1716] mb-4">1. Digital Goods & Reports</h3>

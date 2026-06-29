@@ -284,7 +284,7 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
       retries--;
       if (retries === 0) {
         if (error.status === 503 || (error.message && error.message.includes("503"))) {
-          throw new Error("Google's Gemini AI is currently overloaded. Please wait a minute and try again.");
+          throw new Error("Google's Gemini Data Engine is currently overloaded. Please wait a minute and try again.");
         }
         throw error;
       }
@@ -305,7 +305,7 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
       try {
         parsed = JSON.parse(text + '}\n}');
       } catch {
-        throw new Error("AI generated incomplete response. Try a shorter description.");
+        throw new Error("Data Engine generated incomplete response. Try a shorter description.");
       }
     }
   }

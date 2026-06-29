@@ -25,7 +25,7 @@ export default function BlogPage() {
     },
     {
       title: "The Danger of 'Yes Men' in Startup Validation",
-      excerpt: "Friends and family will almost always tell you your idea is great. Here is why you need brutal, unbiased AI feedback before quitting your day job.",
+      excerpt: "Friends and family will almost always tell you your idea is great. Here is why you need brutal, unbiased Data Engine feedback before quitting your day job.",
       category: "Founder Psychology",
       date: "May 15, 2026",
       author: "Validexio Team",

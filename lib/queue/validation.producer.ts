@@ -34,7 +34,7 @@ export interface ValidationJobPayload {
 }
 
 /**
- * Dispatches a new job to the BullMQ queue for heavy AI processing
+ * Dispatches a new job to the BullMQ queue for heavy Data Engine processing
  */
 export async function dispatchValidationJob(payload: ValidationJobPayload) {
   try {

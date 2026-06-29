@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Validexio',
     short_name: 'Validexio',
-    description: 'AI-powered startup validation platform. From concept to customer in 60 seconds.',
+    description: 'data-driven startup validation platform. From concept to customer in 60 seconds.',
     start_url: '/dashboard',
     display: 'standalone',
     background_color: '#FDFCF8',

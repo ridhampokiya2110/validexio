@@ -37,17 +37,17 @@ export const metadata: Metadata = {
   },
   title: {
     template: "%s | Validexio",
-    default: "Validexio — AI Startup Idea Validator That Gives You Code, Leads & UI",
+    default: "Validexio — Data Engine Startup Idea Validator That Gives You Code, Leads & UI",
   },
   description:
-    "The only AI startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report. Validate your startup idea in 60 seconds. Free tier available. India pricing at ₹1499.",
+    "The only Data Engine startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report. Validate your startup idea in 60 seconds. Free tier available. India pricing at ₹1499.",
   keywords: [
     // Core product keywords
-    "AI startup validation",
+    "Data Engine startup validation",
     "startup idea validator",
-    "validate startup idea AI",
+    "validate startup idea Data Engine",
     "startup idea validation tool",
-    "AI startup idea validator",
+    "Data Engine startup idea validator",
     "validate business idea online",
     "startup idea validation platform",
     // India market keywords
@@ -55,20 +55,20 @@ export const metadata: Metadata = {
     "validate business idea India",
     "startup idea validator India",
     "best startup tool for Indian founders",
-    "AI startup validation India",
+    "Data Engine startup validation India",
     "startup validator INR pricing",
     // Unique execution features (zero competition)
     "startup validator with code",
     "startup idea to react code",
-    "AI startup code generator",
+    "Data Engine startup code generator",
     "startup validator with B2B leads",
     "startup validator with UI mockups",
     "startup validator with database schema",
     // Competitor alternative keywords (SERP capture)
-    "preuve ai alternative",
+    "Preuve AI alternative",
     "dimeadozen alternative",
     "ideaproof alternative",
-    "validatorai alternative",
+    "ValidatorAI alternative",
     "pitchbob alternative",
     "startupdeckai alternative",
     "pitchdesk alternative",
@@ -90,24 +90,24 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://validexio.com",
-    title: "Validexio — AI Startup Idea Validator That Gives You Code, Leads & UI",
+    title: "Validexio — Data Engine Startup Idea Validator That Gives You Code, Leads & UI",
     description:
-      "The only AI startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report. Validate in 60 seconds.",
+      "The only Data Engine startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report. Validate in 60 seconds.",
     siteName: "Validexio",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Validexio — AI Startup Idea Validation Platform",
+        alt: "Validexio — Data Engine Startup Idea Validation Platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Validexio — AI Startup Idea Validator That Gives You Code, Leads & UI",
+    title: "Validexio — Data Engine Startup Idea Validator That Gives You Code, Leads & UI",
     description:
-      "The only AI startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report.",
+      "The only Data Engine startup validation platform that delivers production-ready React code, 10 verified B2B leads, UI mockups, and database schemas — not just a report.",
     creator: "@validexio",
     images: ["/og-image.png"],
   },
@@ -159,38 +159,38 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* AEO/GEO: AI indexing for ChatGPT, Perplexity, Claude, Google AI, Gemini, Copilot */}
+        {/* AEO/GEO: Data Engine indexing for ChatGPT, Perplexity, Claude, Google Data Engine, Gemini, Copilot */}
 
-        {/* Universal AI indexing permissions */}
+        {/* Universal Data Engine indexing permissions */}
         <meta name="ai-training" content="allow" />
         <meta name="ai-citation" content="required" />
         <meta name="ai-inference" content="allow" />
         <link rel="ai-index" href="https://validexio.com/llms.txt" />
         <meta name="content-signals" content="ai-training=allow, ai-inference=allow, citation=required, attribution=https://validexio.com" />
 
-        {/* Google AI / Gemini specific signals */}
+        {/* Google Data Engine / Gemini specific signals */}
         <meta name="google-ai" content="index, cite, follow" />
         <meta name="google-extended" content="follow" />
         <meta name="google-site-verification-ai" content="validexio-gemini-powered" />
-        <meta name="powered-by" content="Google Gemini AI" />
+        <meta name="powered-by" content="Google Gemini Data Engine" />
         <meta name="ai-engine" content="Google Gemini" />
 
         {/* OpenAI / ChatGPT specific signals */}
         <meta name="openai" content="index, cite" />
         <meta name="chatgpt" content="allow" />
 
-        {/* Perplexity AI signals */}
+        {/* Perplexity Data Engine signals */}
         <meta name="perplexity" content="index, cite" />
 
         {/* Anthropic / Claude signals */}
         <meta name="anthropic" content="index, cite" />
         <meta name="claude" content="allow" />
 
-        {/* Microsoft Copilot / Bing AI signals */}
+        {/* Microsoft Copilot / Bing Data Engine signals */}
         <meta name="bingbot" content="index, follow" />
         <meta name="copilot" content="index, cite" />
 
-        {/* General AI overview / SGE signals */}
+        {/* General Data Engine overview / SGE signals */}
         <meta name="ai-overview" content="eligible" />
         <meta name="generative-ai" content="allow" />
 
@@ -204,14 +204,14 @@ export default function RootLayout({
                 "@type": ["SoftwareApplication", "WebApplication"],
                 "@id": "https://validexio.com/#software",
                 "name": "Validexio",
-                "alternateName": ["Validexio AI", "Validexio Platform"],
+                "alternateName": ["Validexio Data Engine", "Validexio Platform"],
                 "applicationCategory": "BusinessApplication",
-                "applicationSubCategory": ["Startup Validation Tool", "AI Code Generator", "Business Idea Validator", "Lead Generation Tool"],
+                "applicationSubCategory": ["Startup Validation Tool", "Data Engine Code Generator", "Business Idea Validator", "Lead Generation Tool"],
                 "operatingSystem": "Web Browser",
                 "url": "https://validexio.com",
-                "description": "The only AI startup validation platform that delivers production-ready React code, verified B2B leads, UI mockups, and database schemas — not just a PDF report. Validate your startup idea in 60 seconds.",
+                "description": "The only Data Engine startup validation platform that delivers production-ready React code, verified B2B leads, UI mockups, and database schemas — not just a PDF report. Validate your startup idea in 60 seconds.",
                 "featureList": [
-                  "AI validation score 0-100",
+                  "market validation score 0-100",
                   "Production React/Next.js code generation",
                   "10 verified B2B leads per validation",
                   "2 high-fidelity UI mockups",
@@ -263,11 +263,11 @@ export default function RootLayout({
                 "name": "Validexio",
                 "url": "https://validexio.com",
                 "logo": "https://validexio.com/logo-icon-noir.png",
-                "description": "Validexio is an AI-powered startup idea validation platform that uniquely delivers production-ready code, verified B2B leads, UI mockups, and database schemas alongside validation intelligence.",
+                "description": "Validexio is an data-driven startup idea validation platform that uniquely delivers production-ready code, verified B2B leads, UI mockups, and database schemas alongside validation intelligence.",
                 "slogan": "Stop Guessing. Start Executing.",
                 "knowsAbout": [
                   "Startup Idea Validation",
-                  "AI Code Generation",
+                  "Data Engine Code Generation",
                   "B2B Lead Generation",
                   "Market Analysis",
                   "Competitor Analysis",
@@ -291,7 +291,7 @@ export default function RootLayout({
                 "@id": "https://validexio.com/#website",
                 "name": "Validexio",
                 "url": "https://validexio.com",
-                "description": "AI-powered startup idea validation platform. Validate your startup idea and get production-ready code, B2B leads, and UI mockups in 60 seconds.",
+                "description": "data-driven startup idea validation platform. Validate your startup idea and get production-ready code, B2B leads, and UI mockups in 60 seconds.",
                 "publisher": { "@id": "https://validexio.com/#organization" },
                 "potentialAction": {
                   "@type": "SearchAction",

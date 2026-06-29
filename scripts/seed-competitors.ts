@@ -17,11 +17,11 @@ const competitors = [
     hasNextjsBoilerplate: false,
     hasAwsBlueprints: false,
     hasApolloLeads: false,
-    specificAttackVector: 'Preuve proves the market exists, then leaves you with a reading assignment. Validexio hands you the functional database schema, outbound messaging, and the frontend codebase to capture it.'
+    specificAttackVector: 'Preuve AI proves the market exists, then leaves you with a reading assignment. Validexio hands you the functional database schema, outbound messaging, and the frontend codebase to capture it.'
   },
   {
     slug: 'dimeadozen',
-    name: 'DimeADozen',
+    name: 'DimeADozen.ai',
     basePrice: 'From $129',
     dataSourceType: 'Web search + GPT-4 static records',
     reportFormatStyle: '40+ page PDF',
@@ -33,7 +33,7 @@ const competitors = [
     hasNextjsBoilerplate: false,
     hasAwsBlueprints: false,
     hasApolloLeads: false,
-    specificAttackVector: 'DimeADozen charges a premium for a massive, unformatted information dump. Validexio strips the text bloat and gives you pure, actionable technical infrastructure components.'
+    specificAttackVector: 'DimeADozen.ai charges a premium for a massive, unformatted information dump. Validexio strips the text bloat and gives you pure, actionable technical infrastructure components.'
   },
   {
     slug: 'pitchbob',
@@ -55,7 +55,7 @@ const competitors = [
     slug: 'ideaproof',
     name: 'IdeaProof',
     basePrice: 'From €24.99',
-    dataSourceType: 'AI-generated base tokens',
+    dataSourceType: 'real-time data-backed base tokens',
     reportFormatStyle: '10 sections, 20+ pages',
     primaryStrength: 'Flexible credit tiers with 90 introductory validation credits.',
     fatalTradeoff: 'Zero trace links or clickable evidence. No verifiable methodology or trusted public platform reviews.',
@@ -65,7 +65,7 @@ const competitors = [
     hasNextjsBoilerplate: false,
     hasAwsBlueprints: false,
     hasApolloLeads: false,
-    specificAttackVector: 'IdeaProof drops an AI-generated text document and vanity branding tools. Validexio outputs fully compilable technical boilerplate schemas and active sales funnels.'
+    specificAttackVector: 'IdeaProof drops an real-time data-backed text document and vanity branding tools. Validexio outputs fully compilable technical boilerplate schemas and active sales funnels.'
   },
   {
     slug: 'tryverdikt',
@@ -84,10 +84,10 @@ const competitors = [
     specificAttackVector: 'Verdikt limits their output to a flat, single-page summary memo. Validexio scales across both analytical execution strategies and full deployment assets.'
   },
   {
-    slug: 'validatorai',
+    slug: 'ValidatorAI',
     name: 'ValidatorAI',
     basePrice: '$49 for 3 sessions',
-    dataSourceType: 'AI-generated inference',
+    dataSourceType: 'real-time data-backed inference',
     reportFormatStyle: 'Interactive chat interface',
     primaryStrength: 'Conversational prompt environment allowing basic follow-up questions.',
     fatalTradeoff: 'Pure model text answers operating blindly with absolutely zero real-time market data backing them up.',

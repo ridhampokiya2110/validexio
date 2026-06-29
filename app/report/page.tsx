@@ -3,7 +3,7 @@ import ReportContent from "./ReportContent";
 
 export const metadata: Metadata = {
   title: "Validation Report | Validexio",
-  description: "View your AI-generated startup validation report and unlock full execution assets.",
+  description: "View your real-time data-backed startup validation report and unlock full execution assets.",
 };
 
 export default function ReportPage() {

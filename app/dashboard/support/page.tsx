@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: "Refund Policy (Strictly Enforced)",
-    answer: "Due to the high compute costs associated with AI generation, all purchases are final. We do not offer refunds once credits have been consumed to generate a validation report.",
+    answer: "Due to the high compute costs associated with Data Engine generation, all purchases are final. We do not offer refunds once credits have been consumed to generate a validation report.",
   },
   {
     question: "Credit Consumption",
@@ -98,7 +98,7 @@ export default function SupportPage() {
             Founder Support & Resolution
           </h1>
           <p className="text-[#1B1716]/60 max-w-2xl mx-auto font-medium">
-            Enterprise-grade support for billing, account access, and AI generation issues. 
+            Enterprise-grade support for billing, account access, and Data Engine generation issues. 
             Check our FAQ before opening a ticket.
           </p>
         </div>

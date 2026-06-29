@@ -244,7 +244,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
                   icon: Rocket,
                   label: "Validate New Idea",
                   href: "/dashboard/validate",
-                  desc: "AI analysis in 60 seconds",
+                  desc: "algorithmic analysis in 60 seconds",
                   color: "text-cherry",
                   bg: "bg-cherry/10",
                 },

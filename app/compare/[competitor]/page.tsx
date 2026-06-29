@@ -43,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       `${competitor.name} review`,
       `${competitor.name} pricing`,
       `startup validation tool`,
-      `AI startup generator`,
+      `Data Engine startup generator`,
       `idea to code platform`,
       `startup builder`,
       `MVP development platform`,

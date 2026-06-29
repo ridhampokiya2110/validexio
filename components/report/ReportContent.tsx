@@ -644,7 +644,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <PremiumLock 
               isLocked={true} 
               title="Pricing Strategy Locked" 
-              description="Upgrade to Premium to unlock AI-generated pricing tiers, feature bundling, and competitor-benchmarked rates." 
+              description="Upgrade to Premium to unlock real-time data-backed pricing tiers, feature bundling, and competitor-benchmarked rates." 
             />
           ) : (
             <>

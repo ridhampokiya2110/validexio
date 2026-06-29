@@ -16,14 +16,14 @@ const examples = [
   {
     slug: "laminar-clone",
     name: "Laminar Clone",
-    tagline: "AI Dev Tool Observability Pipeline",
+    tagline: "Data Engine Dev Tool Observability Pipeline",
     tam: "INR 4,500Cr",
     score: 88,
     icon: <Activity className="w-6 h-6" />
   },
   {
     slug: "cleanops-ai",
-    name: "CleanOps AI",
+    name: "CleanOps Data Engine",
     tagline: "Micro-SaaS Fleet Management",
     tam: "INR 2,200Cr",
     score: 95,
@@ -40,7 +40,7 @@ const examples = [
   {
     slug: "nicheledger",
     name: "NicheLedger",
-    tagline: "Productized AI Bookkeeping for Agencies",
+    tagline: "Productized Data Engine Bookkeeping for Agencies",
     tam: "INR 1,200Cr",
     score: 89,
     icon: <Code className="w-6 h-6" />

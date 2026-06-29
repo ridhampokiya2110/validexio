@@ -8,11 +8,11 @@ export const metadata: Metadata = {
   title: "Preuve AI vs Validexio: Which Startup Validator is Better? [2025]",
   description: "Comparing Preuve AI and Validexio. While Preuve AI gives you a PDF report, Validexio generates production-ready code, B2B leads, and UI mockups. See the full breakdown.",
   keywords: [
-    "preuve ai alternative",
-    "preuve ai vs validexio",
+    "Preuve AI alternative",
+    "Preuve AI vs validexio",
     "startup idea validator",
-    "AI startup code generator",
-    "best alternative to preuve ai"
+    "Data Engine startup code generator",
+    "best alternative to Preuve AI"
   ],
   alternates: {
     canonical: "https://validexio.com/blog/preuve-ai-vs-validexio",
@@ -68,7 +68,7 @@ export default function BlogPost() {
 
         <div className="prose prose-lg max-w-none text-[#1B1716]/80 marker:text-[#75070C]">
           <p className="lead text-xl text-[#1B1716] font-medium mb-8">
-            The AI startup validation space has exploded in 2025. Two of the leading tools are Preuve AI and Validexio. But they serve fundamentally different types of founders. Here is the brutally honest breakdown.
+            The Data Engine startup validation space has exploded in 2025. Two of the leading tools are Preuve AI and Validexio. But they serve fundamentally different types of founders. Here is the brutally honest breakdown.
           </p>
 
           <h2 className="text-2xl font-black text-[#1B1716] mt-12 mb-4">The Core Difference</h2>

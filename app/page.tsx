@@ -136,7 +136,7 @@ function HeroSection() {
                 </div>
                 <div className="relative z-10 sm:mb-6">
                   <div className="flex justify-between items-center mb-3 sm:mb-6">
-                    <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/60 font-bold">AI Validation Score</p>
+                    <p className="text-[9px] sm:text-[10px] uppercase tracking-widest text-white/60 font-bold">market validation Score</p>
                     <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-white font-medium border border-white/10">
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       LIVE
@@ -258,7 +258,7 @@ function HeroSection() {
                 </div>
               </div>
 
-              {/* Third Row: New AI Capabilities Showcase */}
+              {/* Third Row: New Data Engine Capabilities Showcase */}
               <div className="col-span-12 grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4 mt-0 sm:mt-2">
                 {/* Psych Profile */}
                 <div className="col-span-1 bg-white border border-[#1B1716]/5 p-3 sm:p-4 rounded-lg sm:rounded-xl shadow-sm relative overflow-hidden flex flex-col justify-between group">
@@ -453,7 +453,7 @@ function PremiumExecutionShowcase() {
 const features = [
   {
     icon: Brain,
-    title: "AI Validation Engine",
+    title: "market validation Engine",
     description:
       "Get a comprehensive 0–100 validation score backed by Gemini's analysis of market data, competition, and timing.",
     color: "text-cherry",
@@ -471,7 +471,7 @@ const features = [
     icon: Lightbulb,
     title: "UI Mockups & Fake Door",
     description:
-      "AI-generated interfaces plus a copy-pasteable Waitlist React Component to start capturing leads instantly.",
+      "real-time data-backed interfaces plus a copy-pasteable Waitlist React Component to start capturing leads instantly.",
     color: "text-emerald-600",
     bg: "bg-emerald-600/10",
   },
@@ -533,7 +533,7 @@ function FeaturesSection() {
             before you build
           </h2>
           <p className="text-[#1B1716]/60 text-base sm:text-lg max-w-xl mx-auto px-4 sm:px-0">
-            Stop wasting months building products nobody wants. Get AI-powered validation and production-ready code in 60 seconds.
+            Stop wasting months building products nobody wants. Get data-driven validation and production-ready code in 60 seconds.
           </p>
         </div>
 
@@ -577,7 +577,7 @@ const steps = [
   },
   {
     number: "02",
-    title: "AI Analyzes Everything",
+    title: "Data Engine Analyzes Everything",
     description:
       "Our Gemini-powered engine scans market data, competitor landscapes, customer behavior, and business viability in real time.",
     icon: Brain,
@@ -609,7 +609,7 @@ function HowItWorksSection() {
             From idea to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">insight</span><br className="sm:hidden" /> in 60 seconds
           </h2>
           <p className="text-[#6B7280] text-lg md:text-xl font-medium max-w-2xl mx-auto">
-            Three simple steps to validate your startup idea with enterprise-grade AI.
+            Three simple steps to validate your startup idea with enterprise-grade Data Engine.
           </p>
         </div>
 
@@ -823,7 +823,7 @@ function PricingSection() {
 const testimonials = [
   {
     quote: "Validexio saved me 6 months of building the wrong product. The competitor analysis alone was worth 10x the price.",
-    name: "Sarah Chen", title: "Founder, DataFlow AI", avatar: "SC", rating: 5,
+    name: "Sarah Chen", title: "Founder, DataFlow Data Engine", avatar: "SC", rating: 5,
   },
   {
     quote: "I went from idea to first customer in 3 weeks using the acquisition strategy from Validexio. Unbelievable ROI.",
@@ -859,7 +859,7 @@ const testimonials = [
   },
   {
     quote: "The competitor heatmapping is insane. I found 3 indirect competitors I didn't even know existed.",
-    name: "Omar Farooq", title: "CEO, Zenith AI", avatar: "OF", rating: 5,
+    name: "Omar Farooq", title: "CEO, Zenith Data Engine", avatar: "OF", rating: 5,
   },
   {
     quote: "Unbelievable accuracy in the pricing tier recommendations. We implemented it and our conversions doubled overnight.",
@@ -945,13 +945,13 @@ function TestimonialsSection() {
 // =============================================
 const faqs = [
   {
-    question: "How accurate is the AI Validation Score?",
+    question: "How accurate is the market validation Score?",
     answer: "Our engine is trained on thousands of successful and failed startups, real-time market data, and competitor analysis. It provides a brutally honest, data-backed assessment rather than a simple guess.",
     icon: Brain,
   },
   {
-    question: "Is my startup idea safe with Validexio's AI?",
-    answer: "Absolutely. We use enterprise-grade encryption and strictly ensure our AI models do not train on your proprietary data. Your market research, unique concept, and generated React codebase remain 100% confidential and exclusively yours.",
+    question: "Is my startup idea safe with Validexio's Data Engine?",
+    answer: "Absolutely. We use enterprise-grade encryption and strictly ensure our Data Engine models do not train on your proprietary data. Your market research, unique concept, and generated React codebase remain 100% confidential and exclusively yours.",
     icon: Lock,
   },
   {
@@ -1059,7 +1059,7 @@ function CTASection() {
             <span className="gradient-text">validating</span> right now.
           </h2>
           <p className="text-[#1B1716]/60 text-lg mb-10 max-w-lg mx-auto">
-            Don&apos;t build in the dark. Get AI-powered clarity in 60 seconds and
+            Don&apos;t build in the dark. Get data-driven clarity in 60 seconds and
             start executing with confidence.
           </p>
           <Link href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center w-full sm:w-auto text-center mx-auto">
@@ -1172,7 +1172,7 @@ function ValueAnchoringSection() {
                 <h3 className="text-2xl font-black text-[#1B1716] tracking-tight">
                   The Validexio Engine
                 </h3>
-                <p className="text-cherry font-semibold text-sm">Instant AI Execution</p>
+                <p className="text-cherry font-semibold text-sm">Instant Data Engine Execution</p>
               </div>
             </div>
             
@@ -1240,7 +1240,7 @@ function InvestorSimulatorSection() {
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-[#CE202A]">Investor Simulator</span>
           </h2>
           <p className="text-lg md:text-xl text-[#6B7280] max-w-2xl mx-auto font-medium leading-relaxed">
-            Stop pitching blindly. Get interrogated by a ruthless AI trained on top-tier VC and Technical Architect frameworks before you face the real world.
+            Stop pitching blindly. Get interrogated by a ruthless Data Engine trained on top-tier VC and Technical Architect frameworks before you face the real world.
           </p>
         </div>
 

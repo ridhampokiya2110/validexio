@@ -20,7 +20,7 @@ const fullPlans = [
       "High-Level Strategic SWOT Analysis",
       "Competitor Intelligence (Locked)",
       "Precision B2B Target Leads (Locked)",
-      "High-Fidelity AI UI Mockups (Locked)",
+      "High-Fidelity Data Engine UI Mockups (Locked)",
       "Advanced Financial Forecasting (Locked)",
       "Instantaneous Report Delivery"
     ],

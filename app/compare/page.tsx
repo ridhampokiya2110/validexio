@@ -6,7 +6,7 @@ import { Footer } from "@/components/layout/Footer";
 import { competitors } from "@/lib/data/competitors";
 
 export const metadata: Metadata = {
-  title: "Validexio vs The Market - AI Startup Validation",
+  title: "Validexio vs The Market - Data Engine Startup Validation",
   description: "See why founders are switching from legacy PDF report generators to Validexio's live execution engine.",
 };
 

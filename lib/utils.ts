@@ -131,7 +131,7 @@ export const INDUSTRIES = [
   "EdTech",
   "E-commerce",
   "MarketPlace",
-  "AI / ML",
+  "Data Engine / ML",
   "CleanTech",
   "FoodTech",
   "PropTech",

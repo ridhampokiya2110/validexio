@@ -208,7 +208,7 @@ export default function FoundersHub() {
               <tbody className="divide-y divide-[#1B1716]/5">
                 {[
                   { name: "SaaS for Diamond Merchants", date: "Oct 24, 2026", tag: "B2B SaaS" },
-                  { name: "AI Waitlist Generator", date: "Oct 12, 2026", tag: "DevTools" },
+                  { name: "Data Engine Waitlist Generator", date: "Oct 12, 2026", tag: "DevTools" },
                   { name: "Automated Cold Email Agent", date: "Sep 28, 2026", tag: "Marketing" },
                 ].map((project, idx) => (
                   <tr key={idx} className="group hover:bg-[#1B1716]/[0.02] transition-colors">
@@ -241,7 +241,7 @@ export default function FoundersHub() {
           <div className="md:hidden space-y-4">
             {[
               { name: "SaaS for Diamond Merchants", date: "Oct 24, 2026", tag: "B2B SaaS" },
-              { name: "AI Waitlist Generator", date: "Oct 12, 2026", tag: "DevTools" },
+              { name: "Data Engine Waitlist Generator", date: "Oct 12, 2026", tag: "DevTools" },
               { name: "Automated Cold Email Agent", date: "Sep 28, 2026", tag: "Marketing" },
             ].map((project, idx) => (
               <div key={idx} className="glass-card p-5 space-y-4 hover:border-cherry/30 transition-colors">

@@ -124,14 +124,14 @@ export default function ShipmentDashboard() {
   "laminar-clone": {
     id: "ex-laminar-clone",
     idea: {
-      title: "LAMINAR CLONE - AI Observability",
+      title: "LAMINAR CLONE - Data Engine Observability",
       industry: "Developer Tools"
     },
     createdAt: new Date(),
     processingTime: 12400,
     validationScore: 88,
     marketAnalysis: {
-      summary: "As AI adoption grows, the need for LLM observability and tracing is exploding. Developers need tools to understand token usage, latency, and hallucination rates.",
+      summary: "As Data Engine adoption grows, the need for LLM observability and tracing is exploding. Developers need tools to understand token usage, latency, and hallucination rates.",
       tam: "$5B",
       sam: "$1B",
       som: "$50M",
@@ -159,11 +159,11 @@ export default function ShipmentDashboard() {
     ],
     customerPersonas: [
       {
-        name: "AI Engineer Alex",
-        title: "Senior AI Engineer",
+        name: "Data Engine Engineer Alex",
+        title: "Senior Data Engine Engineer",
         age: "28",
         painPoints: ["Debugging prompts is a nightmare", "Costs are spiraling"],
-        goals: ["Ship reliable AI apps", "Reduce token spend"],
+        goals: ["Ship reliable Data Engine apps", "Reduce token spend"],
         buyingBehavior: "Self-serve, open-source first",
         channels: ["Twitter/X", "GitHub", "HackerNews"],
         willingnessToPay: "Medium"
@@ -203,8 +203,8 @@ export default function ShipmentDashboard() {
     ],
     acquisitionStrategy: {
       primaryChannels: ["Product Hunt", "GitHub"],
-      firstCustomerTactics: ["Launch on HackerNews", "Sponsor AI newsletters"],
-      communityBuilding: "Discord server for AI Engineers.",
+      firstCustomerTactics: ["Launch on HackerNews", "Sponsor Data Engine newsletters"],
+      communityBuilding: "Discord server for Data Engine Engineers.",
       contentStrategy: "Write about advanced RAG debugging.",
       partnershipOpportunities: ["Vector Databases", "Model Providers"]
     },
@@ -215,10 +215,10 @@ export default function ShipmentDashboard() {
     },
     landingPageCopy: {
       headline: "See What Your LLM is Actually Doing.",
-      subheadline: "The open-source observability platform for AI engineers. Debug prompts, trace calls, and optimize costs in minutes.",
+      subheadline: "The open-source observability platform for Data Engine engineers. Debug prompts, trace calls, and optimize costs in minutes.",
       valueProp: "Open Source LLMOps",
       cta: "Start Tracing for Free",
-      socialProof: "Used by 500+ AI startups.",
+      socialProof: "Used by 500+ Data Engine startups.",
       features: [{ title: "Visual Trace Viewer", description: "Inspect every step of your chain." }, { title: "Cost Tracking", description: "Monitor token usage in real-time." }]
     },
     codeBoilerplate: `// Trace Initialization

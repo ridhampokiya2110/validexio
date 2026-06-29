@@ -122,7 +122,7 @@ export async function GET(
         extractedFiles++;
       }
 
-      // If no code blocks were found, the AI probably returned raw React code directly
+      // If no code blocks were found, the Data Engine probably returned raw React code directly
       if (extractedFiles === 0) {
         srcFolder?.file("App.tsx", boilerplate);
       }

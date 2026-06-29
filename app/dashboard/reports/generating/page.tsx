@@ -99,7 +99,7 @@ function GeneratingContent() {
           } else if (data.status === "FAILED") {
             isPolling.current = false;
             clearInterval(pollInterval);
-            throw new Error("AI analysis failed during background processing.");
+            throw new Error("algorithmic analysis failed during background processing.");
           }
           // Otherwise keep polling
         } catch (error) {

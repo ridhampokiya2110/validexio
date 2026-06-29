@@ -93,7 +93,7 @@ export default function FreeCodeGenerator() {
                     rows={4}
                     value={idea}
                     onChange={(e) => setIdea(e.target.value)}
-                    placeholder="An AI-powered CRM for freelance graphic designers..."
+                    placeholder="An data-driven CRM for freelance graphic designers..."
                     className="w-full bg-white border border-[#1B1716]/20 rounded-lg px-4 py-3 text-[#1B1716] focus:border-[#75070C] focus:ring-1 focus:ring-[#75070C] outline-none transition-all resize-none placeholder:text-[#1B1716]/30"
                   />
                 </div>

@@ -6,12 +6,12 @@ import { Footer } from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: "How to Validate a Startup Idea in 2025 (Without Writing Code) | Validexio",
-  description: "Learn the exact step-by-step process to validate your startup idea in 2025. Discover how AI tools like Validexio can give you market analysis, code, and leads in 60 seconds.",
+  description: "Learn the exact step-by-step process to validate your startup idea in 2025. Discover how Data Engine tools like Validexio can give you market analysis, code, and leads in 60 seconds.",
   keywords: [
     "how to validate a startup idea",
     "startup idea validation guide 2025",
     "validate business idea without coding",
-    "AI startup validator",
+    "Data Engine startup validator",
     "TAM SAM SOM for startups"
   ],
   alternates: {
@@ -97,12 +97,12 @@ export default function BlogPost() {
           <p>
             <strong>The old way:</strong> Spend a week building a landing page in Webflow or WordPress.
             <br />
-            <strong>The new way:</strong> Use an AI Startup Validator like <strong>Validexio</strong>, which generates the React code for your waitlist page instantly.
+            <strong>The new way:</strong> Use a data engine Startup Validator like <strong>Validexio</strong>, which generates the React code for your waitlist page instantly.
           </p>
 
-          <h2 className="text-2xl font-black text-[#1B1716] mt-12 mb-4">Step 4: Automate the Validation with AI</h2>
+          <h2 className="text-2xl font-black text-[#1B1716] mt-12 mb-4">Step 4: Automate the Validation with Data Engine</h2>
           <p>
-            Traditional validation takes weeks of interviewing potential customers and analyzing competitors. Today, AI can simulate this process with high accuracy based on historical market data.
+            Traditional validation takes weeks of interviewing potential customers and analyzing competitors. Today, Data Engine can simulate this process with high accuracy based on historical market data.
           </p>
           
           <div className="bg-[#75070C]/5 border border-[#75070C]/10 rounded-2xl p-8 my-10">

@@ -28,7 +28,7 @@ const posts = [
       </ul>
 
       <h2>The Anti-Roadmap</h2>
-      <p>Stop thinking about what you need to build, and start thinking about what you need to validate. If your core assumption is that people want an AI tool to write their emails, don't build the AI tool. Build a concierge service where you manually write the emails for them. If they won't pay for that, they won't pay for the AI tool either.</p>
+      <p>Stop thinking about what you need to build, and start thinking about what you need to validate. If your core assumption is that people want a data engine tool to write their emails, don't build the Data Engine tool. Build a concierge service where you manually write the emails for them. If they won't pay for that, they won't pay for the Data Engine tool either.</p>
     `
   },
   {

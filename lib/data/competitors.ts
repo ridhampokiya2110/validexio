@@ -77,9 +77,9 @@ export const competitors: Competitor[] = [
     "name": "Preuve AI",
     "slug": "preuve-ai",
     "website": "https://preuve.ai",
-    "heroHeadline": "Preuve Analyzes.",
+    "heroHeadline": "Preuve AI Analyzes.",
     "validexioHeadline": "Validexio <span class=\"gradient-text\">Builds</span>.",
-    "heroSubheadline": "Analysis is just the first step. Preuve gives you reports. Validexio translates those reports directly into live React code, database schemas, and B2B leads to actually launch the product.",
+    "heroSubheadline": "Analysis is just the first step. Preuve AI gives you reports. Validexio translates those reports directly into live React code, database schemas, and B2B leads to actually launch the product.",
     "targetOutputCompetitor": "PDF Validation Reports",
     "targetOutputValidexio": "Launch-Ready Codebase",
     
@@ -135,7 +135,7 @@ export const competitors: Competitor[] = [
 },
     "pipeline": {
       "title": "Reports vs Live Web Applications",
-      "description": "Preuve specializes in market analysis. We push you all the way to a live Vercel deployment.",
+      "description": "Preuve AI specializes in market analysis. We push you all the way to a live Vercel deployment.",
       "stages": [
         {
           "id": 1,
@@ -318,17 +318,17 @@ export const competitors: Competitor[] = [
   },
   {
     "id": "dimeadozen",
-    "name": "DimeADozen",
+    "name": "DimeADozen.ai",
     "slug": "dimeadozen",
-    "website": "https://dimeadozen.ai",
-    "heroHeadline": "DimeADozen Validates.",
+    "website": "https://DimeADozen.ai",
+    "heroHeadline": "DimeADozen.ai Validates.",
     "validexioHeadline": "Validexio <span class=\"gradient-text\">Executes</span>.",
-    "heroSubheadline": "Validation is the first step. Execution is the next. DimeADozen gives you business plans and risk reports. Validexio translates your idea directly into live code, UI designs, and B2B leads.",
+    "heroSubheadline": "Validation is the first step. Execution is the next. DimeADozen.ai gives you business plans and risk reports. Validexio translates your idea directly into live code, UI designs, and B2B leads.",
     "targetOutputCompetitor": "Business Validation Reports",
     "targetOutputValidexio": "Deployable Code & UI",
     
     "fairAssessment": {
-      "description": "DimeADozen excels at generating comprehensive business plans and providing high-level business validation scores.",
+      "description": "DimeADozen.ai excels at generating comprehensive business plans and providing high-level business validation scores.",
       "pros": [
             {
                   "title": "Extensive Documentation",
@@ -373,7 +373,7 @@ export const competitors: Competitor[] = [
 },
     "pipeline": {
       "title": "Scores vs Live Vercel Deployments",
-      "description": "DimeADozen provides a 'validation score' report. We give you the assets to start building.",
+      "description": "DimeADozen.ai provides a 'validation score' report. We give you the assets to start building.",
       "stages": [
         {
           "id": 1,
@@ -1148,18 +1148,18 @@ export const competitors: Competitor[] = [
     ]
   },
   {
-    "id": "validatorai",
+    "id": "ValidatorAI",
     "name": "ValidatorAI",
-    "slug": "validatorai",
-    "website": "https://validatorai.com",
+    "slug": "ValidatorAI",
+    "website": "https://ValidatorAI.com",
     "heroHeadline": "ValidatorAI Chats.",
     "validexioHeadline": "Validexio <span class=\"gradient-text\">Codes</span>.",
-    "heroSubheadline": "Chatting with an AI chatbot won't build your product. ValidatorAI gives you AI conversation. Validexio gives you the hard technical assets—React components, DB schemas, and lead lists—to actually launch.",
+    "heroSubheadline": "Chatting with a data engine chatbot won't build your product. ValidatorAI gives you Data Engine conversation. Validexio gives you the hard technical assets—React components, DB schemas, and lead lists—to actually launch.",
     "targetOutputCompetitor": "Chatbot Feedback",
     "targetOutputValidexio": "Production-Ready Setup",
     
     "fairAssessment": {
-      "description": "ValidatorAI offers a conversational, frictionless way to bounce ideas off an AI to get immediate feedback.",
+      "description": "ValidatorAI offers a conversational, frictionless way to bounce ideas off a data engine to get immediate feedback.",
       "pros": [
             {
                   "title": "Conversational Interface",
@@ -1203,7 +1203,7 @@ export const competitors: Competitor[] = [
       ]
 },
     "pipeline": {
-      "title": "Talking to AI vs Launching Software",
+      "title": "Talking to Data Engine vs Launching Software",
       "description": "ValidatorAI focuses on quick chat conversations. We give you the cloud infrastructure.",
       "stages": [
         {
@@ -1216,7 +1216,7 @@ export const competitors: Competitor[] = [
         },
         {
           "id": 2,
-          "name": "AI Chat Output",
+          "name": "Data Engine Chat Output",
           "iconName": "FileText",
           "competitorHas": true,
           "validexioHas": true,
@@ -1294,7 +1294,7 @@ export const competitors: Competitor[] = [
               "impact": "→ Get the actual React code to launch to Vercel immediately."
             },
             "competitor": {
-              "title": "None. Purely conversational AI."
+              "title": "None. Purely conversational Data Engine."
             }
           },
           {
@@ -1302,7 +1302,7 @@ export const competitors: Competitor[] = [
             "pill": "Verified Leads",
             "validexio": {
               "title": "10 Verified B2B Leads",
-              "impact": "→ Stop talking to AI and start selling to real humans."
+              "impact": "→ Stop talking to Data Engine and start selling to real humans."
             },
             "competitor": {
               "title": "Does not include customer acquisition support."
@@ -1974,16 +1974,16 @@ export const competitors: Competitor[] = [
     "website": "https://pitchdesk.in",
     "heroHeadline": "PitchDesk Aids Fundraising.",
     "validexioHeadline": "Validexio <span class=\"gradient-text\">Aids Revenue</span>.",
-    "heroSubheadline": "Tired of practicing in front of AI judges when you should be writing code? Validexio equips you with the actual product foundations—React components, DB schemas, and lead lists—so you can show traction, not just slides.",
+    "heroSubheadline": "Tired of practicing in front of Data Engine judges when you should be writing code? Validexio equips you with the actual product foundations—React components, DB schemas, and lead lists—so you can show traction, not just slides.",
     "targetOutputCompetitor": "Pitch Decks & Scripts",
     "targetOutputValidexio": "Traction-Ready Code",
     
     "fairAssessment": {
-      "description": "PitchDesk offers a unique angle by simulating the investor pitch experience and providing an 'AI Judge'.",
+      "description": "PitchDesk offers a unique angle by simulating the investor pitch experience and providing an 'VC Judge'.",
       "pros": [
             {
                   "title": "Pitch Simulation",
-                  "description": "Allows founders to practice their pitch against an AI persona."
+                  "description": "Allows founders to practice their pitch against a data engine persona."
             },
             {
                   "title": "Q&A Prep",
@@ -2005,7 +2005,7 @@ export const competitors: Competitor[] = [
             {
                   "name": "Pro Feedback",
                   "price": "$29/mo",
-                  "validatesIdea": "Yes. Detailed AI critique."
+                  "validatesIdea": "Yes. Detailed Data Engine critique."
             }
       ],
       "validexioPricing": "INR 1499 one-time for full execution assets (Code, UI, Leads, Architecture)."
@@ -2018,7 +2018,7 @@ export const competitors: Competitor[] = [
       ],
       "competitorBestFor": [
             "You have a big VC meeting tomorrow and need to practice.",
-            "You want an AI to critique your spoken presentation.",
+            "You want a data engine to critique your spoken presentation.",
             "You don't need any actual code or technical deliverables."
       ]
 },
@@ -2036,11 +2036,11 @@ export const competitors: Competitor[] = [
         },
         {
           "id": 2,
-          "name": "AI VC Judge",
+          "name": "Automated VC Judge",
           "iconName": "FileText",
           "competitorHas": true,
           "validexioHas": true,
-          "description": "Simulating questions from an AI investor."
+          "description": "Simulating questions from a data engine investor."
         },
         {
           "id": 3,
@@ -2074,7 +2074,7 @@ export const competitors: Competitor[] = [
               "impact": "→ We bypass the pitching stage and give you the blueprints to build."
             },
             "competitor": {
-              "title": "Practicing pitches in front of 'AI VC Judges'."
+              "title": "Practicing pitches in front of 'Automated VC Judges'."
             }
           },
           {
@@ -2301,7 +2301,7 @@ export const competitors: Competitor[] = [
               "impact": "→ Your assets reflect the market right now, custom-built for your concept."
             },
             "competitor": {
-              "title": "Curated research team + AI analysis"
+              "title": "Curated research team + algorithmic analysis"
             }
           },
           {
@@ -2363,8 +2363,8 @@ export const competitors: Competitor[] = [
     "id": "venturai",
     "name": "Ventur.ai",
     "slug": "venturai",
-    "website": "https://ventur.ai",
-    "heroHeadline": "Ventur Generates Reports.",
+    "website": "https://Ventur.ai",
+    "heroHeadline": "Ventur.ai Generates Reports.",
     "validexioHeadline": "Validexio <span class='gradient-text'>Generates Startups</span>.",
     "heroSubheadline": "Ventur.ai generates lengthy PDF market analysis reports based on your idea. Validexio skips the paperwork and hands you the React code, API architecture, and verified B2B leads to actually launch.",
     "targetOutputCompetitor": "PDF Market Analysis Reports",

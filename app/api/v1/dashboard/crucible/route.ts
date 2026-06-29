@@ -224,7 +224,7 @@ Follow this EXACT format:
           // If we hit a rate limit, return a generic neutral score so they can keep playing
           return NextResponse.json({
             score: 5,
-            critique: "The AI evaluator hit a rate limit (Too Many Requests), but your answer was recorded. Try slowing down your responses slightly.",
+            critique: "The Data Engine evaluator hit a rate limit (Too Many Requests), but your answer was recorded. Try slowing down your responses slightly.",
             idealAnswer: "A perfect answer would provide exact numbers, clear constraints, and a proven architectural diagram or financial model."
           });
         }
@@ -243,7 +243,7 @@ Follow this EXACT format:
           
           // Attempt a manual salvage of the truncated JSON using Regex
           let salvagedScore = 5;
-          let salvagedCritique = "The AI evaluator returned an invalid response format, but your answer was recorded. Your response lacked definitive proof or hard metrics.";
+          let salvagedCritique = "The Data Engine evaluator returned an invalid response format, but your answer was recorded. Your response lacked definitive proof or hard metrics.";
           
           const scoreMatch = text.match(/"score"\s*:\s*(\d+)/);
           if (scoreMatch && scoreMatch[1]) {

@@ -70,7 +70,7 @@ export default function StartupGallery() {
           </h1>
           
           <p className="text-lg md:text-xl text-[#1B1716]/80 max-w-2xl leading-relaxed relative z-10 font-medium">
-            Explore the most brutally honest AI reality checks. See why thousands of bad ideas were stopped before they cost founders their life savings.
+            Explore the most brutally honest Data Engine reality checks. See why thousands of bad ideas were stopped before they cost founders their life savings.
           </p>
         </section>
 

@@ -48,7 +48,7 @@ export async function POST(req: Request) {
       });
 
       console.log(`[Lemon Squeezy] Successfully upgraded user ${userId} to ${tier}`);
-      // Here you would also add jobs to BullMQ or trigger AI generation logic as you did with Stripe
+      // Here you would also add jobs to BullMQ or trigger Data Engine generation logic as you did with Stripe
     }
 
     return NextResponse.json({ success: true });

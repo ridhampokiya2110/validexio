@@ -6,7 +6,7 @@ import Link from "next/link";
 
 
 
-export const metadata = { title: "AI Mockups" };
+export const metadata = { title: "Data Engine Mockups" };
 
 async function getCachedReports(userId: string) {
     return await prisma.validationReport.findMany({
@@ -33,7 +33,7 @@ export default async function MockupsPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-[#1B1716] mb-1">AI Mockup Concepts</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#1B1716] mb-1">Data Engine Mockup Concepts</h1>
         <p className="text-[#1B1716]/50 text-sm">UI and landing page concepts generated from your validations</p>
       </div>
 
@@ -43,7 +43,7 @@ export default async function MockupsPage() {
             <Palette className="w-8 h-8 text-orange-600" />
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No mockup concepts yet</h3>
-          <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to get AI-generated UI concepts.</p>
+          <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to get real-time data-backed UI concepts.</p>
           <Link href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
         </div>
       ) : (

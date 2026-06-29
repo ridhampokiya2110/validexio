@@ -1,14 +1,14 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pricing — Validexio AI Startup Validator | Free, Pro ₹1499, Team ₹2999",
+  title: "Pricing — Validexio Data Engine Startup Validator | Free, Pro ₹1499, Team ₹2999",
   description: "Simple one-time pricing. Free startup validation forever. Pro plan at ₹1499 ($39) includes React code, 10 B2B leads, UI mockups, and full market analysis.",
   keywords: [
     "Validexio pricing",
     "startup validator India rupees",
     "startup validator INR pricing",
     "free startup idea validation",
-    "AI startup validator free",
+    "Data Engine startup validator free",
     "validate business idea cost"
   ],
   alternates: {
@@ -20,7 +20,7 @@ const schema = {
   "@context": "https://schema.org",
   "@type": "Product",
   "name": "Validexio Validation Execution Engine",
-  "description": "AI-powered startup validation that generates production-ready code, B2B leads, and UI mockups.",
+  "description": "data-driven startup validation that generates production-ready code, B2B leads, and UI mockups.",
   "offers": {
     "@type": "AggregateOffer",
     "lowPrice": "0",

@@ -6,7 +6,7 @@ export function TruthGraph() {
   return (
     <section className="py-20 px-6 max-w-4xl mx-auto my-12">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-[#1B1716] mb-2">The Validexio AI Rigor Filter</h2>
+        <h2 className="text-3xl font-bold text-[#1B1716] mb-2">The Validexio Data Engine Rigor Filter</h2>
         <p className="text-[#1B1716]/60">We do not rubber-stamp bad ideas. We pivot them into revenue.</p>
       </div>
       

@@ -6,7 +6,7 @@ import CrucibleClient from "./CrucibleClient";
 
 export const metadata = {
   title: "Investor Simulator | Validexio",
-  description: "Stress test your startup idea against an elite AI interrogator.",
+  description: "Stress test your startup idea against an elite Data Engine interrogator.",
 };
 
 async function CrucibleDataLoader({ userId }: { userId: string }) {

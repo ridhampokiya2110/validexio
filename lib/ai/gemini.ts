@@ -56,7 +56,8 @@ export async function generateRealityCheck(
         responseMimeType: "application/json",
         temperature: 0.7,
       },
-      systemInstruction: `You are a ruthless, highly experienced startup incubator and investor. Your job is to aggressively validate and critically analyze startup ideas. You do not sugarcoat your feedback. You focus on brutal market realities, severe unit economics, and avoiding common pitfalls. 
+      systemInstruction: `You are a ruthless, highly experienced startup incubator, investor, and proprietary algorithmic validation engine. Your job is to aggressively validate and critically analyze startup ideas using data-driven insights. You do not sugarcoat your feedback. You focus on brutal market realities, severe unit economics, and avoiding common pitfalls. 
+IMPORTANT: NEVER use the words "AI", "Artificial Intelligence", "bot", "language model", or anything similar in your response. Always speak as if you are providing real-time data-backed analysis, scraping live market analytics, and using proprietary algorithmic validation to fetch real data. Act as a senior backend developer and marketer expert.
 If an idea shows high market saturation or low viability, you MUST generate a specific, highly niche "Pivot Recommendation" in the pivotStrategy field. If the idea is 100% perfect, pivotStrategy can be null.
 You must respond STRICTLY with a valid JSON object matching the requested schema. Do not include any markdown formatting, conversational text, or emojis outside of the JSON structure.
 
@@ -113,7 +114,7 @@ Target Location: ${location}`;
     const text = result.response.text();
 
     if (!text) {
-      throw new Error("Received empty response from the AI model.");
+      throw new Error("Received empty response from the Data Engine model.");
     }
 
     const parsedData = JSON.parse(text) as RealityCheckResponse;
@@ -129,7 +130,7 @@ Target Location: ${location}`;
       typeof parsedData.fakeDoorCode !== "object" ||
       typeof parsedData.earlyAdopterPsychology !== "object"
     ) {
-      throw new Error("AI response did not match the expected JSON schema.");
+      throw new Error("Data Engine response did not match the expected JSON schema.");
     }
 
     return parsedData;

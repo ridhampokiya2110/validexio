@@ -58,7 +58,7 @@ interface FormData {
   billingFrequency: string;
 }
 
-// Internal document data — stored in state, sent to AI, NOT shown to user during form
+// Internal document data — stored in state, sent to Data Engine, NOT shown to user during form
 interface DocumentInternal {
   extractedText: string;
   documentType: string;
@@ -275,7 +275,7 @@ export default function ValidatePage() {
         fileSizeMB: data.fileSizeMB,
       });
 
-      // Store internal data silently — sent to AI during validation, NOT shown in form
+      // Store internal data silently — sent to Data Engine during validation, NOT shown in form
       setDocumentInternal(data._internal);
 
       toast.success(`${data.documentTypeLabel} attached — will be analyzed with your idea.`);
@@ -400,7 +400,7 @@ export default function ValidatePage() {
     try {
       const payload: any = { ...form };
 
-      // Silently attach document context — the AI uses this to enrich the report
+      // Silently attach document context — the Data Engine uses this to enrich the report
       // User never saw these details during form fill; they appear in the final report
       if (documentInternal && documentDisplay) {
         payload.documentContext = {
@@ -454,7 +454,7 @@ export default function ValidatePage() {
           Validate Your Idea
         </h1>
         <p className="text-[#1B1716]/50 text-sm sm:text-base">
-          Get AI-powered validation in under 60 seconds.
+          Get data-driven validation in under 60 seconds.
         </p>
       </div>
 
@@ -615,7 +615,7 @@ export default function ValidatePage() {
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
                 className={cn("input-field", errors.title ? "border-red-500/50" : "")}
-                placeholder="e.g., AI-powered invoice management for freelancers"
+                placeholder="e.g., data-driven invoice management for freelancers"
                 maxLength={100}
               />
               <div className="flex justify-between mt-1">
@@ -694,7 +694,7 @@ export default function ValidatePage() {
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-[#1B1716]">Reading your document…</p>
                     <p className="text-xs text-[#1B1716]/40 mt-0.5">
-                      Extracting text and preparing for AI analysis. Takes 5–20 seconds.
+                      Extracting text and preparing for algorithmic analysis. Takes 5–20 seconds.
                     </p>
                     <div className="mt-2 h-1 bg-[#1B1716]/8 rounded-full overflow-hidden">
                       <div className="h-full w-2/3 bg-gradient-to-r from-blue-400 to-cherry rounded-full animate-pulse" />
@@ -737,7 +737,7 @@ export default function ValidatePage() {
               {documentDisplay && (
                 <p className="text-xs text-[#1B1716]/40 mt-2 flex items-center gap-1.5">
                   <Paperclip className="w-3 h-3 flex-shrink-0" />
-                  AI will analyze this document during validation. Detailed suggestions and improvements will appear in your validation report.
+                  Data Engine will analyze this document during validation. Detailed suggestions and improvements will appear in your validation report.
                 </p>
               )}
 
@@ -762,7 +762,7 @@ export default function ValidatePage() {
                 <div className="mb-2 flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200">
                   <FileText className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-amber-800 leading-relaxed">
-                    <strong>Your document is attached!</strong> Please also write a short description in your own words — what specific aspect do you want the AI to focus on? e.g. <em>"Validate our SaaS pricing model and B2B go-to-market strategy"</em>.
+                    <strong>Your document is attached!</strong> Please also write a short description in your own words — what specific aspect do you want the Data Engine to focus on? e.g. <em>"Validate our SaaS pricing model and B2B go-to-market strategy"</em>.
                   </p>
                 </div>
               )}
@@ -969,7 +969,7 @@ export default function ValidatePage() {
                 <div className="flex justify-between">
                   <span>Target Price:</span>
                   <span className="text-[#1B1716] font-medium">
-                    {form.priceTarget ? `$${form.priceTarget}` : "AI decides"}{" "}
+                    {form.priceTarget ? `$${form.priceTarget}` : "Data Engine decides"}{" "}
                     {form.billingFrequency && form.priceTarget ? `(${form.billingFrequency})` : ""}
                   </span>
                 </div>

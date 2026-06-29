@@ -128,7 +128,7 @@ export default function ReportContent() {
               <div>
                 <h3 className="text-lg font-bold text-[#1B1716] mb-2">The Anti-Roadmap</h3>
                 <p className="text-[#1B1716]/80 leading-relaxed">
-                  Market data suggests your proposed &quot;AI Social Feed&quot; feature will drain engineering resources with near-zero ROI. Early adopters in this segment prioritize workflow automation over social interaction. Build the integration engine first; scrap the feed.
+                  Market data suggests your proposed &quot;Data Engine Social Feed&quot; feature will drain engineering resources with near-zero ROI. Early adopters in this segment prioritize workflow automation over social interaction. Build the integration engine first; scrap the feed.
                 </p>
               </div>
             </div>

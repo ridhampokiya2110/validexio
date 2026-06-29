@@ -12,7 +12,7 @@ export function Footer() {
               <img src="/logo-wordmark-noir.png" alt="Validexio" className="h-10 w-auto object-contain" />
             </Link>
             <p className="text-[#1B1716]/60 text-sm mb-6 leading-relaxed max-w-[280px] font-medium">
-              AI-powered startup validation platform. From concept to customer in 60 seconds. Stop guessing, start executing.
+              data-driven startup validation platform. From concept to customer in 60 seconds. Stop guessing, start executing.
             </p>
             <div className="flex flex-col gap-3 mb-8">
               <a 

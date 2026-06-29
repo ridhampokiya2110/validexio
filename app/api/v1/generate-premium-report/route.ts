@@ -168,7 +168,7 @@ Return the data STRICTLY in the JSON format requested. Provide exactly 15 compre
     });
 
     const outputText = response.text;
-    if (!outputText) throw new Error("Empty response from AI");
+    if (!outputText) throw new Error("Empty response from Data Engine");
 
     const payload = JSON.parse(outputText);
 

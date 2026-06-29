@@ -11,7 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     'pitchbob',
     'ideaproof',
     'verdikt',
-    'validatorai',
+    'ValidatorAI',
     'painmap',
     'startupdeckai',
     'bizplanaiprofocus',
