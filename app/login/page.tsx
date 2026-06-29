@@ -6,7 +6,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Zap, AlertCircle, ChevronDown } from "lucide-react";
+import { Zap, AlertCircle, ChevronDown, Eye, EyeOff } from "lucide-react";
 
 const signinSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -35,6 +35,7 @@ function AuthPageContent() {
   });
   const [show2FA, setShow2FA] = useState(false);
   const [code, setCode] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -181,7 +182,7 @@ function AuthPageContent() {
               <div className="absolute inset-0 bg-gradient-to-b from-[#75070C]/10 to-transparent rounded-full blur-xl group-hover:bg-[#75070C]/20 transition-all duration-500"></div>
               <img src="/logo-icon-noir.png" alt="Validexio" className="w-24 h-24 object-contain relative z-10 drop-shadow-md group-hover:scale-105 transition-transform duration-500" />
             </Link>
-            <h2 className="text-3xl font-black uppercase tracking-[0.25em] text-[#1B1716] ml-3 drop-shadow-sm">
+            <h2 className="text-3xl font-black uppercase tracking-[0.25em] text-[#1B1716] drop-shadow-sm">
               Validexio
             </h2>
             <div className="flex items-center justify-center w-full gap-3 mt-3">
@@ -302,13 +303,22 @@ function AuthPageContent() {
                     </Link>
                   )}
                 </div>
-                <input
-                  type="password"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.password ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium`}
-                  placeholder="••••••••"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.password ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium pr-10`}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#1B1716]/40 hover:text-[#1B1716]/70 transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </button>
+                </div>
                 {errors.password && <p className="text-red-500 text-xs mt-1.5 font-medium">{errors.password}</p>}
               </div>
 
