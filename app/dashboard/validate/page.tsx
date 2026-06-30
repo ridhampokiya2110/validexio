@@ -543,7 +543,7 @@ export default function ValidatePage() {
               </p>
             )}
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 sm:grid-cols-3 gap-2">
               {INDUSTRIES.map((industry) => {
                 const isSelected = industry === "Other"
                   ? isOtherIndustry
@@ -770,10 +770,10 @@ export default function ValidatePage() {
               <textarea
                 value={form.description}
                 onChange={(e) => setForm({ ...form, description: e.target.value })}
-                className={cn("input-field min-h-32 resize-y", errors.description ? "border-red-500/50" : "")}
+                className={cn("input-field min-h-24 sm:min-h-32 resize-y", errors.description ? "border-red-500/50" : "")}
                 placeholder="Describe what your product does, who it helps, and what problem it solves. Include any unique insights about the market or customer pain points…"
                 maxLength={4000}
-                rows={5}
+                rows={4}
               />
               <div className="flex justify-between mt-1">
                 {errors.description
@@ -897,7 +897,7 @@ export default function ValidatePage() {
               <p className="text-red-600 text-sm mb-4">{errors.pricingModel}</p>
             )}
 
-            <div className="grid sm:grid-cols-2 gap-2 mb-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 mb-6">
               {PRICING_MODELS.map((model) => (
                 <button
                   key={model}

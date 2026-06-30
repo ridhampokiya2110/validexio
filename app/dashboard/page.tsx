@@ -113,32 +113,32 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
             Review your startup intelligence and validate new concepts with algorithmic precision.
           </p>
         </div>
-        <Link href="/dashboard/validate" className="relative group overflow-hidden rounded-xl shadow-[0_8px_20px_rgba(117,7,12,0.2)] hover:shadow-[0_12px_25px_rgba(117,7,12,0.3)] transition-all duration-500 hover:-translate-y-0.5">
+        <Link href="/dashboard/validate" className="relative group overflow-hidden rounded-xl shadow-[0_8px_20px_rgba(117,7,12,0.2)] hover:shadow-[0_12px_25px_rgba(117,7,12,0.3)] transition-all duration-500 hover:-translate-y-0.5 self-start sm:self-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-[#75070C] to-[#910505] transition-transform duration-500 group-hover:scale-[1.02]"></div>
-          <div className="relative flex items-center gap-3 px-8 py-4 bg-transparent text-white font-bold tracking-wide">
-            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center">
+          <div className="relative flex items-center justify-center gap-3 px-8 py-4 bg-transparent text-white font-bold tracking-wide">
+            <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
               <Plus className="w-4 h-4 text-white" />
             </div>
-            <span>Initiate Validation</span>
+            <span className="whitespace-nowrap">Initiate Validation</span>
           </div>
         </Link>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 relative z-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 relative z-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-[#FDFCF8]/80 backdrop-blur-md p-6 sm:p-8 rounded-2xl border border-[#1B1716]/5 hover:border-[#1B1716]/15 hover:bg-white transition-all duration-500 group shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] relative overflow-hidden">
+          <div key={stat.label} className="bg-[#FDFCF8]/80 backdrop-blur-md p-4 sm:p-8 rounded-2xl border border-[#1B1716]/5 hover:border-[#1B1716]/15 hover:bg-white transition-all duration-500 group shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.08)] relative overflow-hidden">
             {/* Subtle top border highlight on hover */}
             <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#1B1716]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
             
-            <div className="flex items-center justify-between mb-8">
-              <p className="text-[#1B1716]/50 text-[11px] font-bold uppercase tracking-[0.2em]">{stat.label}</p>
-              <div className={`w-10 h-10 rounded-xl bg-white border border-[#1B1716]/5 shadow-sm flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6`}>
-                <stat.icon className={`w-4.5 h-4.5 ${stat.color}`} />
+            <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-8">
+              <p className="text-[#1B1716]/50 text-[10px] font-bold uppercase tracking-widest leading-tight pr-1">{stat.label}</p>
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white border border-[#1B1716]/5 shadow-sm flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 flex-shrink-0`}>
+                <stat.icon className={`w-4 h-4 ${stat.color}`} />
               </div>
             </div>
             <div className="flex items-baseline gap-1.5">
-              <div className="text-4xl sm:text-5xl font-black text-[#1B1716] tracking-tighter drop-shadow-sm">
+              <div className="text-3xl sm:text-5xl font-black text-[#1B1716] tracking-tighter drop-shadow-sm">
                 {stat.value}
               </div>
               {stat.label === "Avg Rigor Score" && stat.value !== "—" && (
@@ -150,7 +150,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
       </div>
 
       {/* Main Grid */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Recent Reports */}
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">

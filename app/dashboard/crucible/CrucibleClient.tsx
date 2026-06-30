@@ -302,10 +302,10 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
     const currentEval = evaluations[evaluations.length - 1];
 
     return (
-      <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 min-h-[80vh] flex flex-col relative">
+      <div className="max-w-4xl mx-auto py-6 sm:py-12 px-4 sm:px-6 lg:px-8 flex flex-col relative">
         <div className="absolute top-0 right-0 w-96 h-96 bg-cherry/5 blur-[100px] rounded-full -z-10 pointer-events-none" />
         
-        <div className="flex justify-between items-center mb-10 pb-6 border-b border-[#1B1716]/10">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-10 pb-4 sm:pb-6 border-b border-[#1B1716]/10 gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#1B1716]/5 flex items-center justify-center">
               {track === "TECHNICAL_ARCHITECT" ? (
@@ -325,6 +325,20 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
           </div>
           
           {/* Progress Bar (Visual) */}
+          <div className="flex sm:hidden items-center gap-1 flex-wrap mt-2">
+            {Array.from({ length: maxQuestions }).map((_, i) => {
+              const isPast = i < evaluations.length;
+              const isCurrent = i === evaluations.length && interrogationState === "ASKING";
+              return (
+                <div 
+                  key={i} 
+                  className={`h-2 rounded-full transition-all duration-500 ${
+                    isPast ? 'w-6 bg-cherry' : isCurrent ? 'w-6 bg-cherry/40 animate-pulse' : 'w-3 bg-[#1B1716]/10'
+                  }`} 
+                />
+              );
+            })}
+          </div>
           <div className="hidden sm:flex items-center gap-1">
             {Array.from({ length: maxQuestions }).map((_, i) => {
               const isPast = i < evaluations.length;
@@ -347,7 +361,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <div className="relative p-8 md:p-10 rounded-2xl bg-[#1B1716]/[0.03] border border-[#1B1716]/10 shadow-inner overflow-hidden group">
+          <div className="relative p-5 sm:p-10 rounded-2xl bg-[#1B1716]/[0.03] border border-[#1B1716]/10 shadow-inner overflow-hidden group">
             <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-cherry to-purple-600 opacity-80"></div>
             <div className="flex items-start gap-4">
               <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-cherry text-white font-black text-sm shadow-md shadow-cherry/20">
@@ -371,7 +385,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
                 value={currentAnswer}
                 onChange={(e) => setCurrentAnswer(e.target.value)}
                 placeholder="Construct your defense strategy here..."
-                className="w-full flex-grow min-h-[240px] p-6 text-lg text-[#1B1716] placeholder-[#1B1716]/30 bg-white/50 backdrop-blur-sm border-2 border-[#1B1716]/10 focus:outline-none focus:border-cherry/50 focus:bg-white rounded-2xl transition-all resize-none shadow-sm"
+                className="w-full flex-grow min-h-[160px] sm:min-h-[240px] p-4 sm:p-6 text-base sm:text-lg text-[#1B1716] placeholder-[#1B1716]/30 bg-white/50 backdrop-blur-sm border-2 border-[#1B1716]/10 focus:outline-none focus:border-cherry/50 focus:bg-white rounded-2xl transition-all resize-none shadow-sm"
               />
               <div className="absolute bottom-4 right-4 text-xs font-bold text-[#1B1716]/30 tracking-widest uppercase">
                 {currentAnswer.length} chars

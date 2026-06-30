@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import Link from "next/link";
 import {
   ChevronLeft,
@@ -29,6 +31,7 @@ import { DeleteReportButton } from "@/components/dashboard/DeleteReportButton";
 import { PremiumRevenueChart } from "@/components/PremiumRevenueChart";
 
 export function ReportContent({ report, isReadOnly = false, userTier = "STARTER" }: { report: any, isReadOnly?: boolean, userTier?: string }) {
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
   if (!report) return null;
 
   const market = {
@@ -199,10 +202,10 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             </div>
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             {!isReadOnly && <DeleteReportButton reportId={report.id} />}
             {!isReadOnly && (
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {/* Notion Export Button - Coming Soon for Team and Enterprise */}
                 {(userTier === "TEAM" || userTier === "ENTERPRISE") && (
                   <button 
@@ -216,10 +219,46 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
 
                 {/* PDF Export Button - Gated for Pro, Team, and Enterprise */}
                 {userTier !== "STARTER" && userTier !== "FREE" ? (
-                  <a href={`/api/v1/projects/${report.id}/export/pdf`} className="btn-primary text-sm gap-2 px-3 py-2 bg-[#111827] text-white border border-[#111827] hover:bg-[#FFFFFF] hover:text-[#111827] transition-colors rounded-none">
-                    <FileText className="w-4 h-4" />
-                    Export PDF
-                  </a>
+                  <button
+                    onClick={async () => {
+                      if (isPdfLoading) return;
+                      setIsPdfLoading(true);
+                      try {
+                        const resp = await fetch(`/api/v1/projects/${report.id}/export/pdf`);
+                        if (!resp.ok) throw new Error("Failed");
+                        const blob = await resp.blob();
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `validexio-report-${report.id.substring(0,6)}.pdf`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                      } catch (e) {
+                        alert("PDF export failed. Please try again.");
+                      } finally {
+                        setIsPdfLoading(false);
+                      }
+                    }}
+                    disabled={isPdfLoading}
+                    className="btn-primary text-sm gap-2 px-3 py-2 bg-[#111827] text-white border border-[#111827] hover:bg-[#FFFFFF] hover:text-[#111827] transition-colors rounded-none disabled:opacity-70 disabled:cursor-not-allowed flex items-center"
+                  >
+                    {isPdfLoading ? (
+                      <>
+                        <svg className="animate-spin w-4 h-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="whitespace-nowrap">Generating PDF...</span>
+                      </>
+                    ) : (
+                      <>
+                        <FileText className="w-4 h-4" />
+                        Export PDF
+                      </>
+                    )}
+                  </button>
                 ) : (
                   <button 
                     onClick={() => alert("PDF Export is available on PRO plans and above. Upgrade your plan to unlock.")}
@@ -375,7 +414,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               competitors.map((comp) => (
                 <div key={comp.name} className="relative bg-white rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_30px_rgb(0,0,0,0.04)] group hover:shadow-[0_8px_30px_rgba(99,1,2,0.08)] transition-all duration-500">
                   {/* Elegant Header Area */}
-                  <div className="bg-[#1B1716] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="bg-[#1B1716] p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="text-2xl font-black text-[#FDFCF8] tracking-tight">{comp.name}</h3>
                       {comp.website && (
@@ -408,9 +447,9 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                     </p>
 
                     {/* The Intelligence Grid */}
-                    <div className="grid lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                       {/* Strengths & Weaknesses (Left/Center) */}
-                      <div className="lg:col-span-2 grid sm:grid-cols-2 gap-6 bg-white rounded-xl p-6 border border-[#E5E7EB] shadow-sm">
+                      <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6 bg-white rounded-xl p-6 border border-[#E5E7EB] shadow-sm">
                         <div>
                           <div className="flex items-center gap-2 mb-4">
                             <div className="w-7 h-7 rounded bg-emerald-50 flex items-center justify-center border border-emerald-100">
@@ -473,7 +512,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             </div>
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Customer Personas</h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {personas.length === 0 ? (
               <div className="md:col-span-3">
                 <PremiumLock 
@@ -617,8 +656,8 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               />
             ) : (
               risks.map((risk, i) => (
-                <div key={i} className={`p-5 flex flex-col sm:flex-row gap-4 sm:items-center ${i !== risks.length - 1 ? 'border-b border-[#E5E7EB]' : ''} hover:bg-[#F9FAFB] transition-colors`}>
-                  <div className="flex gap-2 sm:flex-col sm:gap-1 w-24 flex-shrink-0">
+                <div key={i} className={`p-5 flex flex-col sm:flex-row gap-4 sm:items-start ${i !== risks.length - 1 ? 'border-b border-[#E5E7EB]' : ''} hover:bg-[#F9FAFB] transition-colors`}>
+                  <div className="flex flex-wrap gap-2 sm:flex-col sm:gap-1 flex-shrink-0">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-max ${risk.probability.toLowerCase() === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : risk.probability.toLowerCase() === 'medium' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
                       P: {risk.probability}
                     </span>
@@ -660,7 +699,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               <p className="text-[#6B7280] text-sm mb-6 pb-6 border-b border-[#E5E7EB] font-medium">
                 Strategy: <strong className="text-[#630102] text-base">{pricing.strategy}</strong>
               </p>
-              <div className="grid md:grid-cols-3 gap-6 mb-8 relative z-10">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
                 {pricing.tiers.map((tier) => (
                   <div key={tier.name} className="glass border border-[#E5E7EB] rounded-xl p-8 flex flex-col hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
                     <p className="text-[#6B7280] font-bold text-xs uppercase tracking-widest mb-3">{tier.name}</p>
@@ -746,7 +785,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                 </div>
               </div>
 
-              <div className="grid lg:grid-cols-12 gap-10">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 {/* Left Column: Channels & Content */}
                 <div className="lg:col-span-5 flex flex-col gap-8">
                   
@@ -888,14 +927,14 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               </div>
               <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Sales Funnel Strategy</h2>
             </div>
-            <div className="grid md:grid-cols-4 gap-0 border border-[#E5E7EB] rounded-lg overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-0 border border-[#E5E7EB] rounded-lg overflow-hidden">
               {[
                 { title: "Awareness", data: salesFunnel.awareness, keys: ["channels", "content"] },
                 { title: "Consideration", data: salesFunnel.consideration, keys: ["touchpoints", "objections"] },
                 { title: "Conversion", data: salesFunnel.conversion, keys: ["triggers", "incentives"] },
                 { title: "Retention", data: salesFunnel.retention, keys: ["strategies", "metrics"] },
               ].map((stage, idx) => (
-                <div key={stage.title} className={`p-5 bg-[#FDFDFD] ${idx !== 3 ? 'border-b md:border-b-0 md:border-r border-[#E5E7EB]' : ''}`}>
+                <div key={stage.title} className={`p-5 bg-[#FDFDFD] border-b border-[#E5E7EB] md:border-b-0 ${idx !== 3 ? 'md:border-r' : ''}`}>
                   <p className="text-xs font-bold text-[#111827] uppercase tracking-wider mb-4 border-l-2 border-[#630102] pl-2">{stage.title}</p>
                   <div className="space-y-5">
                     <div>
@@ -959,7 +998,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
 
         {/* Code Boilerplate */}
         {codeBoilerplate && (
-          <section id="code-boilerplate" className="glass-card p-6 overflow-hidden mt-10 animate-fade-in-scale delay-[1300ms] group hover:border-[#111827]/20 transition-all duration-500">
+          <section id="code-boilerplate" className="glass-card p-4 sm:p-6 overflow-hidden mt-10 animate-fade-in-scale delay-[1300ms] group hover:border-[#111827]/20 transition-all duration-500">
             <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
               <div className="w-10 h-10 rounded-xl bg-cherry/5 border border-cherry/10 flex items-center justify-center group-hover:bg-cherry/10 transition-colors">
                 <FileText className="w-5 h-5 text-cherry" />
@@ -967,7 +1006,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               <h2 className="text-2xl font-bold text-[#111827] tracking-tight">MVP Code Boilerplate</h2>
             </div>
             <ExecutionLock isReadOnly={isReadOnly}>
-              <div className="bg-[#111827] text-[#E5E7EB] p-5 rounded-xl overflow-x-auto text-sm font-mono whitespace-pre max-h-[600px] overflow-y-auto custom-scrollbar">
+              <div className="bg-[#111827] text-[#E5E7EB] p-3 sm:p-5 rounded-xl overflow-x-auto text-xs sm:text-sm font-mono whitespace-pre max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
                 {codeBoilerplate}
               </div>
             </ExecutionLock>

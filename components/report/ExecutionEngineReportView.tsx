@@ -8,6 +8,7 @@ import { ExecutionLock } from "@/components/report/ExecutionLock";
 
 export function ExecutionEngineReportView({ report, isReadOnly = false }: { report: any, isReadOnly?: boolean }) {
   const [activeTab, setActiveTab] = useState<"code" | "plan" | "ui">("code");
+  const [isPdfLoading, setIsPdfLoading] = useState(false);
 
   if (!report) return null;
 
@@ -37,12 +38,43 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
       {/* Floating CTA */}
       <div className="fixed bottom-6 right-6 z-50">
         {!isReadOnly && (
-          <a 
-            href={`/api/v1/projects/${report.id}/export/pdf`}
-            className="bg-[#FFEDAB] text-[#1B1716] font-black px-6 py-3 rounded-lg shadow-2xl border border-[#1B1716] hover:bg-[#ffe175] transition-all flex items-center gap-2 uppercase tracking-tight text-sm"
+          <button
+            onClick={async () => {
+              if (isPdfLoading) return;
+              setIsPdfLoading(true);
+              try {
+                const resp = await fetch(`/api/v1/projects/${report.id}/export/pdf`);
+                if (!resp.ok) throw new Error('Failed');
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `validexio-report-${report.id.substring(0,6)}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+              } catch (e) {
+                alert('PDF export failed. Please try again.');
+              } finally {
+                setIsPdfLoading(false);
+              }
+            }}
+            disabled={isPdfLoading}
+            className="bg-[#FFEDAB] text-[#1B1716] font-black px-6 py-3 rounded-lg shadow-2xl border border-[#1B1716] hover:bg-[#ffe175] transition-all flex items-center gap-2 uppercase tracking-tight text-sm disabled:opacity-70"
           >
-            Export Full PDF <FileText className="w-4 h-4" />
-          </a>
+            {isPdfLoading ? (
+              <>
+                <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Generating...
+              </>
+            ) : (
+              <>Export Full PDF <FileText className="w-4 h-4" /></>  
+            )}
+          </button>
         )}
       </div>
 

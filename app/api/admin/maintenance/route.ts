@@ -20,7 +20,8 @@ export async function GET() {
       return NextResponse.json({ enabled: false, error: "Redis not configured" }, { status: 200 });
     }
 
-    const enabled = await redis.get("maintenance_mode_enabled");
+    const maintenanceKey = `maintenance_mode_enabled_${process.env.NODE_ENV || "development"}`;
+    const enabled = await redis.get(maintenanceKey);
     return NextResponse.json({ enabled: !!enabled });
   } catch (error) {
     console.error("Admin Maintenance Mode GET Error:", error);
@@ -42,10 +43,12 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { enabled } = body;
 
+    const maintenanceKey = `maintenance_mode_enabled_${process.env.NODE_ENV || "development"}`;
+
     if (enabled) {
-      await redis.set("maintenance_mode_enabled", "true");
+      await redis.set(maintenanceKey, "true");
     } else {
-      await redis.del("maintenance_mode_enabled");
+      await redis.del(maintenanceKey);
     }
 
     return NextResponse.json({ success: true, enabled: !!enabled });

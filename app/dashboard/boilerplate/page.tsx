@@ -1,9 +1,10 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { Code, Download, TerminalSquare, Lock } from "lucide-react";
+import { Code, TerminalSquare, Lock } from "lucide-react";
 import Link from "next/link";
 import CodePreviewBlock from "@/components/dashboard/CodePreviewBlock";
+import BoilerplateDownloadButton from "@/components/dashboard/BoilerplateDownloadButton";
 
 
 export const metadata = { title: "Code Boilerplate" };
@@ -55,14 +56,7 @@ export default async function BoilerplatePage() {
                 </div>
                 
                 {isPremium ? (
-                  <a
-                    href={`/api/v1/projects/${r.id}/export/code`}
-                    download={`${r.idea.title.replace(/\s+/g, '_')}_boilerplate.zip`}
-                    className="btn-primary text-sm gap-2 px-3 py-1.5"
-                  >
-                    <Download className="w-4 h-4" />
-                    Download .ZIP
-                  </a>
+                  <BoilerplateDownloadButton reportId={r.id} ideaTitle={r.idea.title} />
                 ) : (
                   <Link
                     href="/pricing"

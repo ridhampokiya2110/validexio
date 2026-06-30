@@ -45,7 +45,8 @@ export default auth(async (req) => {
   // MAINTENANCE MODE CHECK
   if (redis) {
     try {
-      const maintenanceModeEnabled = await redis.get("maintenance_mode_enabled");
+      const maintenanceKey = `maintenance_mode_enabled_${process.env.NODE_ENV || "development"}`;
+      const maintenanceModeEnabled = await redis.get(maintenanceKey);
       const isEnabled = maintenanceModeEnabled === "true" || maintenanceModeEnabled === true;
 
       // If maintenance is enabled, redirect non-essential routes to /maintenance

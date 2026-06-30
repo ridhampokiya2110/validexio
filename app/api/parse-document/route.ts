@@ -21,7 +21,7 @@ export interface ParsedDocumentResult {
 async function extractPdfTextFast(buffer: Buffer): Promise<{ text: string; pageCount: number }> {
   return new Promise((resolve, reject) => {
     try {
-      const pdfParser = new PDFParser(null, 1); // 1 indicates text extraction mode
+      const pdfParser = new (PDFParser as any)(null, 1); // 1 indicates text extraction mode
       
       pdfParser.on("pdfParser_dataError", (errData: any) => {
         reject(new Error(errData?.parserError || "Failed to parse PDF"));

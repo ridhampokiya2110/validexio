@@ -58,7 +58,7 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
         {[
           { label: "Total Concepts", value: totalIdeas, icon: Zap },
           { label: "Reports Generated", value: reports.length, icon: FileText },
@@ -75,22 +75,23 @@ export default async function AnalyticsPage() {
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-8">
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
         {/* Score History */}
         <div className="lg:col-span-2">
           {reports.length > 0 ? (
-            <div className="glass-card p-8 h-full border-[#1B1716]/10">
+            <div className="glass-card p-4 sm:p-8 h-full border-[#1B1716]/10">
               <h2 className="text-lg font-bold text-[#1B1716] mb-6">Historical Rigor Analysis</h2>
               <div className="space-y-4">
                 {[...reports].reverse().map((report, i) => (
-                  <div key={i} className="flex items-center gap-4 group">
-                    <span className="text-[#1B1716]/40 text-xs w-20 font-medium flex-shrink-0">
+                  <div key={i} className="flex items-center gap-2 sm:gap-4 group">
+                    <span className="text-[#1B1716]/40 text-xs w-14 sm:w-20 font-medium flex-shrink-0">
                       {new Date(report.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                     
                     <div className="flex-1">
                       <div className="flex justify-between items-end mb-1">
-                        <span className="text-[#1B1716] text-xs font-bold truncate pr-4">{report.idea.title}</span>
+                        <span className="text-[#1B1716] text-xs font-bold truncate pr-2">{report.idea.title}</span>
                       </div>
                       <div className="h-4 bg-[#1B1716]/5 rounded-full overflow-hidden flex">
                         <div

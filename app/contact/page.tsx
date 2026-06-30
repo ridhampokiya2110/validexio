@@ -35,7 +35,7 @@ export default function ContactPage() {
     <div className="min-h-screen bg-[#FDFCF8] text-[#1B1716] font-sans selection:bg-cherry/40 selection:text-[#1B1716] flex flex-col">
       <Navbar />
       
-      <main className="flex-1 pt-32 pb-20">
+      <main className="flex-1 pt-24 sm:pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
           <div className="text-center mb-16 relative">
@@ -48,7 +48,7 @@ export default function ContactPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 max-w-5xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12 max-w-5xl mx-auto relative z-10">
             {/* Contact Info */}
             <div className="lg:col-span-1 space-y-8">
               <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl">
@@ -71,7 +71,7 @@ export default function ContactPage() {
             </div>
 
             {/* Contact Form */}
-            <div className="lg:col-span-2 bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 sm:p-10 rounded-2xl">
+            <div className="lg:col-span-2 bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-5 sm:p-10 rounded-2xl">
               {status === "success" ? (
                 <div className="h-full flex flex-col items-center justify-center text-center py-12">
                   <div className="w-16 h-16 bg-emerald-500/20 text-emerald-600 rounded-full flex items-center justify-center mb-6">
@@ -98,7 +98,7 @@ export default function ContactPage() {
                         type="text" 
                         value={formData.firstName}
                         onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-                        className="w-full bg-[#FDFCF8] border border-[#1B1716]/10 rounded-xl px-4 py-3 text-[#1B1716] placeholder:text-[#1B1716]/30 focus:outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry"
+                        className="w-full min-w-0 bg-[#FDFCF8] border border-[#1B1716]/10 rounded-xl px-4 py-3 text-[#1B1716] placeholder:text-[#1B1716]/30 focus:outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry"
                         placeholder="John"
                       />
                     </div>
@@ -109,7 +109,7 @@ export default function ContactPage() {
                         type="text" 
                         value={formData.lastName}
                         onChange={(e) => setFormData({...formData, lastName: e.target.value})}
-                        className="w-full bg-[#FDFCF8] border border-[#1B1716]/10 rounded-xl px-4 py-3 text-[#1B1716] placeholder:text-[#1B1716]/30 focus:outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry"
+                        className="w-full min-w-0 bg-[#FDFCF8] border border-[#1B1716]/10 rounded-xl px-4 py-3 text-[#1B1716] placeholder:text-[#1B1716]/30 focus:outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry"
                         placeholder="Doe"
                       />
                     </div>
@@ -122,7 +122,7 @@ export default function ContactPage() {
                       type="email" 
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      className="w-full bg-[#FDFCF8] border border-[#1B1716]/10 rounded-xl px-4 py-3 text-[#1B1716] placeholder:text-[#1B1716]/30 focus:outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry"
+                      className="w-full min-w-0 bg-[#FDFCF8] border border-[#1B1716]/10 rounded-xl px-4 py-3 text-[#1B1716] placeholder:text-[#1B1716]/30 focus:outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry"
                       placeholder="john@example.com"
                     />
                   </div>
