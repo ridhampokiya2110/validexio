@@ -22,7 +22,16 @@ export default function AboutLayout({ children }: { children: React.ReactNode })
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: `{
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://validexio.com/about"
+  },
+  "name": "About Validexio",
+  "description": "Learn about Validexio, the ultimate reality check for startup founders."
+}` }}
       />
       {children}
     </>

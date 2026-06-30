@@ -52,7 +52,7 @@ export default function ExecutionEnginePage() {
           <p className="text-[#FFEDAB] text-lg md:text-xl font-medium leading-relaxed max-w-2xl mx-auto mb-10">
             Academic validation tools end with a 15-page PDF citing SEC filings. Validexio ends with a repository you can deploy and a lead list you can email today. Execution &gt; Observation.
           </p>
-          <Link 
+          <Link aria-label="Navigation link" 
             href="/dashboard/validate"
             className="inline-block bg-[#FDFCF8] text-[#1B1716] font-black uppercase tracking-widest px-8 py-4 border border-[#1B1716] hover:translate-y-[2px] hover:translate-x-[2px] hover:shadow-none shadow-[4px_4px_0px_#1B1716] transition-all"
           >

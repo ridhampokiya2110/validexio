@@ -104,7 +104,7 @@ export default function ReportClient({ session }: ReportClientProps) {
         </div>
         <h2 className="text-2xl font-black text-[#1B1716] mb-2">Generation Failed</h2>
         <p className="text-[#1B1716]/60 font-medium max-w-md mb-6">{error}</p>
-        <button onClick={() => window.location.reload()} className="bg-[#1B1716] text-[#FFEDAB] px-6 py-2 rounded font-bold">Try Again</button>
+        <button aria-label="Button action" type="button" onClick={() => window.location.reload()} className="bg-[#1B1716] text-[#FFEDAB] px-6 py-2 rounded font-bold">Try Again</button>
       </main>
     );
   }
@@ -120,7 +120,7 @@ export default function ReportClient({ session }: ReportClientProps) {
           </div>
           
           <div className="flex bg-[#FDFCF8] border border-[#75070C]/30 rounded-lg p-1">
-            <button
+            <button aria-label="Button action" type="button"
               onClick={() => setActiveTab("founder")}
               className={`px-6 py-2 rounded-md font-bold text-sm flex items-center gap-2 transition-all ${
                 activeTab === "founder" ? "bg-[#630102] text-[#EDEBDE] shadow-md" : "text-[#1B1716]/60 hover:text-[#1B1716]"
@@ -128,7 +128,7 @@ export default function ReportClient({ session }: ReportClientProps) {
             >
               <Briefcase className="w-4 h-4" /> Business Founder
             </button>
-            <button
+            <button aria-label="Button action" type="button"
               onClick={() => setActiveTab("builder")}
               className={`px-6 py-2 rounded-md font-bold text-sm flex items-center gap-2 transition-all ${
                 activeTab === "builder" ? "bg-[#630102] text-[#EDEBDE] shadow-md" : "text-[#1B1716]/60 hover:text-[#1B1716]"
@@ -159,7 +159,7 @@ export default function ReportClient({ session }: ReportClientProps) {
               >
                 <div className="flex justify-between items-center no-print">
                   <h2 className="text-2xl font-black text-[#75070C]">15-Section Analytical Evaluation</h2>
-                  <button 
+                  <button aria-label="Button action" type="button" 
                     onClick={handleDownload}
                     className="bg-[#FFEDAB] text-[#1B1716] font-bold px-6 py-3 rounded shadow hover:bg-[#ffe175] transition-colors flex items-center gap-2 border border-[#1B1716]/20"
                   >
@@ -184,7 +184,7 @@ export default function ReportClient({ session }: ReportClientProps) {
                         { label: "Profit Margin", value: localMarketOverview.profitMargin },
                         { label: "Growth Trend", value: localMarketOverview.growthTrend },
                       ].map((stat, i) => (
-                        <div key={i} className="bg-[#1B1716]/5 p-4 rounded-xl border border-[#1B1716]/10">
+                        <div key={`item-${i}`} className="bg-[#1B1716]/5 p-4 rounded-xl border border-[#1B1716]/10">
                           <p className="text-xs font-bold text-[#1B1716]/60 uppercase tracking-wider mb-1">{stat.label}</p>
                           <p className="text-lg font-black text-[#75070C]">{stat.value}</p>
                         </div>
@@ -199,7 +199,7 @@ export default function ReportClient({ session }: ReportClientProps) {
                           <p className="text-sm font-medium mb-6 leading-relaxed opacity-90">{opportunityComparison.reasoning}</p>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {opportunityComparison.metrics?.map((m: any, i: number) => (
-                              <div key={i} className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
+                              <div key={`item-${i}`} className="flex items-center justify-between bg-white/5 p-3 rounded-lg border border-white/10">
                                 <span className="text-xs font-bold uppercase tracking-wider opacity-70">{m.metricName}</span>
                                 <div className="flex flex-col items-end">
                                   <span className="text-xs line-through opacity-50">{m.currentValue} ({opportunityComparison.currentRegion})</span>
@@ -214,7 +214,7 @@ export default function ReportClient({ session }: ReportClientProps) {
                   </div>
 
                   {businessSections.map((section, idx) => (
-                    <div key={idx} className="bg-white border border-[#1B1716]/10 p-8 rounded-xl shadow-sm">
+                    <div key={`item-${idx}`} className="bg-white border border-[#1B1716]/10 p-8 rounded-xl shadow-sm">
                       <h3 className="text-xl font-bold text-[#1B1716] mb-4 border-b border-[#75070C]/20 pb-2">
                         {idx + 1}. {section.title}
                       </h3>

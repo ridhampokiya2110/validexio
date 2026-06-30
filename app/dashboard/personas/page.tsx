@@ -76,17 +76,17 @@ export default async function PersonasPage() {
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
                   {personas.map((persona, i) => (
                     <div 
-                      key={i} 
+                      key={`item-${i}`} 
                       className="bg-white rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 border border-gray-100 flex flex-col h-full"
                     >
                       {/* Persona Header */}
                       <div className="flex items-center gap-4 mb-8">
-                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100/50 flex items-center justify-center border border-indigo-100/50">
+                        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-50 to-indigo-100/50 flex items-center justify-center border border-indigo-100/50 flex-shrink-0">
                           <span className="text-2xl font-semibold text-indigo-600">{persona.name[0]}</span>
                         </div>
-                        <div>
-                          <h3 className="text-gray-900 font-bold text-xl tracking-tight">{persona.name}</h3>
-                          <p className="text-indigo-600 text-sm font-medium">{persona.title}</p>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="text-gray-900 font-bold text-xl tracking-tight truncate">{persona.name}</h3>
+                          <p className="text-indigo-600 text-sm font-medium truncate">{persona.title}</p>
                         </div>
                       </div>
 

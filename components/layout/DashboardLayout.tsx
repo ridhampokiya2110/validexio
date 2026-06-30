@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
@@ -25,7 +26,8 @@ import {
   Rocket,
   LifeBuoy,
   ChevronLeft,
-  FileDown
+  FileDown,
+  RefreshCw
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { NotificationsDropdown } from "./NotificationsDropdown";
@@ -82,11 +84,11 @@ function SidebarContent({ user, onClose }: SidebarProps) {
     <div className="flex flex-col h-full">
       {/* Logo */}
       <div className="flex items-center justify-center px-4 py-5 border-b border-[#1B1716]/8 relative">
-        <Link href="/" className="flex items-center justify-center" onClick={onClose}>
-          <img src="/logo-primary-noir.png" alt="Validexio" className="h-10 w-auto object-contain" />
+        <Link aria-label="Navigation link" href="/" className="flex items-center justify-center" onClick={onClose}>
+          <Image src="/logo-primary-noir.png" alt="Validexio" width={160} height={40} className="h-10 w-auto object-contain" />
         </Link>
         {onClose && (
-          <button onClick={onClose} className="absolute right-4 p-1 rounded-lg hover:bg-[#1B1716]/10 text-[#1B1716]/50 lg:hidden">
+          <button aria-label="Button action" type="button" onClick={onClose} className="absolute right-4 p-1 rounded-lg hover:bg-[#1B1716]/10 text-[#1B1716]/50 lg:hidden">
             <X className="w-4 h-4" />
           </button>
         )}
@@ -94,7 +96,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
 
       {/* New Validation CTA */}
       <div className="px-3 py-3">
-        <Link
+        <Link aria-label="Navigation link"
           href="/dashboard/validate"
           onClick={onClose}
           className="btn-primary w-full justify-center text-sm py-2.5 gap-2"
@@ -119,7 +121,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
                     : pathname.startsWith(item.href);
 
                 return (
-                  <Link
+                  <Link aria-label="Navigation link"
                     key={item.href}
                     href={item.href}
                     onClick={onClose}
@@ -147,7 +149,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
             {user?.tier === "PRO" ? "Pro Plan" : user?.tier === "TEAM" ? "Team Plan" : "Free Plan"}
           </span>
           {(user?.tier === "FREE" || !user?.tier) && (
-            <Link
+            <Link aria-label="Navigation link"
               href="/dashboard/billing"
               className="text-xs text-[#630102] hover:text-[#75070C] font-bold transition-colors"
               onClick={onClose}
@@ -170,7 +172,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
             </p>
             <p className="text-[#6B7280] text-xs truncate font-medium">{user?.email}</p>
           </div>
-          <button
+          <button aria-label="Button action" type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
             className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-50 text-[#6B7280] hover:text-red-600"
             title="Sign out"
@@ -191,7 +193,28 @@ export default function DashboardLayout({
   user?: SidebarProps["user"];
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [needsRefresh, setNeedsRefresh] = useState(false);
   const pathname = usePathname();
+
+  useEffect(() => {
+    if (!user) return;
+    
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch("/api/v1/auth/sync");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.tier !== user.tier || data.availableCredits !== user.availableCredits) {
+            setNeedsRefresh(true);
+          }
+        }
+      } catch (err) {
+        // silently ignore fetch errors
+      }
+    }, 15000); // Poll every 15 seconds
+    
+    return () => clearInterval(interval);
+  }, [user?.tier, user?.availableCredits]);
 
   // Bypass the standard sidebar layout if we are viewing a specific report
   // The route matches /dashboard/reports/[id] where [id] is present
@@ -223,11 +246,26 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden">
+        {needsRefresh && (
+          <div className="bg-[#1B1716] text-[#FDFCF8] px-4 py-3 flex items-center justify-between text-sm font-semibold z-50 flex-shrink-0">
+            <div className="flex items-center gap-2">
+              <RefreshCw className="w-4 h-4 animate-[spin_3s_linear_infinite]" />
+              <span>Your plan or credits have been updated by an admin.</span>
+            </div>
+            <button aria-label="Button action" type="button" 
+              onClick={() => window.location.reload()}
+              className="bg-white text-[#1B1716] px-3 py-1.5 rounded-md text-xs font-bold hover:bg-gray-100 transition-colors whitespace-nowrap"
+            >
+              Refresh Now
+            </button>
+          </div>
+        )}
+        
         {/* Top Bar */}
         <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#1B1716]/8 glass-dark flex-shrink-0">
           <div className="flex items-center gap-3">
             {/* Mobile menu button */}
-            <button
+            <button aria-label="Button action" type="button"
               onClick={() => setSidebarOpen(true)}
               className="lg:hidden p-2 rounded-lg hover:bg-[#1B1716]/10 text-[#1B1716]/60"
             >
@@ -240,7 +278,7 @@ export default function DashboardLayout({
 
           <div className="flex items-center gap-2 sm:gap-3">
             {/* Credits Badge */}
-            <Link
+            <Link aria-label="Navigation link"
               href="/dashboard/billing"
               className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cherry/10 border border-cherry/20 hover:bg-cherry/20 transition-colors"
             >

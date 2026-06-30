@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Calendar, BookOpen, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import DOMPurify from 'isomorphic-dompurify';
 
 // Mock data matching the blog index
 const posts = [
@@ -124,7 +125,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
       <main className="flex-1 pt-32 pb-24">
         <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          <Link href="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-[#1B1716]/50 hover:text-cherry transition-colors mb-12">
+          <Link aria-label="Navigation link" href="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-[#1B1716]/50 hover:text-cherry transition-colors mb-12">
             <ArrowLeft className="w-4 h-4" />
             Back to Insights
           </Link>
@@ -159,7 +160,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
           <div 
             className="prose prose-lg max-w-none prose-headings:font-black prose-headings:text-[#1B1716] prose-p:text-[#1B1716]/80 prose-p:leading-relaxed prose-a:text-cherry hover:prose-a:text-[#910505] prose-strong:text-[#1B1716] prose-li:text-[#1B1716]/80"
-            dangerouslySetInnerHTML={{ __html: post.content }}
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
 
           <div className="mt-20 pt-10 border-t border-[#1B1716]/10">
@@ -169,7 +170,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
               <p className="text-[#EDEBDE]/80 mb-8 max-w-lg mx-auto relative z-10">
                 Don't become another statistic. Get a comprehensive breakdown of your startup idea's viability in 60 seconds.
               </p>
-              <Link href="/dashboard" className="inline-block bg-cherry hover:bg-[#910505] text-white font-bold py-3 px-8 rounded-lg transition-colors relative z-10">
+              <Link aria-label="Navigation link" href="/dashboard" className="inline-block bg-cherry hover:bg-[#910505] text-white font-bold py-3 px-8 rounded-lg transition-colors relative z-10">
                 Validate Your Idea
               </Link>
             </div>

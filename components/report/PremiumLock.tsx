@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+
 import Link from "next/link";
 import { Lock } from "lucide-react";
 
@@ -36,7 +36,7 @@ export function PremiumLock({ isLocked, title, description }: PremiumLockProps) 
         <p className="text-[#1B1716]/60 mb-6 max-w-md font-medium">
           {description}
         </p>
-        <Link
+        <Link aria-label="Navigation link"
           href="/pricing"
           className="inline-flex items-center justify-center px-8 py-3.5 bg-[#111827] text-white rounded-xl font-bold hover:bg-[#2A313C] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5"
         >

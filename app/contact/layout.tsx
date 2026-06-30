@@ -22,7 +22,16 @@ export default function ContactLayout({ children }: { children: React.ReactNode 
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: `{
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://validexio.com/contact"
+  },
+  "name": "Contact Validexio",
+  "description": "Get in touch with the Validexio team."
+}` }}
       />
       {children}
     </>

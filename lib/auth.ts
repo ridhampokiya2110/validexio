@@ -225,7 +225,7 @@ const nextAuthResult = NextAuth({
           const reqHeaders = await headers();
           const userAgent = reqHeaders.get("user-agent") || "Unknown Browser";
           
-          let ipAddress = 
+          const ipAddress = 
             reqHeaders.get("x-forwarded-for")?.split(",")[0] || 
             reqHeaders.get("x-real-ip") || 
             "Unknown IP";

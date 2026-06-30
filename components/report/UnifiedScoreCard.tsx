@@ -58,7 +58,7 @@ export function UnifiedScoreCard({ score, report }: UnifiedScoreCardProps) {
             strokeDasharray={strokeDasharray}
             strokeLinecap="round"
             transform={`rotate(-90 ${size / 2} ${size / 2})`}
-            style={{ transition: "stroke-dasharray 1.5s ease-out" }}
+            style={{ transition: "stroke-dasharray 0.8s ease-out" }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center z-20">

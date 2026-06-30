@@ -70,7 +70,7 @@ export function CompetitorComparison() {
           <div className="flex flex-col gap-2 sm:gap-3">
             {features.map((feature, idx) => (
               <div
-                key={idx}
+                key={`item-${idx}`}
                 className="grid grid-cols-12 gap-2 sm:gap-4 items-center bg-white border border-[#1B1716]/5 rounded-xl p-3 sm:p-5 hover:border-[#1B1716]/15 hover:-translate-y-0.5 transition-all duration-300 group shadow-sm"
               >
                 <div className="col-span-6 sm:col-span-4 pl-1 sm:pl-4">
@@ -101,7 +101,7 @@ export function CompetitorComparison() {
           </div>
 
           <div className="mt-6 sm:mt-8 text-center flex justify-center">
-            <Link href="/compare" className="inline-flex items-center text-xs sm:text-sm font-bold text-[#75070C] hover:text-[#810100] transition-colors px-4">
+            <Link aria-label="Navigation link" href="/compare" className="inline-flex items-center text-xs sm:text-sm font-bold text-[#75070C] hover:text-[#810100] transition-colors px-4">
               See how we compare against the market <ArrowRight className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
             </Link>
           </div>

@@ -34,7 +34,7 @@ async function PremiumExecutionContent({ userId }: { userId: string }) {
           <h1 className="text-2xl sm:text-3xl font-bold text-[#1B1716] mb-1">Premium Blueprint (PDF)</h1>
           <p className="text-[#1B1716]/50 text-sm">Access your deeply technical, single-pass analytical execution documents.</p>
         </div>
-        <Link href="/dashboard/validate" className="btn-primary text-sm px-4 py-2.5 whitespace-nowrap">
+        <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm px-4 py-2.5 whitespace-nowrap">
           <Plus className="w-4 h-4 mr-1" />
           New Idea
         </Link>
@@ -47,7 +47,7 @@ async function PremiumExecutionContent({ userId }: { userId: string }) {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No validations yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea first to generate your premium blueprint.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">
             Validate Your First Idea
           </Link>
         </div>
@@ -81,7 +81,7 @@ async function PremiumExecutionContent({ userId }: { userId: string }) {
                     </span>
                   ) : (
                     <div className="flex flex-col items-end gap-2">
-                      <Link 
+                      <Link aria-label="Navigation link" 
                         href={`/report/${session.id}`} 
                         className="bg-[#1B1716] text-[#FFEDAB] hover:bg-[#630102] hover:text-[#FDFCF8] transition-colors font-bold text-sm px-5 py-2.5 rounded-lg flex items-center gap-2 shadow-sm"
                       >

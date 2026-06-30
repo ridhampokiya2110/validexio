@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -178,9 +179,9 @@ function AuthPageContent() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <div className="flex flex-col items-center justify-center text-center w-full mb-10">
-            <Link href="/" className="inline-block mb-5 relative group mx-auto">
+            <Link aria-label="Navigation link" href="/" className="inline-block mb-5 relative group mx-auto">
               <div className="absolute inset-0 bg-gradient-to-b from-[#75070C]/10 to-transparent rounded-full blur-xl group-hover:bg-[#75070C]/20 transition-all duration-500"></div>
-              <img src="/logo-icon-noir.png" alt="Validexio" className="w-24 h-24 object-contain relative z-10 drop-shadow-md group-hover:scale-105 transition-transform duration-500" />
+              <Image src="/logo-icon-noir.png" alt="Validexio" width={96} height={96} className="w-24 h-24 object-contain relative z-10 drop-shadow-md group-hover:scale-105 transition-transform duration-500" />
             </Link>
             <h2 className="text-3xl font-black uppercase tracking-[0.25em] text-[#1B1716] drop-shadow-sm">
               Validexio
@@ -201,13 +202,13 @@ function AuthPageContent() {
 
             {/* Toggle Tabs */}
             <div className="flex border-b border-[#1B1716]/10 mb-8">
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => { setActiveTab("signin"); setErrors({}); }}
                 className={`flex-1 pb-3 text-sm font-bold transition-colors border-b-2 ${activeTab === "signin" ? "border-[#75070C] text-[#75070C]" : "border-transparent text-[#1B1716]/40 hover:text-[#1B1716]"}`}
               >
                 Sign In
               </button>
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => { setActiveTab("signup"); setErrors({}); }}
                 className={`flex-1 pb-3 text-sm font-bold transition-colors border-b-2 ${activeTab === "signup" ? "border-[#75070C] text-[#75070C]" : "border-transparent text-[#1B1716]/40 hover:text-[#1B1716]"}`}
               >
@@ -298,7 +299,7 @@ function AuthPageContent() {
                     Password
                   </label>
                   {activeTab === "signin" && (
-                    <Link href="/forgot-password" className="text-xs text-[#75070C]/80 hover:text-[#75070C] font-semibold transition-colors">
+                    <Link aria-label="Navigation link" href="/forgot-password" className="text-xs text-[#75070C]/80 hover:text-[#75070C] font-semibold transition-colors">
                       Forgot Password?
                     </Link>
                   )}
@@ -311,7 +312,7 @@ function AuthPageContent() {
                     className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.password ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium pr-10`}
                     placeholder="••••••••"
                   />
-                  <button
+                  <button aria-label="Button action"
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#1B1716]/40 hover:text-[#1B1716]/70 transition-colors"
@@ -338,7 +339,7 @@ function AuthPageContent() {
                 </div>
               )}
 
-              <button
+              <button aria-label="Button action"
                 type="submit"
                 disabled={loading || (show2FA && code.length !== 6)}
                 className="w-full py-3.5 mt-4 bg-[#75070C] hover:bg-[#810100] text-white font-bold rounded-lg transition-all duration-200 shadow-[0_4px_12px_rgba(117,7,12,0.2)] hover:shadow-[0_6px_16px_rgba(117,7,12,0.3)] hover:-translate-y-0.5 disabled:opacity-70 disabled:hover:translate-y-0 flex justify-center items-center gap-2"
@@ -357,7 +358,7 @@ function AuthPageContent() {
               <div className="flex-1 h-px bg-[#1B1716]/10" />
             </div>
 
-            <button
+            <button aria-label="Button action" type="button"
               onClick={() => handleSocialLogin("google")}
               disabled={loadingProvider === "google"}
               className="w-full py-3 bg-white border border-[#1B1716]/10 hover:bg-[#FDFCF8] text-[#1B1716] font-bold rounded-lg transition-colors flex justify-center items-center gap-3 disabled:opacity-70 shadow-sm"

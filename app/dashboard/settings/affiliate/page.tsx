@@ -9,7 +9,7 @@ export default function AffiliatePortalPage() {
       {/* HEADER */}
       <header className="sticky top-0 z-40 h-16 flex items-center px-6 bg-[#FDFCF8]/80 backdrop-blur-md border-b border-[#1B1716]/5">
         <div className="flex-1 flex items-center gap-4 max-w-7xl mx-auto w-full">
-          <Link href="/dashboard/settings" className="w-9 h-9 rounded-xl hover:bg-[#1B1716]/5 flex items-center justify-center transition-colors">
+          <Link aria-label="Navigation link" href="/dashboard/settings" className="w-9 h-9 rounded-xl hover:bg-[#1B1716]/5 flex items-center justify-center transition-colors">
             <ChevronLeft className="w-5 h-5 text-[#1B1716]/80" />
           </Link>
           <span className="font-semibold text-[15px] text-[#1B1716] tracking-tight">Partner & Affiliate Portal</span>
@@ -38,7 +38,7 @@ export default function AffiliatePortalPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <a 
+                <a aria-label="Link action" 
                   href="https://validexio.lemonsqueezy.com/affiliates" 
                   target="_blank" 
                   rel="noreferrer"
@@ -113,7 +113,7 @@ export default function AffiliatePortalPage() {
                 { step: "2", title: "Get Your Link", desc: "Instantly generate your unique tracking URL and discount code." },
                 { step: "3", title: "Share & Earn", desc: "Share with your network and track your real-time earnings." }
               ].map((item, i) => (
-                <div key={i} className="flex flex-col items-center text-center relative z-10 mb-8 md:mb-0 max-w-[240px] mx-auto">
+                <div key={`item-${i}`} className="flex flex-col items-center text-center relative z-10 mb-8 md:mb-0 max-w-[240px] mx-auto">
                   <div className="w-12 h-12 rounded-full bg-white border-2 border-cherry text-cherry font-black text-lg flex items-center justify-center mb-4 shadow-sm shadow-cherry/10">
                     {item.step}
                   </div>

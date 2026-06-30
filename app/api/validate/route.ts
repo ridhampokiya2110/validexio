@@ -45,18 +45,14 @@ export async function POST(req: NextRequest) {
     }
 
     // Check usage limits and credits
-    const isUnlimited = user.tier === "PRO" || user.tier === "TEAM";
-
-    if (!isUnlimited) {
-      if (user.availableCredits <= 0) {
-        return NextResponse.json(
-          {
-            error: "INSUFFICIENT_CREDITS",
-            message: "You have 0 credits remaining. Please upgrade or purchase more credits to validate this idea.",
-          },
-          { status: 402 }
-        );
-      }
+    if (user.availableCredits <= 0) {
+      return NextResponse.json(
+        {
+          error: "INSUFFICIENT_CREDITS",
+          message: "You have 0 credits remaining. Please upgrade or purchase more credits to validate this idea.",
+        },
+        { status: 402 }
+      );
     }
 
     // Parse and validate input
@@ -123,12 +119,10 @@ export async function POST(req: NextRequest) {
     });
 
     // Deduct credit
-    if (!isUnlimited) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { availableCredits: { decrement: 1 } },
-      });
-    }
+    await prisma.user.update({
+      where: { id: userId },
+      data: { availableCredits: { decrement: 1 } },
+    });
 
     // Instead of synchronously analyzing the idea here (which takes 15s and breaks the flow),
     // we return the idea ID instantly. The frontend will redirect to the Generating page,

@@ -112,7 +112,7 @@ export default function SettingsPage() {
       {/* HEADER */}
       <header className="glass-nav sticky top-0 z-40 h-16 flex items-center px-6">
         <div className="flex-1 flex items-center gap-4">
-          <Link href="/dashboard" className="w-8 h-8 rounded-lg hover:bg-[#1B1716]/5 flex items-center justify-center transition-colors">
+          <Link aria-label="Navigation link" href="/dashboard" className="w-8 h-8 rounded-lg hover:bg-[#1B1716]/5 flex items-center justify-center transition-colors">
             <ChevronLeft className="w-5 h-5 text-[#1B1716]" />
           </Link>
           <span className="font-bold text-lg text-[#1B1716] tracking-tight">Settings</span>
@@ -129,7 +129,7 @@ export default function SettingsPage() {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
               return (
-                <button
+                <button aria-label="Button action" type="button"
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold transition-all whitespace-nowrap rounded-lg ${
@@ -145,7 +145,7 @@ export default function SettingsPage() {
             })}
             {profile && ["PRO", "TEAM", "ENTERPRISE"].includes(profile.tier) && (
               <div className="md:mt-8 md:pt-4 md:border-t border-[#1B1716]/10 ml-auto md:ml-0 flex items-center">
-                <Link href="/dashboard/settings/affiliate" className="text-xs font-semibold text-[#1B1716]/70 hover:text-cherry transition-colors flex items-center px-4 py-3 md:py-0 whitespace-nowrap">
+                <Link aria-label="Navigation link" href="/dashboard/settings/affiliate" className="text-xs font-semibold text-[#1B1716]/70 hover:text-cherry transition-colors flex items-center px-4 py-3 md:py-0 whitespace-nowrap">
                   Partner Program
                 </Link>
               </div>
@@ -215,7 +215,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
 
-                  <button
+                  <button aria-label="Button action" type="button"
                     onClick={handlePortalRedirect}
                     disabled={actionLoading === "portal"}
                     className="btn-primary w-full"
@@ -249,7 +249,7 @@ export default function SettingsPage() {
                   </p>
 
                   {!showDeleteConfirm ? (
-                    <button
+                    <button aria-label="Button action" type="button"
                       onClick={() => setShowDeleteConfirm(true)}
                       className="px-6 py-2.5 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg font-semibold text-sm transition-colors"
                     >
@@ -271,7 +271,7 @@ export default function SettingsPage() {
                         placeholder="DELETE"
                       />
                       <div className="flex gap-3">
-                        <button
+                        <button aria-label="Button action" type="button"
                           onClick={handleDeleteAccount}
                           disabled={actionLoading === "delete" || deleteConfirmText !== "DELETE"}
                           className="flex-1 py-2.5 bg-red-600 text-white rounded-lg font-semibold text-sm hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
@@ -282,7 +282,7 @@ export default function SettingsPage() {
                             "Execute Purge"
                           )}
                         </button>
-                        <button
+                        <button aria-label="Button action" type="button"
                           onClick={() => {
                             setShowDeleteConfirm(false);
                             setDeleteConfirmText("");

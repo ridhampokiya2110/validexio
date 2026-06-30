@@ -87,12 +87,12 @@ function HeroSection() {
 
         {/* CTA Group */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in delay-300">
-          <Link href="/register" className="btn-primary text-base px-8 py-3.5 w-full sm:w-auto">
+          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-8 py-3.5 w-full sm:w-auto">
             <Rocket className="w-5 h-5 mr-2" />
             Validate My Idea Now
             <ArrowRight className="w-4 h-4 ml-2" />
           </Link>
-          <button className="btn-ghost text-base px-8 py-3.5 w-full sm:w-auto gap-2">
+          <button aria-label="Button action" type="button" className="btn-ghost text-base px-8 py-3.5 w-full sm:w-auto gap-2">
             <Play className="w-4 h-4 fill-current" />
             Watch Demo
           </button>
@@ -105,7 +105,7 @@ function HeroSection() {
             "Free tier available",
             "Results in under 60 seconds",
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-2">
+            <div key={`item-${i}`} className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" />
               <span>{item}</span>
             </div>
@@ -356,7 +356,7 @@ function HeroSection() {
                  { Icon: FaLinkedin, color: "text-[#0A66C2]" },
                  { Icon: SiX, color: "text-[#1B1716]" },
                ].map((source, i) => (
-                 <div key={i} className="w-6 h-6 rounded-[8px] bg-[#F8F9FA] border border-[#1B1716]/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center transition-transform hover:scale-110 cursor-default">
+                 <div key={`item-${i}`} className="w-6 h-6 rounded-[8px] bg-[#F8F9FA] border border-[#1B1716]/5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center transition-transform hover:scale-110 cursor-default">
                    <source.Icon className={`w-3 h-3 ${source.color}`} />
                  </div>
                ))}
@@ -687,7 +687,7 @@ const homePlans = [
       "5 Verified Target B2B Leads",
       "2 High-Fidelity UI Mockups",
       "Lifetime access to the report",
-      "Export to Notion / PDF",
+      "Export to PDF",
       "Investor Simulator (All Personas, 10 QA Rounds)"
     ],
     cta: "Unlock Execution Pro",
@@ -706,7 +706,7 @@ const homePlans = [
       "Up to 7 Direct Competitors Analyzed",
       "8 Verified Target B2B Leads",
       "Export to PDF for Investors",
-      "Export directly to Notion Workspace",
+
       "Dedicated account support manager",
       "White-label branding options (Your Logo)",
       "Shared Team Workspace (Coming soon)",
@@ -756,7 +756,7 @@ function PricingCard({ plan, currency }: { plan: any; currency: string }) {
         ))}
       </ul>
 
-      <Link
+      <Link aria-label="Navigation link"
         href={plan.href}
         className={`mt-auto block text-center py-3.5 px-6 rounded-2xl font-semibold text-[15px] tracking-tight transition-all duration-700 overflow-hidden relative group/btn ${
           plan.featured
@@ -807,7 +807,7 @@ function PricingSection() {
 
         <div className="mt-16 text-center">
           <SecureCheckoutBadge />
-          <Link href="/pricing" className="btn-secondary px-8 py-3.5 inline-flex items-center gap-2 mt-4">
+          <Link aria-label="Navigation link" href="/pricing" className="btn-secondary px-8 py-3.5 inline-flex items-center gap-2 mt-4">
             View all 5 plans
             <ArrowRight className="w-4 h-4" />
           </Link>
@@ -1001,10 +1001,10 @@ function FAQSection() {
             const isOpen = openIndex === index;
             return (
               <div 
-                key={index} 
+                key={`item-${index}`} 
                 className={`bg-white border rounded-2xl overflow-hidden transition-all duration-300 ${isOpen ? 'border-[#630102]/20 shadow-[0_8px_30px_rgb(0,0,0,0.04)]' : 'border-[#1B1716]/5 hover:border-[#1B1716]/10'}`}
               >
-                <button
+                <button aria-label="Button action" type="button"
                   className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                 >
@@ -1062,7 +1062,7 @@ function CTASection() {
             Don&apos;t build in the dark. Get data-driven clarity in 60 seconds and
             start executing with confidence.
           </p>
-          <Link href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center w-full sm:w-auto text-center mx-auto">
+          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center w-full sm:w-auto text-center mx-auto">
             <Rocket className="w-5 h-5 mr-2 shrink-0" />
             <span>Start Validating for Free</span>
             <ArrowRight className="w-5 h-5 ml-2 shrink-0" />
@@ -1183,7 +1183,7 @@ function ValueAnchoringSection() {
                 "Early Adopter Psych & GTM Kit",
                 "Tech Architecture & Fake Door Code"
               ].map((feature, idx) => (
-                <li key={idx} className="flex justify-between items-center p-4 rounded-xl bg-white border border-cherry/10 shadow-sm hover:border-cherry/30 transition-colors">
+                <li key={`item-${idx}`} className="flex justify-between items-center p-4 rounded-xl bg-white border border-cherry/10 shadow-sm hover:border-cherry/30 transition-colors">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 className="w-5 h-5 text-cherry shrink-0" />
                     <span className="text-[#1B1716] font-semibold">{feature}</span>
@@ -1304,7 +1304,7 @@ export default function LandingPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
+          __html: `{
             "@context": "https://schema.org",
             "@type": "WebSite",
             "name": "Validexio",
@@ -1314,7 +1314,7 @@ export default function LandingPage() {
               "target": "https://validexio.com/search?q={search_term_string}",
               "query-input": "required name=search_term_string"
             }
-          })
+          }`
         }}
       />
       <Navbar />

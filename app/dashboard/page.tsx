@@ -113,7 +113,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
             Review your startup intelligence and validate new concepts with algorithmic precision.
           </p>
         </div>
-        <Link href="/dashboard/validate" className="relative group overflow-hidden rounded-xl shadow-[0_8px_20px_rgba(117,7,12,0.2)] hover:shadow-[0_12px_25px_rgba(117,7,12,0.3)] transition-all duration-500 hover:-translate-y-0.5 self-start sm:self-auto">
+        <Link aria-label="Navigation link" href="/dashboard/validate" className="relative group overflow-hidden rounded-xl shadow-[0_8px_20px_rgba(117,7,12,0.2)] hover:shadow-[0_12px_25px_rgba(117,7,12,0.3)] transition-all duration-500 hover:-translate-y-0.5 self-start sm:self-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-[#75070C] to-[#910505] transition-transform duration-500 group-hover:scale-[1.02]"></div>
           <div className="relative flex items-center justify-center gap-3 px-8 py-4 bg-transparent text-white font-bold tracking-wide">
             <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -132,7 +132,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
             <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#1B1716]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`}></div>
             
             <div className="flex items-start sm:items-center justify-between mb-4 sm:mb-8">
-              <p className="text-[#1B1716]/50 text-[10px] font-bold uppercase tracking-widest leading-tight pr-1">{stat.label}</p>
+              <p className="text-[#1B1716]/50 text-[10px] font-bold uppercase tracking-widest leading-tight pr-1 flex-1 min-w-0 break-words">{stat.label}</p>
               <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white border border-[#1B1716]/5 shadow-sm flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6 flex-shrink-0`}>
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
               </div>
@@ -155,7 +155,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
         <div className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-[#1B1716] tracking-tight">Recent Intelligence</h2>
-            <Link href="/dashboard/reports" className="text-xs font-bold text-cherry/70 hover:text-cherry flex items-center gap-1 transition-colors">
+            <Link aria-label="Navigation link" href="/dashboard/reports" className="text-xs font-bold text-cherry/70 hover:text-cherry flex items-center gap-1 transition-colors">
               View all <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
@@ -169,7 +169,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
               <p className="text-[#1B1716]/60 text-sm mb-8 max-w-sm mx-auto leading-relaxed">
                 Validate your first startup idea to unlock deep market intelligence, competitor analysis, and targeted leads.
               </p>
-              <Link href="/dashboard/validate" className="btn-primary text-sm px-6">
+              <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm px-6">
                 <Rocket className="w-4 h-4 mr-2" />
                 Validate First Idea
               </Link>
@@ -177,7 +177,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
           ) : (
             <div className="grid gap-4">
               {recentReports.map((report) => (
-                <Link
+                <Link aria-label="Navigation link"
                   key={report.id}
                   href={`/dashboard/reports/${report.id}`}
                   className="glass-card p-6 flex items-center gap-6 hover:border-cherry/30 border-[#1B1716]/10 group transition-all duration-300 relative overflow-hidden"
@@ -288,7 +288,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
                   bg: "bg-slate-500/10",
                 },
               ].map((action) => (
-                <Link
+                <Link aria-label="Navigation link"
                   key={action.label}
                   href={action.href}
                   className="flex items-center gap-4 p-4 rounded-xl hover:bg-[#1B1716]/5 border border-transparent hover:border-[#1B1716]/10 transition-all duration-300 group"

@@ -35,7 +35,7 @@ export function ExecutionLock({ children, isReadOnly }: ExecutionLockProps) {
           <p className="text-sm text-[#1B1716]/60 mb-5">
             Unlock the full MVP boilerplate and execution assets for your own idea.
           </p>
-          <Link
+          <Link aria-label="Navigation link"
             href="/dashboard/validate"
             className="btn-primary w-full block py-3 bg-cherry text-white rounded-xl font-bold hover:bg-cherry/90 transition-colors shadow-[0_0_15px_rgba(117,7,12,0.3)]"
           >

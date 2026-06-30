@@ -26,7 +26,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
       
       {!isReadOnly && (
         <div className="max-w-[1600px] mx-auto mb-6">
-          <Link
+          <Link aria-label="Navigation link"
             href="/dashboard/reports"
             className="inline-flex items-center gap-1.5 text-[#1B1716]/50 hover:text-[#1B1716] text-sm font-semibold transition-colors uppercase tracking-widest"
           >
@@ -38,42 +38,13 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
       {/* Floating CTA */}
       <div className="fixed bottom-6 right-6 z-50">
         {!isReadOnly && (
-          <button
-            onClick={async () => {
-              if (isPdfLoading) return;
-              setIsPdfLoading(true);
-              try {
-                const resp = await fetch(`/api/v1/projects/${report.id}/export/pdf`);
-                if (!resp.ok) throw new Error('Failed');
-                const blob = await resp.blob();
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `validexio-report-${report.id.substring(0,6)}.pdf`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-              } catch (e) {
-                alert('PDF export failed. Please try again.');
-              } finally {
-                setIsPdfLoading(false);
-              }
+          <button aria-label="Button action" type="button"
+            onClick={() => {
+              window.open(`/api/v1/projects/${report.id}/export/pdf`, '_blank');
             }}
-            disabled={isPdfLoading}
-            className="bg-[#FFEDAB] text-[#1B1716] font-black px-6 py-3 rounded-lg shadow-2xl border border-[#1B1716] hover:bg-[#ffe175] transition-all flex items-center gap-2 uppercase tracking-tight text-sm disabled:opacity-70"
+            className="bg-[#FFEDAB] text-[#1B1716] font-black px-6 py-3 rounded-lg shadow-2xl border border-[#1B1716] hover:bg-[#ffe175] transition-all flex items-center gap-2 uppercase tracking-tight text-sm"
           >
-            {isPdfLoading ? (
-              <>
-                <svg className="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Generating...
-              </>
-            ) : (
-              <>Export Full PDF <FileText className="w-4 h-4" /></>  
-            )}
+            Export Full PDF <FileText className="w-4 h-4" />
           </button>
         )}
       </div>
@@ -135,7 +106,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                 </h3>
                 <ul className="space-y-2">
                   {swot.strengths.slice(0, 3).map((s: string, i: number) => (
-                    <li key={i} className="text-sm text-[#1B1716]/80 flex items-start gap-2">
+                    <li key={`item-${i}`} className="text-sm text-[#1B1716]/80 flex items-start gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
                       {s}
                     </li>
@@ -148,19 +119,19 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
           {/* CENTER PANE: Code & Execution */}
           <div className="col-span-1 lg:col-span-5 flex flex-col bg-[#1B1716] rounded-xl shadow-xl overflow-hidden border border-[#75070C]/30 lg:max-h-[calc(100vh-12rem)]">
             <div className="flex bg-[#2a2422] border-b border-[#75070C]/30 text-xs font-bold uppercase tracking-widest">
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => setActiveTab("code")}
                 className={`flex-1 py-4 flex items-center justify-center gap-2 transition-colors ${activeTab === "code" ? "bg-[#1B1716] text-[#FFEDAB] border-t-2 border-[#FFEDAB]" : "text-[#EDEBDE]/50 hover:bg-[#1B1716]/50 hover:text-[#EDEBDE]"}`}
               >
                 <Terminal className="w-4 h-4" /> MVP Code
               </button>
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => setActiveTab("plan")}
                 className={`flex-1 py-4 flex items-center justify-center gap-2 transition-colors ${activeTab === "plan" ? "bg-[#1B1716] text-[#FFEDAB] border-t-2 border-[#FFEDAB]" : "text-[#EDEBDE]/50 hover:bg-[#1B1716]/50 hover:text-[#EDEBDE]"}`}
               >
                 <Zap className="w-4 h-4" /> Action Plan
               </button>
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => setActiveTab("ui")}
                 className={`flex-1 py-4 flex items-center justify-center gap-2 transition-colors ${activeTab === "ui" ? "bg-[#1B1716] text-[#FFEDAB] border-t-2 border-[#FFEDAB]" : "text-[#EDEBDE]/50 hover:bg-[#1B1716]/50 hover:text-[#EDEBDE]"}`}
               >
@@ -198,7 +169,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                         <div>
                           <h4 className="text-[#FFEDAB] font-bold uppercase tracking-widest mb-3 border-b border-[#75070C]/30 pb-2">Phase 1: Zero to One (Days 0-30)</h4>
                           <ul className="space-y-2 text-[#EDEBDE]/80">
-                            {actionPlan.day30.map((item: string, i: number) => <li key={i}>[{i+1}] {item}</li>)}
+                            {actionPlan.day30.map((item: string, i: number) => <li key={`item-${i}`}>[{i+1}] {item}</li>)}
                           </ul>
                         </div>
                       )}
@@ -206,7 +177,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                         <div>
                           <h4 className="text-[#FFEDAB] font-bold uppercase tracking-widest mb-3 border-b border-[#75070C]/30 pb-2">Phase 2: Growth Engine (Days 31-60)</h4>
                           <ul className="space-y-2 text-[#EDEBDE]/80">
-                            {actionPlan.day60.map((item: string, i: number) => <li key={i}>[{i+1}] {item}</li>)}
+                            {actionPlan.day60.map((item: string, i: number) => <li key={`item-${i}`}>[{i+1}] {item}</li>)}
                           </ul>
                         </div>
                       )}
@@ -214,7 +185,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                         <div>
                           <h4 className="text-[#FFEDAB] font-bold uppercase tracking-widest mb-3 border-b border-[#75070C]/30 pb-2">Phase 3: Scale (Days 61-90)</h4>
                           <ul className="space-y-2 text-[#EDEBDE]/80">
-                            {actionPlan.day90.map((item: string, i: number) => <li key={i}>[{i+1}] {item}</li>)}
+                            {actionPlan.day90.map((item: string, i: number) => <li key={`item-${i}`}>[{i+1}] {item}</li>)}
                           </ul>
                         </div>
                       )}
@@ -236,7 +207,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                     ) : (
                       <div className="space-y-8">
                         {(report.uiMockupDescriptions as Array<{ screen: string; description: string; keyElements: string[]; userFlow: string }>).map((mockup, idx) => (
-                          <div key={idx} className="bg-[#2a2422] rounded-xl p-6 border border-[#75070C]/20 shadow-md relative overflow-hidden group">
+                          <div key={`item-${idx}`} className="bg-[#2a2422] rounded-xl p-6 border border-[#75070C]/20 shadow-md relative overflow-hidden group">
                             {/* Abstract Dark Wireframe graphic */}
                             <div className="absolute inset-0 bg-gradient-to-br from-[#1B1716] to-transparent opacity-50" />
                             
@@ -259,7 +230,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                                   <h4 className="text-[10px] font-black text-[#EDEBDE]/40 uppercase tracking-[0.2em] mb-3">Architecture & Elements</h4>
                                   <ul className="space-y-2">
                                     {mockup.keyElements.map((el, i) => (
-                                      <li key={i} className="flex items-start gap-2 text-sm font-mono text-[#EDEBDE]/70">
+                                      <li key={`item-${i}`} className="flex items-start gap-2 text-sm font-mono text-[#EDEBDE]/70">
                                         <span className="text-[#75070C] mt-0.5">↳</span> {el}
                                       </li>
                                     ))}
@@ -302,7 +273,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                   </thead>
                   <tbody>
                     {(acquisition.primaryChannels || []).map((channel: string, i: number) => (
-                      <tr key={i} className="border-b border-[#1B1716]/5 last:border-0">
+                      <tr key={`item-${i}`} className="border-b border-[#1B1716]/5 last:border-0">
                         <td className="p-2 font-medium text-[#1B1716] flex items-center gap-2">
                            <span className="w-1.5 h-1.5 rounded-full bg-cherry/50 flex-shrink-0" />
                            {channel}
@@ -337,7 +308,7 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
               </h3>
               <div className="space-y-4">
                 {(report.customerPersonas || []).slice(0, 2).map((persona: any, i: number) => (
-                   <div key={i} className="border border-[#75070C]/30 p-3 rounded">
+                   <div key={`item-${i}`} className="border border-[#75070C]/30 p-3 rounded">
                       <p className="text-[#FFEDAB] font-bold text-xs uppercase tracking-widest mb-1">{persona.name}</p>
                       <p className="text-[#EDEBDE]/60 text-xs mb-2">{persona.title} ({persona.age})</p>
                       <ul className="text-xs text-[#EDEBDE]/80 space-y-1 font-mono">

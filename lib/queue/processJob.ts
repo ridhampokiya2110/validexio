@@ -11,14 +11,15 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
   const { ideaId, userId } = data;
   console.log(`[Job ${jobId}] Processing generate job for Idea: ${ideaId}`);
 
-  const idea = await prisma.idea.findFirst({
-    where: { id: ideaId, userId },
-  });
-
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { tier: true },
-  });
+  const [idea, user] = await Promise.all([
+    prisma.idea.findFirst({
+      where: { id: ideaId, userId },
+    }),
+    prisma.user.findUnique({
+      where: { id: userId },
+      select: { tier: true },
+    })
+  ]);
 
   if (!idea) {
     throw new Error(`Idea not found: ${ideaId}`);
@@ -255,6 +256,13 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     return { success: true, ideaId };
   } catch (error) {
     console.error(`[Job ${jobId}] Failed:`, error);
+    
+    // Refund the credit on failure
+    await prisma.user.update({
+      where: { id: userId },
+      data: { availableCredits: { increment: 1 } },
+    }).catch(() => {});
+
     await prisma.idea.update({
       where: { id: idea.id },
       data: { status: "FAILED" },

@@ -40,7 +40,7 @@ export default async function BoilerplatePage() {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No code generated yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to get a customized code boilerplate.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
         </div>
       ) : (
         reports.map((r, i) => {
@@ -48,7 +48,7 @@ export default async function BoilerplatePage() {
           const bp = r.codeBoilerplate as any;
 
           return (
-            <div key={i} className="glass-card p-6 border border-[#1B1716]/10 mb-8">
+            <div key={`item-${i}`} className="glass-card p-6 border border-[#1B1716]/10 mb-8">
               <div className="flex items-center justify-between gap-3 mb-6 border-b border-[#1B1716]/10 pb-4">
                 <div className="flex items-center gap-3">
                   <TerminalSquare className="w-6 h-6 text-cherry" />
@@ -58,7 +58,7 @@ export default async function BoilerplatePage() {
                 {isPremium ? (
                   <BoilerplateDownloadButton reportId={r.id} ideaTitle={r.idea.title} />
                 ) : (
-                  <Link
+                  <Link aria-label="Navigation link"
                     href="/pricing"
                     className="flex items-center justify-center gap-2 bg-[#1B1716]/5 text-[#1B1716]/50 hover:bg-[#1B1716]/10 hover:text-[#1B1716]/70 transition-colors duration-200 text-sm font-semibold py-1.5 px-4 rounded-full border border-[#1B1716]/10"
                   >

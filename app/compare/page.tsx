@@ -40,7 +40,7 @@ export default function CompareHubPage() {
             const targetOutput = comp.targetOutputCompetitor;
             
             return (
-              <Link 
+              <Link aria-label="Navigation link" 
                 key={comp.id} 
                 href={`/compare/${comp.slug}`}
                 className="group glass-card p-6 flex flex-col hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#75070C]/20"
@@ -79,7 +79,7 @@ export default function CompareHubPage() {
           <p className="text-[#1B1716]/60 mb-8 max-w-2xl mx-auto">
             Get the code, the leads, and the architecture you need to launch your SaaS this weekend.
           </p>
-          <Link 
+          <Link aria-label="Navigation link" 
             href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder"
             className="btn-primary inline-flex items-center justify-center px-8 py-4 text-lg"
           >

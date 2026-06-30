@@ -8,20 +8,22 @@ export const metadata = { title: "Analytics" };
 
 const getCachedData = unstable_cache(
   async (userId: string) => {
-    const reports = await prisma.validationReport.findMany({
-      where: { userId },
-      select: {
-        validationScore: true,
-        marketOpportunity: true,
-        productMarketFit: true,
-        riskScore: true,
-        createdAt: true,
-        idea: { select: { industry: true, title: true } },
-      },
-      orderBy: { createdAt: "asc" },
-    });
+    const [reports, totalIdeas] = await Promise.all([
+      prisma.validationReport.findMany({
+        where: { userId },
+        select: {
+          validationScore: true,
+          marketOpportunity: true,
+          productMarketFit: true,
+          riskScore: true,
+          createdAt: true,
+          idea: { select: { industry: true, title: true } },
+        },
+        orderBy: { createdAt: "asc" },
+      }),
+      prisma.idea.count({ where: { userId } })
+    ]);
 
-    const totalIdeas = await prisma.idea.count({ where: { userId } });
     return { reports, totalIdeas };
   },
   ['analytics-data'],
@@ -84,7 +86,7 @@ export default async function AnalyticsPage() {
               <h2 className="text-lg font-bold text-[#1B1716] mb-6">Historical Rigor Analysis</h2>
               <div className="space-y-4">
                 {[...reports].reverse().map((report, i) => (
-                  <div key={i} className="flex items-center gap-2 sm:gap-4 group">
+                  <div key={`item-${i}`} className="flex items-center gap-2 sm:gap-4 group">
                     <span className="text-[#1B1716]/40 text-xs w-14 sm:w-20 font-medium flex-shrink-0">
                       {new Date(report.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>

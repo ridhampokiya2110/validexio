@@ -82,7 +82,7 @@ export default function MaintenancePage() {
             { icon: Clock, title: "Downtime", desc: "Expected < 15 mins" },
           ].map((item, idx) => (
             <div
-              key={idx}
+              key={`item-${idx}`}
               className="flex flex-col items-center p-6 rounded-2xl border border-white/5 bg-white/[0.02] backdrop-blur-sm hover:bg-white/[0.04] transition-colors"
             >
               <item.icon className="w-6 h-6 text-orange-400 mb-3" />

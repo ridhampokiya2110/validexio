@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireSuperAdmin } from "@/lib/guards/admin.guard";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -11,23 +12,27 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     }
 
     const body = await req.json();
-    const { tier } = body;
+    const { tier, credits } = body;
 
-    if (!["FREE", "PRO", "TEAM", "ENTERPRISE"].includes(tier)) {
+    if (!["FREE", "STARTER", "PRO", "TEAM", "ENTERPRISE"].includes(tier)) {
       return NextResponse.json({ error: "Invalid tier" }, { status: 400 });
     }
 
-    let addedCredits = 0;
-    if (tier === "PRO") addedCredits = 1;
-    if (tier === "TEAM") addedCredits = 3;
-    if (tier === "ENTERPRISE") addedCredits = 15;
+    const updateData: any = { tier };
+    if (credits !== undefined) {
+      updateData.availableCredits = Number(credits);
+    }
 
     const updatedUser = await prisma.user.update({
       where: { id },
-      data: { 
-        tier,
-        availableCredits: { increment: addedCredits }
-      },
+      data: updateData,
+    });
+
+    // Notify the user in real-time that their plan has been updated
+    await supabaseAdmin.channel(`user-updates:${id}`).send({
+      type: "broadcast",
+      event: "plan-updated",
+      payload: { tier: updatedUser.tier, credits: updatedUser.availableCredits },
     });
 
     return NextResponse.json({ success: true, tier: updatedUser.tier, availableCredits: updatedUser.availableCredits });

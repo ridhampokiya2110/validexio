@@ -34,7 +34,7 @@ export function PricingReveal({ competitorName, data }: PricingRevealProps) {
           
           <div className="space-y-4 flex-grow">
             {data.competitorTiers.map((tier, idx) => (
-              <div key={idx} className="bg-[#FDFCF8] rounded-2xl p-5 border border-[#1B1716]/5 flex justify-between items-center">
+              <div key={`item-${idx}`} className="bg-[#FDFCF8] rounded-2xl p-5 border border-[#1B1716]/5 flex justify-between items-center">
                 <div>
                   <div className="font-bold text-[#1B1716] text-lg">{tier.name}</div>
                   <div className="text-sm text-[#1B1716]/60 mt-1 flex items-center gap-1.5">
@@ -97,7 +97,7 @@ export function PricingReveal({ competitorName, data }: PricingRevealProps) {
                   "5 Verified B2B Target Leads",
                   "Complete Database Schemas",
                 ].map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-3">
+                  <div key={`item-${idx}`} className="flex items-center gap-3">
                     <div className="w-5 h-5 rounded-full bg-cherry/20 flex items-center justify-center shrink-0">
                       <CheckCircle2 className="w-3.5 h-3.5 text-cherry" />
                     </div>

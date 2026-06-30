@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useEffect } from "react";
 import { ArrowRight } from "lucide-react";
 
@@ -41,8 +42,8 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <img src="/logo-primary-noir.png" alt="Validexio" className="h-10 sm:h-12 w-auto object-contain" />
+        <Link aria-label="Navigation link" href="/" className="flex items-center gap-2 group">
+          <Image src="/logo-primary-noir.png" alt="Validexio" width={150} height={48} className="h-10 sm:h-12 w-auto object-contain" />
         </Link>
 
         {/* Desktop Nav Links */}
@@ -55,7 +56,7 @@ export function Navbar() {
             { label: "About", href: "/about" },
             { label: "Blog", href: "/blog" },
           ].map((item) => (
-            <Link
+            <Link aria-label="Navigation link"
               key={item.label}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
@@ -68,20 +69,20 @@ export function Navbar() {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          <Link
+          <Link aria-label="Navigation link"
             href="/login"
             className="text-sm font-medium text-[#1B1716]/70 hover:text-[#1B1716] transition-colors px-4 py-2 rounded-lg hover:bg-[#1B1716]/5"
           >
             Log In
           </Link>
-          <Link href="/register" className="btn-primary flex items-center gap-1 text-sm px-5 py-2.5 rounded-lg bg-cherry text-white hover:bg-[#910505] transition-all shadow-[0_4px_12px_rgba(117,7,12,0.3)]">
+          <Link aria-label="Navigation link" href="/register" className="btn-primary flex items-center gap-1 text-sm px-5 py-2.5 rounded-lg bg-cherry text-white hover:bg-[#910505] transition-all shadow-[0_4px_12px_rgba(117,7,12,0.3)]">
             Get Started
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button
+        <button aria-label="Button action" type="button"
           className="md:hidden p-2 rounded-lg hover:bg-[#1B1716]/10 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="Toggle menu"
@@ -105,7 +106,7 @@ export function Navbar() {
             { label: "About", href: "/about" },
             { label: "Blog", href: "/blog" },
           ].map((item) => (
-            <Link
+            <Link aria-label="Navigation link"
               key={item.label}
               href={item.href}
               onClick={(e) => handleNavClick(e, item.href)}
@@ -115,8 +116,8 @@ export function Navbar() {
             </Link>
           ))}
           <div className="flex flex-col gap-2 pt-2 border-t border-[#1B1716]/5 mt-2">
-            <Link href="/login" className="flex items-center justify-center font-semibold text-sm py-2.5 rounded-lg border border-[#1B1716]/10 text-[#1B1716]">Log In</Link>
-            <Link href="/register" className="flex items-center justify-center font-semibold text-sm py-2.5 rounded-lg bg-cherry text-white">Get Started</Link>
+            <Link aria-label="Navigation link" href="/login" className="flex items-center justify-center font-semibold text-sm py-2.5 rounded-lg border border-[#1B1716]/10 text-[#1B1716]">Log In</Link>
+            <Link aria-label="Navigation link" href="/register" className="flex items-center justify-center font-semibold text-sm py-2.5 rounded-lg bg-cherry text-white">Get Started</Link>
           </div>
         </div>
       )}

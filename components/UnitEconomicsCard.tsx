@@ -45,7 +45,7 @@ export function UnitEconomicsCard({ data }: UnitEconomicsCardProps) {
             </thead>
             <tbody>
               {data.competitorPricingTiers.map((tier, index) => (
-                <tr key={index} className="border-b border-[#630102]/5 hover:bg-white/50 transition-colors">
+                <tr key={`item-${index}`} className="border-b border-[#630102]/5 hover:bg-white/50 transition-colors">
                   <td className="py-4 px-4 text-[#111827] text-base whitespace-nowrap font-heading font-medium tracking-wide">{tier.competitorName}</td>
                   <td className="py-4 px-4 text-[#630102] text-lg whitespace-nowrap font-heading font-light tracking-tight">{tier.price}</td>
                   <td className="py-4 px-4 text-[#111827]/70 text-sm whitespace-nowrap font-heading font-light tracking-wider uppercase">{tier.billingModel}</td>

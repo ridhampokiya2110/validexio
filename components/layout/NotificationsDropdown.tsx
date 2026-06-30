@@ -66,7 +66,7 @@ export function NotificationsDropdown() {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button 
+      <button aria-label="Button action" type="button" 
         onClick={toggleDropdown}
         className={`relative p-2 rounded-lg hover:bg-[#1B1716]/10 transition-colors ${isOpen ? 'bg-[#1B1716]/10 text-[#1B1716]' : 'text-[#1B1716]/60 hover:text-[#1B1716]'}`}
       >
@@ -94,7 +94,7 @@ export function NotificationsDropdown() {
             ) : (
               <div className="divide-y divide-[#1B1716]/5">
                 {activities.map((activity) => (
-                  <Link 
+                  <Link aria-label="Navigation link" 
                     key={activity.id} 
                     href={activity.link}
                     onClick={() => setIsOpen(false)}
@@ -120,7 +120,7 @@ export function NotificationsDropdown() {
             )}
           </div>
           <div className="p-2 border-t border-[#1B1716]/10 bg-gray-50 text-center">
-            <Link 
+            <Link aria-label="Navigation link" 
               href="/dashboard/security" 
               onClick={() => setIsOpen(false)}
               className="text-xs font-semibold text-cherry hover:text-cherry/80 transition-colors"

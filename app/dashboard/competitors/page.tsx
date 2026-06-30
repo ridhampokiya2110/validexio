@@ -39,7 +39,7 @@ export default async function CompetitorsPage() {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No competitor data yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to discover competitors.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
         </div>
       ) : (
         <div className="space-y-12">
@@ -55,7 +55,7 @@ export default async function CompetitorsPage() {
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {(report.competitors as any[]).map((comp, i) => (
-                  <div key={i} className="glass-card flex flex-col h-full border-[#1B1716]/10 hover:border-cherry/30 transition-all duration-300 overflow-hidden relative">
+                  <div key={`item-${i}`} className="glass-card flex flex-col h-full border-[#1B1716]/10 hover:border-cherry/30 transition-all duration-300 overflow-hidden relative">
                     
                     {/* Header */}
                     <div className="p-6 pb-4 border-b border-[#1B1716]/5">
@@ -63,7 +63,7 @@ export default async function CompetitorsPage() {
                         <div>
                           <h3 className="text-xl font-bold text-[#1B1716] mb-1 tracking-tight">{comp.name}</h3>
                           {comp.website && (
-                            <a href={`https://${comp.website}`} target="_blank" rel="noopener noreferrer"
+                            <a aria-label="Link action" href={`https://${comp.website}`} target="_blank" rel="noopener noreferrer"
                               className="text-xs text-[#1B1716]/40 hover:text-cherry transition-colors flex items-center gap-1 group"
                             >
                               <ExternalLink className="w-3 h-3 group-hover:scale-110 transition-transform" />

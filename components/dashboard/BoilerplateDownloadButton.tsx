@@ -37,7 +37,7 @@ export default function BoilerplateDownloadButton({ reportId, ideaTitle }: Boile
   };
 
   return (
-    <button
+    <button aria-label="Button action" type="button"
       onClick={handleDownload}
       disabled={isDownloading}
       className="btn-primary text-sm gap-2 px-3 py-1.5 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"

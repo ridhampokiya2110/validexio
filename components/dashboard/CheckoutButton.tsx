@@ -36,14 +36,14 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured }: Checkout
 
   if (isCurrentPlan) {
     return (
-      <button disabled className="btn-secondary w-full justify-center text-sm py-2.5 opacity-50 cursor-not-allowed">
+      <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-2.5 opacity-50 cursor-not-allowed">
         Current Plan
       </button>
     );
   }
 
   return (
-    <button
+    <button aria-label="Button action" type="button"
       onClick={handleCheckout}
       disabled={loading}
       className={`w-full justify-center text-sm py-2.5 ${isFeatured ? "btn-primary" : "btn-secondary"}`}

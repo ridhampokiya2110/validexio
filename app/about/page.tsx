@@ -87,7 +87,7 @@ export default function AboutPage() {
           <div className="max-w-4xl mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-5xl font-black text-[#1B1716] mb-6">Ready to face reality?</h2>
             <p className="text-lg text-[#1B1716]/70 mb-10">Stop guessing. Start validating. Get a comprehensive breakdown of your startup idea in 60 seconds.</p>
-            <Link href="/#pricing" className="inline-flex items-center justify-center gap-2 bg-cherry hover:bg-[#910505] text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-cherry/30 hover:scale-105">
+            <Link aria-label="Navigation link" href="/#pricing" className="inline-flex items-center justify-center gap-2 bg-cherry hover:bg-[#910505] text-white px-8 py-4 rounded-xl font-bold text-lg transition-all shadow-lg shadow-cherry/30 hover:scale-105">
               Validate Your Idea Now
             </Link>
           </div>

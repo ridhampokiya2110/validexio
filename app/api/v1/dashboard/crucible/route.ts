@@ -239,7 +239,7 @@ Follow this EXACT format:
         } catch (parseError) {
           console.error("Failed to parse Gemini evaluation JSON:", text);
           // Write to a local file so I can inspect it
-          require('fs').writeFileSync('gemini-debug.txt', text);
+          console.error('gemini-debug:', text);
           
           // Attempt a manual salvage of the truncated JSON using Regex
           let salvagedScore = 5;

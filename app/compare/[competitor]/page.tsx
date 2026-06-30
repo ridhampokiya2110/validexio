@@ -1,3 +1,4 @@
+import DOMPurify from "isomorphic-dompurify";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -84,7 +85,7 @@ function CTAWrapper({ text }: { text: string }) {
   // Advanced tracking passthrough can be handled client-side if needed, 
   // but a simple link is fine here since tracking is handled globally.
   return (
-    <Link 
+    <Link aria-label="Navigation link" 
       href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder"
       className="btn-primary inline-flex items-center justify-center px-8 py-4 text-lg"
     >
@@ -105,7 +106,7 @@ function LegalDisclaimer({ competitorName, website }: { competitorName: string, 
         <strong>Legal Disclaimer:</strong> All product and company names, logos, and brands are property of their respective owners. 
         All company, product and service names used in this website are for identification purposes only. 
         Use of these names, logos, and brands does not imply endorsement. {competitorName} is a trademark of its respective owner. 
-        {website && <span>Official website: <a href={website} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#75070C]">{website}</a>. </span>}
+        {website && <span>Official website: <a aria-label="Link action" href={website} target="_blank" rel="noopener noreferrer" className="underline hover:text-[#75070C]">{website}</a>. </span>}
         The comparisons presented are based on publicly available information and our own objective analysis at the time of publication.
       </p>
     </div>
@@ -165,7 +166,7 @@ export default async function ComparePage({ params }: PageProps) {
             {competitor.heroHeadline}<br />
             <span 
               className="text-[#1B1716]" 
-              dangerouslySetInnerHTML={{ __html: competitor.validexioHeadline || 'Validexio <span className="gradient-text">Executes</span>.' }} 
+              dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(competitor.validexioHeadline || 'Validexio <span className="gradient-text">Executes</span>.') }} 
             />
           </h1>
           <p className="text-lg md:text-xl text-[#1B1716]/80 max-w-3xl mx-auto leading-relaxed mb-10">

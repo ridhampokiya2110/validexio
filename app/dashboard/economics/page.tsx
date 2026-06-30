@@ -36,7 +36,7 @@ export default async function EconomicsPage() {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No financial data yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to get pricing and revenue projections.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
         </div>
       ) : (
         reports.map((r, i) => {
@@ -46,7 +46,7 @@ export default async function EconomicsPage() {
           if (!rev || !pricing) return null;
 
           return (
-            <div key={i} className="glass-card p-6 border border-[#1B1716]/10 mb-8">
+            <div key={`item-${i}`} className="glass-card p-6 border border-[#1B1716]/10 mb-8">
               <div className="flex items-center gap-3 mb-6 border-b border-[#1B1716]/10 pb-4">
                 <Wallet className="w-6 h-6 text-cherry" />
                 <h2 className="text-xl font-bold text-[#1B1716]">{r.idea.title} Economics</h2>
@@ -108,7 +108,7 @@ export default async function EconomicsPage() {
 
                   <div className="space-y-4">
                     {pricing.tiers?.map((tier: any, idx: number) => (
-                      <div key={idx} className="group relative overflow-hidden bg-white/60 backdrop-blur-sm border border-[#1B1716]/10 rounded-2xl p-6 hover:shadow-[0_15px_40px_-15px_rgba(99,1,2,0.15)] hover:border-[#630102]/30 hover:-translate-y-1 transition-all duration-500">
+                      <div key={`item-${idx}`} className="group relative overflow-hidden bg-white/60 backdrop-blur-sm border border-[#1B1716]/10 rounded-2xl p-6 hover:shadow-[0_15px_40px_-15px_rgba(99,1,2,0.15)] hover:border-[#630102]/30 hover:-translate-y-1 transition-all duration-500">
                         <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-[#630102]/5 to-transparent rounded-full blur-2xl -z-10 translate-x-1/3 -translate-y-1/3 group-hover:from-[#630102]/10 transition-colors duration-500"></div>
                         
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-4 pb-4 border-b border-[#1B1716]/5 group-hover:border-[#630102]/10 transition-colors">

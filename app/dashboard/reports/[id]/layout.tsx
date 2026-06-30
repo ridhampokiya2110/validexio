@@ -16,7 +16,7 @@ export default function ReportLayout({ children }: { children: ReactNode }) {
       {/* Table of Contents Sidebar */}
       <aside className="w-64 bg-[#FFFFFF] border-r border-[#1B1716]/10 flex flex-col hidden md:flex">
         <div className="p-4 sm:p-6 border-b border-[#1B1716]/10">
-          <Link
+          <Link aria-label="Navigation link"
             href="/dashboard/reports"
             className="inline-flex items-center gap-1.5 text-[#1B1716]/60 hover:text-[#1B1716] text-sm font-medium transition-colors mb-4"
           >
@@ -59,7 +59,7 @@ export default function ReportLayout({ children }: { children: ReactNode }) {
 
 function TOCLink({ href, active, icon, label, onClick }: { href: string, active: boolean, icon: ReactNode, label: string, onClick: () => void }) {
   return (
-    <a
+    <a aria-label="Link action"
       href={href}
       onClick={onClick}
       className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${

@@ -36,7 +36,7 @@ export default function LegalPage() {
         {/* Sidebar Menu */}
         <aside className="w-full md:w-64 flex-shrink-0 md:sticky md:top-32 h-fit z-20">
           <nav className="flex md:flex-col overflow-x-auto md:overflow-visible pb-4 md:pb-0 gap-2 bg-[#F5F3EB] rounded-xl p-2.5 border border-[#1B1716]/10 shadow-[4px_0_24px_rgba(0,0,0,0.02)] snap-x [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            <button 
+            <button aria-label="Button action" type="button" 
               onClick={() => setActiveTab("terms")}
               className={`snap-start whitespace-nowrap text-left px-5 py-3.5 rounded-lg text-sm font-bold transition-all ${
                 activeTab === "terms" 
@@ -46,7 +46,7 @@ export default function LegalPage() {
             >
               Terms of Service
             </button>
-            <button 
+            <button aria-label="Button action" type="button" 
               onClick={() => setActiveTab("privacy")}
               className={`snap-start whitespace-nowrap text-left px-5 py-3.5 rounded-lg text-sm font-bold transition-all ${
                 activeTab === "privacy" 
@@ -56,7 +56,7 @@ export default function LegalPage() {
             >
               Privacy Policy
             </button>
-            <button 
+            <button aria-label="Button action" type="button" 
               onClick={() => setActiveTab("refund")}
               className={`snap-start whitespace-nowrap text-left px-5 py-3.5 rounded-lg text-sm font-bold transition-all ${
                 activeTab === "refund" 

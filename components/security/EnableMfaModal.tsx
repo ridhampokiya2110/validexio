@@ -60,7 +60,7 @@ export default function EnableMfaModal() {
 
   return (
     <>
-      <button
+      <button aria-label="Button action" type="button"
         onClick={handleOpen}
         className="mt-2 text-xs font-semibold text-white bg-cherry/90 hover:bg-cherry px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2"
       >
@@ -70,7 +70,7 @@ export default function EnableMfaModal() {
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl w-full max-w-md p-6 relative shadow-2xl">
-            <button
+            <button aria-label="Button action" type="button"
               onClick={() => setIsOpen(false)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
@@ -86,10 +86,10 @@ export default function EnableMfaModal() {
                 </p>
                 <div className="bg-gray-50 p-4 rounded-xl grid grid-cols-2 gap-3 text-sm font-mono text-gray-800 mb-6">
                   {backupCodes.map((bc, i) => (
-                    <div key={i}>{bc}</div>
+                    <div key={`item-${i}`}>{bc}</div>
                   ))}
                 </div>
-                <button
+                <button aria-label="Button action" type="button"
                   onClick={() => setIsOpen(false)}
                   className="w-full bg-cherry text-white py-2.5 rounded-xl font-medium hover:bg-cherry/90 transition-colors"
                 >
@@ -122,7 +122,7 @@ export default function EnableMfaModal() {
                         onChange={(e) => setCode(e.target.value.replace(/[^0-9]/g, ''))}
                         className="w-full text-center text-2xl tracking-[0.5em] font-mono p-3 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-cherry/50 focus:border-cherry transition-all"
                       />
-                      <button
+                      <button aria-label="Button action" type="button"
                         onClick={handleVerify}
                         disabled={code.length !== 6 || isLoading}
                         className="w-full bg-cherry text-white py-2.5 rounded-xl font-medium hover:bg-cherry/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"

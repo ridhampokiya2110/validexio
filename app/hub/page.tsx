@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Zap, User, LogOut, ExternalLink, ArrowRight, ShieldCheck, CreditCard, Rocket, Loader2 } from "lucide-react";
 
@@ -36,16 +37,16 @@ export default function FoundersHub() {
     <div className="min-h-screen bg-[#FDFCF8] text-[#1B1716] font-sans selection:bg-cherry/40 selection:text-[#1B1716]">
       {/* 1. TOP NAVIGATION */}
       <nav className="h-16 flex items-center justify-between px-6 lg:px-10 border-b border-[#1B1716]/10 bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <Link href="/" className="flex items-center gap-2 group">
-          <img src="/logo-wordmark-noir.png" alt="Validexio" className="h-6 w-auto object-contain" />
+        <Link aria-label="Navigation link" href="/" className="flex items-center gap-2 group">
+          <Image src="/logo-wordmark-noir.png" alt="Validexio" width={160} height={24} className="h-6 w-auto object-contain" />
         </Link>
         <div className="flex items-center gap-6">
-          <button className="flex items-center gap-2 text-sm font-medium text-[#1B1716]/70 hover:text-[#1B1716] transition-colors">
+          <button aria-label="Button action" type="button" className="flex items-center gap-2 text-sm font-medium text-[#1B1716]/70 hover:text-[#1B1716] transition-colors">
             <User className="w-4 h-4" />
             <span className="hidden sm:inline">Founder Profile</span>
           </button>
           <div className="w-px h-4 bg-[#1B1716]/20" />
-          <button className="flex items-center gap-2 text-sm font-bold text-[#1B1716]/50 hover:text-cherry transition-colors">
+          <button aria-label="Button action" type="button" className="flex items-center gap-2 text-sm font-bold text-[#1B1716]/50 hover:text-cherry transition-colors">
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">Logout</span>
           </button>
@@ -75,11 +76,11 @@ export default function FoundersHub() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full md:w-auto relative z-10">
-              <Link href="/dashboard/validate" className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-cherry hover:bg-[#910505] text-[#EDEBDE] text-sm font-bold rounded-lg transition-all shadow-lg shadow-cherry/20">
+              <Link aria-label="Navigation link" href="/dashboard/validate" className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-cherry hover:bg-[#910505] text-[#EDEBDE] text-sm font-bold rounded-lg transition-all shadow-lg shadow-cherry/20">
                 <Rocket className="w-4 h-4" />
                 Validate New Idea
               </Link>
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => setShowPricing(!showPricing)}
                 className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-sm font-bold transition-all border ${
                   showPricing 
@@ -115,7 +116,7 @@ export default function FoundersHub() {
                     Standard Delivery
                   </li>
                 </ul>
-                <button 
+                <button aria-label="Button action" type="button" 
                   onClick={() => handleCheckout("STARTER")}
                   disabled={loadingCheckout === "STARTER"}
                   className="w-full py-3 bg-transparent border border-cherry text-cherry hover:bg-cherry hover:text-white rounded font-bold text-sm transition-colors flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
@@ -148,7 +149,7 @@ export default function FoundersHub() {
                     Export to PDF enabled
                   </li>
                 </ul>
-                <button 
+                <button aria-label="Button action" type="button" 
                   onClick={() => handleCheckout("PRO")}
                   disabled={loadingCheckout === "PRO"}
                   className="w-full py-3 bg-cherry hover:bg-[#910505] text-white rounded font-bold text-sm transition-all shadow-lg shadow-cherry/20 flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
@@ -174,7 +175,7 @@ export default function FoundersHub() {
                     White-label Reports
                   </li>
                 </ul>
-                <button 
+                <button aria-label="Button action" type="button" 
                   onClick={() => handleCheckout("TEAM")}
                   disabled={loadingCheckout === "TEAM"}
                   className="w-full py-3 bg-transparent border border-cherry text-cherry hover:bg-cherry hover:text-white rounded font-bold text-sm transition-colors flex justify-center items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
@@ -211,7 +212,7 @@ export default function FoundersHub() {
                   { name: "Data Engine Waitlist Generator", date: "Oct 12, 2026", tag: "DevTools" },
                   { name: "Automated Cold Email Agent", date: "Sep 28, 2026", tag: "Marketing" },
                 ].map((project, idx) => (
-                  <tr key={idx} className="group hover:bg-[#1B1716]/[0.02] transition-colors">
+                  <tr key={`item-${idx}`} className="group hover:bg-[#1B1716]/[0.02] transition-colors">
                     <td className="px-6 py-5 font-bold text-[#1B1716] text-base">{project.name}</td>
                     <td className="px-6 py-5 text-[#1B1716]/50 font-mono text-xs">{project.date}</td>
                     <td className="px-6 py-5">
@@ -226,7 +227,7 @@ export default function FoundersHub() {
                       </div>
                     </td>
                     <td className="px-6 py-5 text-right">
-                      <Link href="/dashboard" className="btn-secondary text-xs px-4 py-2 gap-2 opacity-0 group-hover:opacity-100 transition-all">
+                      <Link aria-label="Navigation link" href="/dashboard" className="btn-secondary text-xs px-4 py-2 gap-2 opacity-0 group-hover:opacity-100 transition-all">
                         View Dashboard
                         <ExternalLink className="w-3 h-3" />
                       </Link>
@@ -244,7 +245,7 @@ export default function FoundersHub() {
               { name: "Data Engine Waitlist Generator", date: "Oct 12, 2026", tag: "DevTools" },
               { name: "Automated Cold Email Agent", date: "Sep 28, 2026", tag: "Marketing" },
             ].map((project, idx) => (
-              <div key={idx} className="glass-card p-5 space-y-4 hover:border-cherry/30 transition-colors">
+              <div key={`item-${idx}`} className="glass-card p-5 space-y-4 hover:border-cherry/30 transition-colors">
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-bold text-[#1B1716] text-lg leading-tight mb-1">{project.name}</h3>
@@ -259,7 +260,7 @@ export default function FoundersHub() {
                     <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_rgba(16,185,129,0.4)]" />
                     <span className="text-emerald-700 font-bold text-[10px] tracking-wider uppercase">Unlocked</span>
                   </div>
-                  <Link href="/dashboard" className="btn-primary text-xs px-3 py-1.5 gap-1.5">
+                  <Link aria-label="Navigation link" href="/dashboard" className="btn-primary text-xs px-3 py-1.5 gap-1.5">
                     View
                     <ArrowRight className="w-3 h-3" />
                   </Link>

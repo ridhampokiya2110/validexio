@@ -63,7 +63,7 @@ async function ReportDataFetcher({ id, userId }: { id: string, userId: string })
           <p className="text-[#1B1716]/60 max-w-md mx-auto mb-8 font-medium">
             Starter tier reports are securely locked after 7 days and permanently deleted after 30 days. Upgrade to Pro for lifetime access to this and all future intelligence reports.
           </p>
-          <Link href="/pricing" className="btn-primary">
+          <Link aria-label="Navigation link" href="/pricing" className="btn-primary">
             Upgrade to Pro for Lifetime Access
           </Link>
         </div>

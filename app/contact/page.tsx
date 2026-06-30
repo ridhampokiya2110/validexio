@@ -57,7 +57,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-[#1B1716]">Email Us</h3>
                 <p className="text-[#1B1716]/60 text-sm font-medium mb-4">For general inquiries and support.</p>
-                <a href="mailto:support@validexio.com" className="text-cherry font-semibold hover:underline">support@validexio.com</a>
+                <a aria-label="Link action" href="mailto:support@validexio.com" className="text-cherry font-semibold hover:underline">support@validexio.com</a>
               </div>
 
               <div className="bg-white border border-[#1B1716]/10 shadow-[0_8px_30px_rgba(27,23,22,0.04)] p-8 rounded-2xl">
@@ -66,7 +66,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="text-xl font-bold mb-2 text-[#1B1716]">Enterprise Sales</h3>
                 <p className="text-[#1B1716]/60 text-sm font-medium mb-4">Looking for bulk reports or API access?</p>
-                <a href="mailto:support@validexio.com" className="text-emerald-600 font-semibold hover:underline">support@validexio.com</a>
+                <a aria-label="Link action" href="mailto:support@validexio.com" className="text-emerald-600 font-semibold hover:underline">support@validexio.com</a>
               </div>
             </div>
 
@@ -81,7 +81,7 @@ export default function ContactPage() {
                   </div>
                   <h3 className="text-2xl font-bold text-[#1B1716] mb-4">Message Sent!</h3>
                   <p className="text-[#1B1716]/70 font-medium">We've received your inquiry and our support team will get back to you within 24 hours.</p>
-                  <button 
+                  <button aria-label="Button action" type="button" 
                     onClick={() => setStatus("idle")}
                     className="mt-8 px-6 py-2 bg-[#1B1716] text-white rounded-lg font-medium hover:bg-[#1B1716]/80 transition-colors"
                   >
@@ -145,7 +145,7 @@ export default function ContactPage() {
                     </div>
                   )}
 
-                  <button 
+                  <button aria-label="Button action" 
                     type="submit"
                     disabled={status === "submitting"}
                     className="w-full bg-gradient-to-r from-[#630102] to-[#CE202A] text-white py-4 rounded-xl font-bold text-[15px] tracking-wide hover:shadow-[0_8px_20px_rgba(99,1,2,0.4)] transition-all hover:-translate-y-1 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"

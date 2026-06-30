@@ -20,32 +20,12 @@ const COMPETITORS = [
   { lat: 48.8566, lng: 2.3522, name: "Paris Labs", location: "Paris", avatar: "/competitors/3.png", status: "Analyzed" },
 ];
 
-const MAP_LABELS = [
-  { lat: 39.8283, lng: -98.5795, name: "United States", size: 1.5, type: 'country', color: '#1B1716' },
-  { lat: 56.1304, lng: -106.3468, name: "Canada", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 71.7069, lng: -42.6043, name: "Greenland", size: 1.0, type: 'country', color: '#1B1716' },
-  { lat: 46.2276, lng: 2.2137, name: "France", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 40.4637, lng: -3.7492, name: "Spain", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 41.8719, lng: 12.5674, name: "Italy", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 20.5937, lng: 78.9629, name: "India", size: 1.5, type: 'country', color: '#1B1716' },
-  { lat: -25.2744, lng: 133.7751, name: "Australia", size: 1.5, type: 'country', color: '#1B1716' },
-  { lat: -14.2350, lng: -51.9253, name: "Brazil", size: 1.5, type: 'country', color: '#1B1716' },
-  { lat: 60.4720, lng: 8.4689, name: "Norway", size: 1.0, type: 'country', color: '#1B1716' },
-  { lat: 64.9631, lng: -19.0208, name: "Iceland", size: 1.0, type: 'country', color: '#1B1716' },
-  { lat: 34.0479, lng: 100.6197, name: "China", size: 1.5, type: 'country', color: '#1B1716' },
-  { lat: -30.5595, lng: 22.9375, name: "South Africa", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 36.2048, lng: 138.2529, name: "Japan", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 55.3781, lng: -3.4360, name: "United Kingdom", size: 1.2, type: 'country', color: '#1B1716' },
-  { lat: 35.8617, lng: 104.1954, name: "ASIA", size: 2.0, type: 'continent', color: '#778899' },
-  { lat: 45.0, lng: -100.0, name: "NORTH AMERICA", size: 2.0, type: 'continent', color: '#778899' },
-  { lat: 48.0, lng: 15.0, name: "EUROPE", size: 2.0, type: 'continent', color: '#778899' },
-  { lat: 25.0, lng: -40.0, name: "North Atlantic Ocean", size: 1.8, type: 'ocean', color: '#ffffff' },
-];
-
 export default function GlobalCompetitorsGlobe() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const globeRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [isClient, setIsClient] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [countries, setCountries] = useState<any>({ features: [] });
 
   useEffect(() => {
@@ -69,6 +49,7 @@ export default function GlobalCompetitorsGlobe() {
     updateDimensions();
     
     // Debounce the resize event to prevent performance issues
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let resizeTimer: any;
     const handleResize = () => {
       clearTimeout(resizeTimer);
@@ -132,7 +113,7 @@ export default function GlobalCompetitorsGlobe() {
             </div>
           </div>
           <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#111827] mb-6 tracking-tight">
-            Map The World's <br />
+            Map The World&apos;s <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-600">
               Hidden Competitors
             </span>
@@ -170,9 +151,10 @@ export default function GlobalCompetitorsGlobe() {
 
               // Bespoke HTML Markers
               htmlElementsData={COMPETITORS}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               htmlElement={(d: any) => {
                 const el = document.createElement("div");
-                el.innerHTML = `
+                el.insertAdjacentHTML('beforeend', `
                   <div class="relative group cursor-pointer -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
                     
                     <!-- Expanding Ripple Rings for Premium Visual -->

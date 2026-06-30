@@ -549,7 +549,7 @@ export default function ValidatePage() {
                   ? isOtherIndustry
                   : (!isOtherIndustry && form.industry === industry);
                 return (
-                  <button
+                  <button aria-label="Button action" type="button"
                     key={industry}
                     onClick={() => {
                       if (industry === "Other") {
@@ -561,7 +561,7 @@ export default function ValidatePage() {
                       }
                     }}
                     className={cn(
-                      "px-3 py-3 rounded-xl text-sm font-medium text-left transition-all duration-200",
+                      "px-2 py-3 sm:px-3 rounded-xl text-[11px] sm:text-sm font-medium text-left transition-all duration-200 break-words leading-tight",
                       isSelected
                         ? "bg-cherry/20 border-2 border-cherry/60 text-[#1B1716]"
                         : "bg-[#1B1716]/5 border border-[#1B1716]/10 text-[#1B1716]/60 hover:bg-[#1B1716]/10 hover:border-[#1B1716]/20 hover:text-[#1B1716]"
@@ -722,7 +722,7 @@ export default function ValidatePage() {
                       <CheckCircle className="w-4 h-4" />
                       <span className="hidden sm:inline">Attached</span>
                     </div>
-                    <button
+                    <button aria-label="Button action" type="button"
                       onClick={removeFile}
                       className="p-1 rounded-lg hover:bg-emerald-200 text-emerald-600 hover:text-emerald-800 transition-colors"
                       title="Remove file"
@@ -807,7 +807,7 @@ export default function ValidatePage() {
 
                 <div className="flex flex-wrap gap-3 mb-4">
                   {["GLOBAL", "COUNTRY", "STATE", "CITY"].map((scope) => (
-                    <button
+                    <button aria-label="Button action" type="button"
                       key={scope}
                       onClick={() => setForm({...form, targetScope: scope})}
                       className={cn("px-4 py-2 rounded-lg text-sm transition-all",
@@ -899,7 +899,7 @@ export default function ValidatePage() {
 
             <div className="grid grid-cols-2 sm:grid-cols-2 gap-2 mb-6">
               {PRICING_MODELS.map((model) => (
-                <button
+                <button aria-label="Button action" type="button"
                   key={model}
                   onClick={() => setForm({ ...form, pricingModel: model })}
                   className={cn(
@@ -1006,7 +1006,7 @@ export default function ValidatePage() {
 
       {/* Navigation */}
       <div className="flex items-center justify-between mt-6 gap-4">
-        <button
+        <button aria-label="Button action" type="button"
           onClick={handleBack}
           disabled={step === 1 || loading}
           className="btn-secondary text-sm px-6 py-2.5 disabled:opacity-30 disabled:cursor-not-allowed"
@@ -1028,12 +1028,12 @@ export default function ValidatePage() {
         </div>
 
         {step < steps.length ? (
-          <button onClick={handleNext} className="btn-primary text-sm px-6 py-2.5">
+          <button aria-label="Button action" type="button" onClick={handleNext} className="btn-primary text-sm px-6 py-2.5">
             Continue
             <ChevronRight className="w-4 h-4 ml-1" />
           </button>
         ) : (
-          <button
+          <button aria-label="Button action" type="button"
             onClick={handleSubmit}
             disabled={loading}
             className="btn-primary text-sm px-8 py-2.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"

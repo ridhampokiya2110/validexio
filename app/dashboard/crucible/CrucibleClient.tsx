@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import React, { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cpu, Briefcase, ChevronRight, Zap, Target, AlertCircle, CheckCircle2, Lock, Download, Shield } from "lucide-react";
@@ -44,9 +46,9 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
         <p className="text-[#6B7280] max-w-md mx-auto mb-8">
           The Investor Simulator requires a generated Validation Report to interrogate you. Run your idea through the engine first.
         </p>
-        <a href="/dashboard" className="px-6 py-3 bg-[#111827] text-white font-bold tracking-wide uppercase text-sm border-[1.5px] border-[#111827] hover:bg-white hover:text-[#111827] transition-colors">
+        <Link aria-label="Navigation link" href="/dashboard" className="px-6 py-3 bg-[#111827] text-white font-bold tracking-wide uppercase text-sm border-[1.5px] border-[#111827] hover:bg-white hover:text-[#111827] transition-colors">
           Return to Dashboard
-        </a>
+        </Link>
       </div>
     );
   }
@@ -184,7 +186,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
         filename:     'Investor_Simulator_Brief.pdf',
         image:        { type: 'jpeg' as const, quality: 0.98 },
         html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' as 'portrait' }
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' as const }
       };
       
       await html2pdf().set(opt).from(scorecardRef.current).save();
@@ -233,7 +235,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
       </div>
 
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 relative z-10">
-        <button 
+        <button aria-label="Button action" type="button" 
           onClick={() => startTrack("TECHNICAL_ARCHITECT")}
           disabled={loading}
           className="group relative text-left glass-card p-8 md:p-10 hover:border-cherry/30 border-[#1B1716]/10 transition-all duration-500 disabled:opacity-50 flex flex-col hover:shadow-2xl hover:shadow-cherry/5 overflow-hidden"
@@ -264,7 +266,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
           </div>
         </button>
 
-        <button 
+        <button aria-label="Button action" type="button" 
           onClick={() => startTrack("INVESTOR_VC")}
           disabled={loading}
           className="group relative text-left glass-card p-8 md:p-10 hover:border-cherry/30 border-[#1B1716]/10 transition-all duration-500 disabled:opacity-50 flex flex-col hover:shadow-2xl hover:shadow-cherry/5 overflow-hidden"
@@ -331,7 +333,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
               const isCurrent = i === evaluations.length && interrogationState === "ASKING";
               return (
                 <div 
-                  key={i} 
+                  key={`item-${i}`} 
                   className={`h-2 rounded-full transition-all duration-500 ${
                     isPast ? 'w-6 bg-cherry' : isCurrent ? 'w-6 bg-cherry/40 animate-pulse' : 'w-3 bg-[#1B1716]/10'
                   }`} 
@@ -345,7 +347,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
               const isCurrent = i === evaluations.length && interrogationState === "ASKING";
               return (
                 <div 
-                  key={i} 
+                  key={`item-${i}`} 
                   className={`h-2 rounded-full transition-all duration-500 ${
                     isPast ? 'w-8 bg-cherry' : isCurrent ? 'w-8 bg-cherry/40 animate-pulse' : 'w-4 bg-[#1B1716]/10'
                   }`} 
@@ -400,7 +402,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
                 </div>
               ) : <div />}
               
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={submitAnswer}
                 disabled={loading || !currentAnswer.trim()}
                 className="w-full sm:w-auto px-8 py-4 bg-cherry text-white rounded-xl font-bold tracking-widest uppercase text-sm hover:bg-[#8C0203] hover:shadow-lg hover:shadow-cherry/20 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
@@ -467,7 +469,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
               </div>
 
               <div className="mt-10 flex justify-end">
-                <button 
+                <button aria-label="Button action" type="button" 
                   onClick={nextQuestion}
                   disabled={loading}
                   className="w-full sm:w-auto px-8 py-4 bg-white text-[#1B1716] rounded-xl font-bold tracking-widest uppercase text-sm hover:bg-gray-100 hover:scale-[1.02] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
@@ -546,7 +548,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
             </div>
             <div className="space-y-6">
               {evaluations.map((evalItem, idx) => (
-                <div key={idx} className="bg-white border border-[#1B1716]/10 rounded-2xl p-6 md:p-8 shadow-sm">
+                <div key={`item-${idx}`} className="bg-white border border-[#1B1716]/10 rounded-2xl p-6 md:p-8 shadow-sm">
                   <div className="flex justify-between items-start gap-6 mb-6">
                     <div className="text-[#1B1716] font-bold text-xl leading-snug tracking-tight">
                       <span className="text-cherry mr-2">Q{idx + 1}.</span>{evalItem.question}
@@ -588,7 +590,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
 
         <div className="flex justify-center mt-8">
           {canExport ? (
-            <button 
+            <button aria-label="Button action" type="button" 
               onClick={downloadPDF}
               className="px-10 py-4 bg-cherry text-white rounded-xl font-bold tracking-widest uppercase text-sm hover:bg-[#8C0203] hover:shadow-lg hover:shadow-cherry/20 transition-all flex items-center gap-2"
             >
@@ -597,7 +599,7 @@ export default function CrucibleClient({ tier, maxQuestions, reportExists }: Cru
             </button>
           ) : (
             <div className="relative group cursor-not-allowed">
-              <button 
+              <button aria-label="Button action" type="button" 
                 disabled
                 className="px-10 py-4 bg-[#1B1716]/5 text-[#1B1716]/40 rounded-xl font-bold tracking-widest uppercase text-sm border border-[#1B1716]/10 flex items-center gap-2"
               >

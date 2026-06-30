@@ -23,7 +23,7 @@ export function FairAssessment({ competitorName, data }: FairAssessmentProps) {
 
       <div className="grid md:grid-cols-3 gap-6 mt-12">
         {data.pros.map((pro, idx) => (
-          <div key={idx} className="bg-white border border-[#1B1716]/10 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+          <div key={`item-${idx}`} className="bg-white border border-[#1B1716]/10 p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
             <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mb-4">
               <CheckCircle2 className="w-5 h-5 text-green-700" />
             </div>

@@ -53,7 +53,7 @@ export function CompetitorFAQ({
 
           return (
             <motion.div
-              key={index}
+              key={`item-${index}`}
               initial={false}
               itemScope
               itemProp="mainEntity"
@@ -64,7 +64,7 @@ export function CompetitorFAQ({
                   : "bg-white/50 border-[#1B1716]/10 hover:border-[#1B1716]/20 hover:bg-white"
               }`}
             >
-              <button
+              <button aria-label="Button action" type="button"
                 className="flex items-center justify-between w-full p-6 text-left"
                 onClick={() => setOpenIndex(isOpen ? null : index)}
                 aria-expanded={isOpen}

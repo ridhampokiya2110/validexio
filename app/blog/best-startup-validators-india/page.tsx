@@ -46,7 +46,7 @@ export default function BlogPost() {
       />
 
       <article className="pt-32 pb-20 px-6 max-w-3xl mx-auto">
-        <Link href="/blog" className="inline-flex items-center text-sm font-semibold text-[#6B7280] hover:text-[#75070C] transition-colors mb-8">
+        <Link aria-label="Navigation link" href="/blog" className="inline-flex items-center text-sm font-semibold text-[#6B7280] hover:text-[#75070C] transition-colors mb-8">
           <ArrowLeft className="w-4 h-4 mr-1.5" />
           Back to Blog
         </Link>
@@ -96,7 +96,7 @@ export default function BlogPost() {
             <p className="text-[#1B1716]/80 mb-6">
               Our system automatically detects Indian IPs to apply the ₹1499 pricing at checkout. Validate your first idea today.
             </p>
-            <Link href="/" className="btn-primary inline-flex items-center justify-center px-6 py-3">
+            <Link aria-label="Navigation link" href="/" className="btn-primary inline-flex items-center justify-center px-6 py-3">
               Start Free Validation
             </Link>
           </div>

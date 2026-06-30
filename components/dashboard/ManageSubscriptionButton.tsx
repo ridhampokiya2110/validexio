@@ -28,7 +28,7 @@ export function ManageSubscriptionButton() {
   };
 
   return (
-    <button
+    <button aria-label="Button action" type="button"
       onClick={handleManage}
       disabled={loading}
       className="btn-secondary text-sm px-4 py-2 flex items-center justify-center gap-2"

@@ -62,7 +62,7 @@ const fullPlans = [
       "5 Verified Target B2B Leads",
       "2 High-Fidelity UI Mockups",
       "Lifetime access to the report",
-      "Export to Notion / PDF",
+      "Export to PDF",
       "Investor Simulator (All Personas, 10 QA Rounds)"
     ],
     href: "/register?plan=pro",
@@ -81,7 +81,7 @@ const fullPlans = [
       "Up to 7 Direct Competitors Analyzed",
       "8 Verified Target B2B Leads",
       "Export to PDF for Investors",
-      "Export directly to Notion Workspace",
+
       "Dedicated account support manager",
       "White-label branding options (Your Logo)",
       "Shared Team Workspace (Coming soon)",
@@ -157,7 +157,7 @@ function PricingCard({ plan, currency, handleCheckout, loading }: { plan: any; c
       </div>
 
       <div className="flex-shrink-0 w-full lg:w-[240px] flex items-center justify-center border-t lg:border-t-0 border-[#E5E7EB]/80 pt-8 mt-8 lg:pt-0 lg:mt-0 lg:pl-8">
-        <button
+        <button aria-label="Button action" type="button"
           onClick={() => handleCheckout(plan)}
           disabled={loading === plan.tierKey}
           className={`w-full block text-center py-4 px-6 rounded-2xl font-semibold text-[16px] tracking-tight transition-all duration-700 overflow-hidden relative group/btn disabled:opacity-70 disabled:cursor-not-allowed ${plan.featured
@@ -261,7 +261,7 @@ export default function PricingPage() {
 
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 relative z-10">
           <div className="mb-8">
-            <Link href="/" className="inline-flex items-center text-sm font-semibold text-[#6B7280] hover:text-[#111827] transition-colors">
+            <Link aria-label="Navigation link" href="/" className="inline-flex items-center text-sm font-semibold text-[#6B7280] hover:text-[#111827] transition-colors">
               <ArrowLeft className="w-4 h-4 mr-1.5" />
               Back to Home
             </Link>

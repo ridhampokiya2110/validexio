@@ -33,7 +33,7 @@ async function ReportsContent({ userId }: { userId: string }) {
           <h1 className="text-2xl sm:text-3xl font-bold text-[#1B1716] mb-1">Validation Reports</h1>
           <p className="text-[#1B1716]/50 text-sm">{reports.length} report{reports.length !== 1 ? "s" : ""} generated</p>
         </div>
-        <Link href="/dashboard/validate" className="btn-primary text-sm px-4 py-2.5">
+        <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm px-4 py-2.5">
           <Plus className="w-4 h-4 mr-1" />
           New
         </Link>
@@ -46,14 +46,14 @@ async function ReportsContent({ userId }: { userId: string }) {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No reports yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Start validating your first startup idea.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">
             Validate Your First Idea
           </Link>
         </div>
       ) : (
         <div className="space-y-3">
           {reports.map((report) => (
-            <Link
+            <Link aria-label="Navigation link"
               key={report.id}
               href={`/dashboard/reports/${report.id}`}
               className="glass-card p-5 flex items-center gap-4 hover:border-cherry/25 group transition-all"

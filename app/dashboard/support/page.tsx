@@ -82,7 +82,7 @@ export default function SupportPage() {
       {/* HEADER */}
       <header className="glass-nav sticky top-0 z-40 h-16 flex items-center px-6">
         <div className="flex-1 flex items-center gap-4">
-          <Link href="/dashboard" className="w-8 h-8 rounded-lg hover:bg-[#1B1716]/5 flex items-center justify-center transition-colors">
+          <Link aria-label="Navigation link" href="/dashboard" className="w-8 h-8 rounded-lg hover:bg-[#1B1716]/5 flex items-center justify-center transition-colors">
             <ChevronLeft className="w-5 h-5 text-[#1B1716]" />
           </Link>
           <span className="font-bold text-lg text-[#1B1716] tracking-tight">Support</span>
@@ -116,14 +116,14 @@ export default function SupportPage() {
                 const isActive = activeFaq === index;
                 return (
                   <div 
-                    key={index}
+                    key={`item-${index}`}
                     className={`border transition-all duration-300 overflow-hidden rounded-xl ${
                       isActive 
                         ? "bg-white border-cherry shadow-lg shadow-cherry/5" 
                         : "bg-white border-[#1B1716]/10 hover:border-[#1B1716]/20"
                     }`}
                   >
-                    <button
+                    <button aria-label="Button action" type="button"
                       onClick={() => toggleFaq(index)}
                       className="w-full px-6 py-5 flex items-center justify-between text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-cherry rounded-xl"
                     >
@@ -210,7 +210,7 @@ export default function SupportPage() {
                   />
                 </div>
 
-                <button
+                <button aria-label="Button action"
                   type="submit"
                   disabled={loading}
                   className="btn-primary w-full"

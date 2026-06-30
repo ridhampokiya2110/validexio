@@ -96,7 +96,7 @@ export default function BlogPage() {
               </div>
               
               <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight group-hover:text-cherry transition-colors">
-                <Link href={`/blog/${posts[0].slug}`} className="before:absolute before:inset-0">
+                <Link aria-label="Navigation link" href={`/blog/${posts[0].slug}`} className="before:absolute before:inset-0">
                   {posts[0].title}
                 </Link>
               </h2>
@@ -117,7 +117,7 @@ export default function BlogPage() {
         <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="space-y-6">
             {posts.slice(1).map((post, idx) => (
-              <div key={idx} className="group relative bg-white border border-[#1B1716]/10 rounded-2xl p-6 md:p-8 hover:border-cherry/30 hover:shadow-[0_8px_30px_rgba(27,23,22,0.06)] transition-all duration-300">
+              <div key={`item-${idx}`} className="group relative bg-white border border-[#1B1716]/10 rounded-2xl p-6 md:p-8 hover:border-cherry/30 hover:shadow-[0_8px_30px_rgba(27,23,22,0.06)] transition-all duration-300">
                 <div className="flex flex-col md:flex-row md:items-start justify-between gap-6">
                   
                   <div className="flex-1">
@@ -128,7 +128,7 @@ export default function BlogPage() {
                     </div>
                     
                     <h3 className="text-2xl font-bold text-[#1B1716] mb-3 group-hover:text-cherry transition-colors leading-tight">
-                      <Link href={`/blog/${post.slug}`} className="before:absolute before:inset-0">
+                      <Link aria-label="Navigation link" href={`/blog/${post.slug}`} className="before:absolute before:inset-0">
                         {post.title}
                       </Link>
                     </h3>

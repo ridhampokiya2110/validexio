@@ -77,10 +77,11 @@ export default function OnboardingPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Phone Number */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="phone" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 Phone Number (Optional)
               </label>
               <input
+                id="phone"
                 type="tel"
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -91,11 +92,12 @@ export default function OnboardingPage() {
 
             {/* Role */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="role" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 I am a...
               </label>
               <div className="relative">
                 <select
+                  id="role"
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                   className={`input-field appearance-none cursor-pointer ${errors.role ? "border-red-500/50" : ""}`}
@@ -116,7 +118,7 @@ export default function OnboardingPage() {
               {errors.role && <p className="text-red-600 text-xs mt-1">{errors.role}</p>}
             </div>
 
-            <button
+            <button aria-label="Button action"
               type="submit"
               disabled={loading}
               className="btn-primary w-full justify-center py-3 mt-4 disabled:opacity-60"

@@ -126,7 +126,7 @@ export default async function BillingPage() {
         "5 Verified Target B2B Leads",
         "2 High-Fidelity UI Mockups",
         "Lifetime access to the report",
-        "Export to Notion / PDF",
+        "Export to PDF",
         "Investor Simulator (All Personas, 10 QA Rounds)"
       ],
       current: tier === "PRO",
@@ -144,7 +144,7 @@ export default async function BillingPage() {
         "Up to 7 Direct Competitors Analyzed",
         "8 Verified Target B2B Leads",
         "Export to PDF for Investors",
-        "Export directly to Notion Workspace",
+
         "Dedicated account support manager",
         "White-label branding options (Your Logo)",
         "Shared Team Workspace (Coming soon)",
@@ -259,11 +259,11 @@ export default async function BillingPage() {
 
             <div className="mt-auto pt-4">
               {plan.current ? (
-                <button disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
+                <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
                   Current Plan
                 </button>
               ) : plan.name === "Free" ? (
-                <button disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
+                <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
                   Downgrade to Free
                 </button>
               ) : (
@@ -280,7 +280,7 @@ export default async function BillingPage() {
 
       {countryCode === "IN" && (
         <div className="mt-8 text-center text-sm text-[#1B1716]/70 bg-orange-50/50 border border-orange-200/50 p-4 rounded-xl">
-          🇮🇳 Based in India? Please ensure <strong>International Transactions</strong> are enabled on your Visa/Mastercard. Having trouble? <Link href="/contact" className="text-cherry font-bold hover:underline">Contact us for UPI options</Link>.
+          🇮🇳 Based in India? Please ensure <strong>International Transactions</strong> are enabled on your Visa/Mastercard. Having trouble? <Link aria-label="Navigation link" href="/contact" className="text-cherry font-bold hover:underline">Contact us for UPI options</Link>.
         </div>
       )}
     </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { toast } from "sonner";
@@ -144,7 +145,7 @@ function RegisterPageContent() {
           <p className="text-[#1B1716]/55 mb-6">
             Check your email to verify your account, then sign in to start validating your ideas.
           </p>
-          <Link href="/login" className="btn-primary w-full justify-center">
+          <Link aria-label="Navigation link" href="/login" className="btn-primary w-full justify-center">
             Sign In Now
           </Link>
         </div>
@@ -161,8 +162,8 @@ function RegisterPageContent() {
       <div className="w-full max-w-md relative z-10">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <Link href="/" className="inline-block mb-6">
-            <img src="/logo-icon-noir.png" alt="Validexio" className="w-20 h-20 object-contain" />
+          <Link aria-label="Navigation link" href="/" className="inline-block mb-6">
+            <Image src="/logo-icon-noir.png" alt="Validexio" width={80} height={80} className="w-20 h-20 object-contain" />
           </Link>
           <span className="font-bold text-xl text-[#1B1716]">Validexio</span>
           <h1 className="text-2xl font-bold text-[#1B1716] mt-6 mb-1">Create your account</h1>
@@ -172,7 +173,7 @@ function RegisterPageContent() {
         <div className="glass-card p-6 sm:p-8">
           {/* Social Login */}
           <div className="mb-6">
-            <button
+            <button aria-label="Button action" type="button"
               onClick={() => handleSocialLogin("google")}
               disabled={!!loadingProvider}
               className="btn-secondary w-full text-sm py-2.5 justify-center gap-2 disabled:opacity-50"
@@ -207,12 +208,13 @@ function RegisterPageContent() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="name" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 Full Name
               </label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
                 <input
+                  id="name"
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -226,11 +228,12 @@ function RegisterPageContent() {
 
             {/* Phone */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="phone" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 Phone Number (Optional)
               </label>
               <div className="relative">
                 <input
+                  id="phone"
                   type="tel"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -243,11 +246,12 @@ function RegisterPageContent() {
 
             {/* Role */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="role" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 I am a...
               </label>
               <div className="relative">
                 <select
+                  id="role"
                   value={form.role}
                   onChange={(e) => setForm({ ...form, role: e.target.value })}
                   className={`input-field appearance-none cursor-pointer ${errors.role ? "border-red-500/50" : ""}`}
@@ -268,12 +272,13 @@ function RegisterPageContent() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="email" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 Email Address
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
                 <input
+                  id="email"
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -287,12 +292,13 @@ function RegisterPageContent() {
 
             {/* Password */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="password" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
                 <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -300,7 +306,7 @@ function RegisterPageContent() {
                   placeholder="••••••••"
                   autoComplete="new-password"
                 />
-                <button
+                <button aria-label="Button action"
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1B1716]/35 hover:text-[#1B1716]/70"
@@ -314,7 +320,7 @@ function RegisterPageContent() {
                   <div className="flex gap-1 mb-1">
                     {[...Array(6)].map((_, i) => (
                       <div
-                        key={i}
+                        key={`item-${i}`}
                         className={`flex-1 h-1 rounded-full transition-all duration-300 ${
                           i < passwordStrength.score ? passwordStrength.color : "bg-[#1B1716]/10"
                         }`}
@@ -331,12 +337,13 @@ function RegisterPageContent() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+              <label htmlFor="confirmPassword" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
                 Confirm Password
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
                 <input
+                  id="confirmPassword"
                   type={showPassword ? "text" : "password"}
                   value={form.confirmPassword}
                   onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
@@ -352,12 +359,12 @@ function RegisterPageContent() {
 
             <p className="text-xs text-[#1B1716]/35">
               By creating an account, you agree to our{" "}
-              <Link href="/terms" className="text-cherry/60 hover:text-cherry">Terms of Service</Link>{" "}
+              <Link aria-label="Navigation link" href="/terms" className="text-cherry/60 hover:text-cherry">Terms of Service</Link>{" "}
               and{" "}
-              <Link href="/privacy" className="text-cherry/60 hover:text-cherry">Privacy Policy</Link>.
+              <Link aria-label="Navigation link" href="/privacy" className="text-cherry/60 hover:text-cherry">Privacy Policy</Link>.
             </p>
 
-            <button
+            <button aria-label="Button action"
               type="submit"
               disabled={loading}
               className="btn-primary w-full justify-center py-3 disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none"
@@ -378,7 +385,7 @@ function RegisterPageContent() {
 
           <p className="text-center text-[#1B1716]/40 text-sm mt-6">
             Already have an account?{" "}
-            <Link href="/login" className="text-cherry/80 hover:text-cherry font-medium transition-colors">
+            <Link aria-label="Navigation link" href="/login" className="text-cherry/80 hover:text-cherry font-medium transition-colors">
               Sign in
             </Link>
           </p>

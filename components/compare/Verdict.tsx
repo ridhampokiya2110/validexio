@@ -29,7 +29,7 @@ export function Verdict({ competitorName, data }: VerdictProps) {
           </div>
           <ul className="space-y-6 flex-grow">
             {data.competitorBestFor.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-4 text-gray-500">
+              <li key={`item-${idx}`} className="flex items-start gap-4 text-gray-500">
                 <X className="w-6 h-6 shrink-0 mt-0.5 text-gray-400" />
                 <span className="text-lg">{item}</span>
               </li>
@@ -46,7 +46,7 @@ export function Verdict({ competitorName, data }: VerdictProps) {
           </div>
           <ul className="space-y-6 flex-grow">
             {data.validexioBestFor.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-4 text-[#1B1716]">
+              <li key={`item-${idx}`} className="flex items-start gap-4 text-[#1B1716]">
                 <Check className="w-6 h-6 shrink-0 mt-0.5 text-[#75070C]" />
                 <span className="text-lg font-medium">{item}</span>
               </li>
@@ -57,7 +57,7 @@ export function Verdict({ competitorName, data }: VerdictProps) {
 
       <div className="mt-20 text-center">
         <div className="inline-block p-[2px] rounded-full bg-gradient-to-r from-[#75070C] to-[#a8101a] shadow-xl hover:shadow-2xl transition-shadow cursor-pointer">
-          <Link href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder" className="bg-[#1B1716] text-white px-10 py-5 rounded-full font-bold text-lg inline-flex items-center hover:bg-[#2a2423] transition-colors">
+          <Link aria-label="Navigation link" href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder" className="bg-[#1B1716] text-white px-10 py-5 rounded-full font-bold text-lg inline-flex items-center hover:bg-[#2a2423] transition-colors">
             Start Building Now <ArrowRight className="ml-2 w-5 h-5" />
           </Link>
         </div>

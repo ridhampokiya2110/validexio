@@ -61,7 +61,7 @@ export default function ValidateNichePage({ params }: PageProps) {
           </div>
 
           {features.map((feature, idx) => (
-            <div key={idx} className="grid grid-cols-12 border-b border-[#1B1716]/10 last:border-0 hover:bg-[#1B1716]/[0.02] transition-colors">
+            <div key={`item-${idx}`} className="grid grid-cols-12 border-b border-[#1B1716]/10 last:border-0 hover:bg-[#1B1716]/[0.02] transition-colors">
               <div className="col-span-6 p-5 flex items-center font-bold text-[#1B1716]">
                 {feature.name}
               </div>

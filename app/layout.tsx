@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
@@ -159,13 +160,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-        <script
+        {/* PWA Init */}
+        <Script
+          id="pwa-install"
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.deferredPrompt = null;
@@ -215,7 +213,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify([
+            __html: `[
               {
                 "@context": "https://schema.org",
                 "@type": ["SoftwareApplication", "WebApplication"],
@@ -230,30 +228,9 @@ export default function RootLayout({
                 "featureList": [
                   "market validation score 0-100",
                   "Production React/Next.js code generation",
-                  "10 verified B2B leads per validation",
-                  "2 high-fidelity UI mockups",
-                  "Complete database schemas (Supabase/Prisma)",
+                  "B2B lead generation via LinkedIn/Apollo APIs",
+                  "Automated competitor teardowns",
                   "TAM/SAM/SOM market sizing",
-                  "Competitor analysis and tech stack teardown",
-                  "Unit economics and 3-year revenue projections",
-                  "VC pitch simulator with all personas",
-                  "Day-1 GTM branding kit",
-                  "Anti-roadmap and pivot strategy",
-                  "India-first pricing at INR 1499"
-                ],
-                "offers": [
-                  {
-                    "@type": "Offer",
-                    "name": "Free",
-                    "price": "0",
-                    "priceCurrency": "USD",
-                    "description": "Basic validation score, market saturation check, blurred mockups"
-                  },
-                  {
-                    "@type": "Offer",
-                    "name": "Pro",
-                    "price": "39",
-                    "priceCurrency": "USD",
                     "description": "Full execution payload: code, leads, UI, architecture"
                   },
                   {

@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Palette, Monitor, Smartphone, Layout } from "lucide-react";
 import { prisma } from "@/lib/db";
 import Link from "next/link";
+import Image from "next/image";
 
 
 
@@ -44,7 +45,7 @@ export default async function MockupsPage() {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No mockup concepts yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to get real-time data-backed UI concepts.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
         </div>
       ) : (
         <div className="space-y-8">
@@ -96,7 +97,7 @@ export default async function MockupsPage() {
                           <span className="text-[#75070C]">{copy.headline.split(' ').slice(-1)}</span>
                         </h4>
                         <p className="text-[#1B1716]/60 text-base mb-8 max-w-lg mx-auto leading-relaxed">{copy.subheadline}</p>
-                        <button className="bg-[#1B1716] text-[#FDFCF8] font-medium text-sm px-8 py-3 rounded-full shadow-lg pointer-events-none opacity-90">
+                        <button aria-label="Button action" type="button" className="bg-[#1B1716] text-[#FDFCF8] font-medium text-sm px-8 py-3 rounded-full shadow-lg pointer-events-none opacity-90">
                           {copy.cta}
                         </button>
                       </div>
@@ -107,7 +108,7 @@ export default async function MockupsPage() {
                 {mockups && mockups.length > 0 && (
                   <div className="grid sm:grid-cols-2 gap-4">
                     {mockups.map((mockup, i) => (
-                      <div key={i} className="glass-card p-5 overflow-hidden">
+                      <div key={`item-${i}`} className="glass-card p-5 overflow-hidden">
                         <div className="flex items-center gap-2 mb-3">
                           {i % 2 === 0 ? (
                             <Monitor className="w-4 h-4 text-[#1B1716]/50" />
@@ -120,10 +121,12 @@ export default async function MockupsPage() {
                         {/* Visual mockup representation OR Generated Image */}
                         {mockupImages && mockupImages[i] ? (
                           <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-[#1B1716]/10 mb-4 bg-[#FDFCF8]">
-                            <img 
+                            <Image 
                               src={mockupImages[i]} 
                               alt={`${mockup.screen} mockup`}
-                              className="object-cover w-full h-full hover:scale-105 transition-transform duration-500"
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              className="object-cover hover:scale-105 transition-transform duration-500"
                             />
                           </div>
                         ) : (

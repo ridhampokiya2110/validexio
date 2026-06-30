@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
             <p className="text-[#1B1716]/60 text-sm mb-6">
               We&apos;ve sent a password reset link to {email}
             </p>
-            <Link href="/login" className="btn-secondary w-full">
+            <Link aria-label="Navigation link" href="/login" className="btn-secondary w-full">
               Return to login
             </Link>
           </div>
@@ -89,7 +89,7 @@ export default function ForgotPasswordPage() {
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full">
+            <button aria-label="Button action" type="submit" disabled={loading} className="btn-primary w-full">
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -101,7 +101,7 @@ export default function ForgotPasswordPage() {
             </button>
 
             <div className="text-center mt-6">
-              <Link href="/login" className="inline-flex items-center gap-2 text-sm text-[#1B1716]/50 hover:text-[#1B1716] transition-colors">
+              <Link aria-label="Navigation link" href="/login" className="inline-flex items-center gap-2 text-sm text-[#1B1716]/50 hover:text-[#1B1716] transition-colors">
                 <ArrowLeft className="w-4 h-4" />
                 Back to login
               </Link>

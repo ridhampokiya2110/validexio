@@ -41,6 +41,7 @@ export default function AdminConsole() {
   const [loading, setLoading] = useState(true);
   const [activeModalTicket, setActiveModalTicket] = useState<Ticket | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [editingCredits, setEditingCredits] = useState<Record<string, number>>({});
   const [activeTab, setActiveTab] = useState<"overview" | "users" | "support" | "settings">("overview");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [loadingMaintenance, setLoadingMaintenance] = useState(false);
@@ -68,6 +69,11 @@ export default function AdminConsole() {
 
       setKpis(kpiData);
       setUsers(userData.users || []);
+      const initialCredits: Record<string, number> = {};
+      (userData.users || []).forEach((u: User) => {
+        initialCredits[u.id] = u.availableCredits;
+      });
+      setEditingCredits(initialCredits);
       setTickets(ticketData.tickets || []);
       setMaintenanceMode(maintenanceData.enabled || false);
     } catch (error) {
@@ -128,13 +134,14 @@ export default function AdminConsole() {
     }
   };
 
-  const handleUpdateTier = async (userId: string, newTier: string) => {
+  const handleUpdateTier = async (userId: string, newTier: string, newCredits?: number) => {
     try {
       setProcessingId(`tier-${userId}`);
+      const payload = { tier: newTier, credits: newCredits !== undefined ? newCredits : editingCredits[userId] };
       const res = await fetch(`/api/v1/admin/users/${userId}/tier`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: newTier }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error("Failed to update tier");
       
@@ -190,7 +197,7 @@ export default function AdminConsole() {
           </span>
         </div>
         <nav className="p-4 space-y-2 flex-1">
-          <button 
+          <button aria-label="Button action" type="button" 
             onClick={() => setActiveTab("overview")}
             className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
               activeTab === "overview" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
@@ -199,7 +206,7 @@ export default function AdminConsole() {
             <LayoutDashboard className="w-4 h-4" />
             Overview KPIs
           </button>
-          <button 
+          <button aria-label="Button action" type="button" 
             onClick={() => setActiveTab("users")}
             className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
               activeTab === "users" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
@@ -208,7 +215,7 @@ export default function AdminConsole() {
             <Users className="w-4 h-4" />
             User Management
           </button>
-          <button 
+          <button aria-label="Button action" type="button" 
             onClick={() => setActiveTab("support")}
             className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
               activeTab === "support" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
@@ -217,7 +224,7 @@ export default function AdminConsole() {
             <MessageSquare className="w-4 h-4" />
             Support Queue
           </button>
-          <button 
+          <button aria-label="Button action" type="button" 
             onClick={() => setActiveTab("settings")}
             className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
               activeTab === "settings" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
@@ -228,10 +235,10 @@ export default function AdminConsole() {
           </button>
         </nav>
         <div className="p-4 border-t border-[#1B1716]/10 flex flex-col gap-2">
-          <Link href="/dashboard" className="text-xs font-semibold text-[#1B1716]/60 hover:text-cherry transition-colors block px-2">
+          <Link aria-label="Navigation link" href="/dashboard" className="text-xs font-semibold text-[#1B1716]/60 hover:text-cherry transition-colors block px-2">
             &larr; Exit to App
           </Link>
-          <button 
+          <button aria-label="Button action" type="button" 
             onClick={() => signOut({ callbackUrl: '/login' })}
             className="text-left text-xs font-semibold text-[#1B1716]/60 hover:text-red-600 transition-colors block px-2 py-1"
           >
@@ -311,17 +318,34 @@ export default function AdminConsole() {
                           className="bg-[#1B1716]/5 border border-[#1B1716]/10 text-[#1B1716] text-xs rounded-md px-2 py-1 font-semibold focus:outline-none focus:ring-1 focus:ring-[#1B1716]/20 disabled:opacity-50"
                         >
                           <option value="FREE">FREE</option>
+                          <option value="STARTER">STARTER</option>
                           <option value="PRO">PRO</option>
                           <option value="TEAM">TEAM</option>
                           <option value="ENTERPRISE">ENTERPRISE</option>
                         </select>
-                        <span className="text-xs">[{user.availableCredits} cr]</span>
+                        <span className="text-xs">[</span>
+                        <input
+                          type="number"
+                          min="0"
+                          value={editingCredits[user.id] ?? user.availableCredits}
+                          onChange={(e) => setEditingCredits({ ...editingCredits, [user.id]: parseInt(e.target.value) || 0 })}
+                          className="w-12 bg-transparent border-b border-[#1B1716]/20 text-center text-xs focus:outline-none"
+                        />
+                        <span className="text-xs">cr ]</span>
+                        {editingCredits[user.id] !== undefined && editingCredits[user.id] !== user.availableCredits && (
+                          <button aria-label="Button action" type="button"
+                            onClick={() => handleUpdateTier(user.id, user.tier, editingCredits[user.id])}
+                            className="ml-2 text-[10px] bg-cherry text-white px-2 py-0.5 rounded"
+                          >
+                            Save
+                          </button>
+                        )}
                       </td>
                       <td className="p-4 text-[#1B1716]/60 text-sm">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </td>
                       <td className="p-4 text-right flex items-center justify-end gap-2">
-                        <button 
+                        <button aria-label="Button action" type="button" 
                           onClick={() => handleGrantCredit(user.id)}
                           disabled={processingId === `grant-${user.id}`}
                           className="p-2 border border-[#1B1716]/10 rounded-lg text-[#1B1716]/60 hover:bg-[#1B1716]/5 hover:text-[#1B1716] transition-colors disabled:opacity-50"
@@ -329,7 +353,7 @@ export default function AdminConsole() {
                         >
                           {processingId === `grant-${user.id}` ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
                         </button>
-                        <button 
+                        <button aria-label="Button action" type="button" 
                           onClick={() => handleBanUser(user.id, user.isBanned)}
                           disabled={processingId === `ban-${user.id}`}
                           className={`p-2 border rounded-lg transition-colors disabled:opacity-50 ${
@@ -383,7 +407,7 @@ export default function AdminConsole() {
                       <p className="text-sm text-[#1B1716]/60 mt-1">{ticket.user.email}</p>
                     </div>
                     <div className="text-right">
-                      <button className="px-4 py-2 bg-white border border-[#1B1716]/10 text-[#1B1716] rounded-lg text-sm font-semibold hover:bg-[#1B1716]/5 transition-colors">
+                      <button aria-label="Button action" type="button" className="px-4 py-2 bg-white border border-[#1B1716]/10 text-[#1B1716] rounded-lg text-sm font-semibold hover:bg-[#1B1716]/5 transition-colors">
                         View & Resolve
                       </button>
                     </div>
@@ -410,7 +434,7 @@ export default function AdminConsole() {
                     Only users accessing <code className="bg-[#1B1716]/5 px-1 py-0.5 rounded text-xs">/admin</code> will be able to bypass it.
                   </p>
                 </div>
-                <button
+                <button aria-label="Button action" type="button"
                   onClick={handleToggleMaintenance}
                   disabled={loadingMaintenance}
                   className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors focus:outline-none ${
@@ -439,7 +463,7 @@ export default function AdminConsole() {
                 <h2 className="text-xl font-bold text-[#1B1716] mb-1">{activeModalTicket.subject}</h2>
                 <p className="text-sm font-medium text-[#1B1716]/60">User: {activeModalTicket.user.email}</p>
               </div>
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => setActiveModalTicket(null)}
                 className="text-[#1B1716]/40 hover:text-[#1B1716] transition-colors font-mono"
               >
@@ -450,13 +474,13 @@ export default function AdminConsole() {
               {activeModalTicket.message}
             </div>
             <div className="p-6 border-t border-[#1B1716]/10 flex justify-end gap-3 bg-white rounded-b-2xl">
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => setActiveModalTicket(null)}
                 className="btn-ghost"
               >
                 Cancel
               </button>
-              <button 
+              <button aria-label="Button action" type="button" 
                 onClick={() => handleResolveTicket(activeModalTicket.id)}
                 disabled={processingId === `resolve-${activeModalTicket.id}`}
                 className="btn-primary"

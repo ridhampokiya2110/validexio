@@ -35,7 +35,19 @@ export default function PricingLayout({ children }: { children: React.ReactNode 
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, '\\u003c') }}
+        dangerouslySetInnerHTML={{ __html: `{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Validexio Validation Execution Engine",
+  "description": "data-driven startup validation that generates production-ready code, B2B leads, and UI mockups.",
+  "offers": {
+    "@type": "AggregateOffer",
+    "lowPrice": "0",
+    "highPrice": "249",
+    "priceCurrency": "USD",
+    "offerCount": "4"
+  }
+}` }}
       />
       {children}
     </>

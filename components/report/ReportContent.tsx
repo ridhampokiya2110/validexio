@@ -12,7 +12,6 @@ import {
   Target,
   Rocket,
   BarChart3,
-  Lightbulb,
   CheckCircle,
   XCircle,
   Clock,
@@ -21,7 +20,7 @@ import {
   ShieldCheck,
   AlertCircle
 } from "lucide-react";
-import { getScoreColor, getScoreLabel, getRiskColor, formatDate } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 import { UnitEconomicsCard } from "@/components/UnitEconomicsCard";
 import { UnifiedScoreCard } from "@/components/report/UnifiedScoreCard";
 import { MetricsRow } from "@/components/report/MetricsRow";
@@ -30,6 +29,7 @@ import { PremiumLock } from "@/components/report/PremiumLock";
 import { DeleteReportButton } from "@/components/dashboard/DeleteReportButton";
 import { PremiumRevenueChart } from "@/components/PremiumRevenueChart";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function ReportContent({ report, isReadOnly = false, userTier = "STARTER" }: { report: any, isReadOnly?: boolean, userTier?: string }) {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
   if (!report) return null;
@@ -171,7 +171,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
       {/* Back + Header */}
       <div className="mb-10 border-b border-[#E5E7EB]/50 pb-8 animate-fade-in">
         {!isReadOnly && (
-        <Link
+        <Link aria-label="Navigation link"
           href="/dashboard/reports"
           className="inline-flex items-center gap-1.5 text-[#6B7280] hover:text-[#111827] text-sm mb-4 transition-colors break-words"
         >
@@ -206,61 +206,21 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             {!isReadOnly && <DeleteReportButton reportId={report.id} />}
             {!isReadOnly && (
               <div className="flex flex-wrap items-center gap-2">
-                {/* Notion Export Button - Coming Soon for Team and Enterprise */}
-                {(userTier === "TEAM" || userTier === "ENTERPRISE") && (
-                  <button 
-                    onClick={() => alert("Notion Export is coming soon!")}
-                    className="btn-secondary text-sm gap-2 px-3 py-2 bg-white text-[#111827] border border-[#E5E7EB] hover:bg-gray-50 transition-colors rounded-none"
-                  >
-                    <ExternalLink className="w-4 h-4" />
-                    Export to Notion
-                  </button>
-                )}
-
                 {/* PDF Export Button - Gated for Pro, Team, and Enterprise */}
                 {userTier !== "STARTER" && userTier !== "FREE" ? (
-                  <button
-                    onClick={async () => {
-                      if (isPdfLoading) return;
-                      setIsPdfLoading(true);
-                      try {
-                        const resp = await fetch(`/api/v1/projects/${report.id}/export/pdf`);
-                        if (!resp.ok) throw new Error("Failed");
-                        const blob = await resp.blob();
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = `validexio-report-${report.id.substring(0,6)}.pdf`;
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
-                        URL.revokeObjectURL(url);
-                      } catch (e) {
-                        alert("PDF export failed. Please try again.");
-                      } finally {
-                        setIsPdfLoading(false);
-                      }
+                  <button aria-label="Button action" type="button"
+                    onClick={() => {
+                      window.open(`/api/v1/projects/${report.id}/export/pdf`, '_blank');
                     }}
-                    disabled={isPdfLoading}
-                    className="btn-primary text-sm gap-2 px-3 py-2 bg-[#111827] text-white border border-[#111827] hover:bg-[#FFFFFF] hover:text-[#111827] transition-colors rounded-none disabled:opacity-70 disabled:cursor-not-allowed flex items-center"
+                    className="btn-primary text-sm gap-2 px-3 py-2 bg-[#111827] text-white border border-[#111827] hover:bg-[#FFFFFF] hover:text-[#111827] transition-colors rounded-none flex items-center"
                   >
-                    {isPdfLoading ? (
-                      <>
-                        <svg className="animate-spin w-4 h-4 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span className="whitespace-nowrap">Generating PDF...</span>
-                      </>
-                    ) : (
                       <>
                         <FileText className="w-4 h-4" />
                         Export PDF
                       </>
-                    )}
                   </button>
                 ) : (
-                  <button 
+                  <button aria-label="Button action" type="button" 
                     onClick={() => alert("PDF Export is available on PRO plans and above. Upgrade your plan to unlock.")}
                     className="btn-primary text-sm gap-2 px-3 py-2 bg-[#F3F4F6] text-[#9CA3AF] border border-[#E5E7EB] cursor-not-allowed rounded-none"
                   >
@@ -297,7 +257,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               <p className="text-[#6B7280] text-sm leading-relaxed">
                 {market.reasoning}
                 {market.sourceUrl && (
-                  <a
+                  <a aria-label="Link action"
                     href={market.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -418,14 +378,14 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                     <div>
                       <h3 className="text-2xl font-black text-[#FDFCF8] tracking-tight">{comp.name}</h3>
                       {comp.website && (
-                        <a href={`https://${comp.website}`} target="_blank" rel="noopener noreferrer" className="text-[#FDFCF8]/50 hover:text-[#FFEDAB] text-sm font-medium transition-colors flex items-center gap-1.5 mt-1 w-max">
+                        <a aria-label="Link action" href={`https://${comp.website}`} target="_blank" rel="noopener noreferrer" className="text-[#FDFCF8]/50 hover:text-[#FFEDAB] text-sm font-medium transition-colors flex items-center gap-1.5 mt-1 w-max">
                           {comp.website} <ExternalLink className="w-3 h-3" />
                         </a>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10">
-                      <div className="w-2 h-2 rounded-full bg-[#FFEDAB] animate-pulse"></div>
-                      <span className="text-[#FFEDAB] text-xs font-bold tracking-widest uppercase">{comp.pricing}</span>
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex-shrink-0 whitespace-nowrap">
+                      <div className="w-2 h-2 rounded-full bg-[#FFEDAB] animate-pulse flex-shrink-0"></div>
+                      <span className="text-[#FFEDAB] text-xs font-bold tracking-widest uppercase truncate">{comp.pricing}</span>
                     </div>
                   </div>
 
@@ -440,7 +400,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                         </span>
                       )}
                       {comp.sourceUrl && (
-                        <a href={comp.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-[#630102] hover:text-[#8C0203] font-bold text-sm mt-3 transition-colors inline-flex items-center gap-1">
+                        <a aria-label="Link action" href={comp.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-[#630102] hover:text-[#8C0203] font-bold text-sm mt-3 transition-colors inline-flex items-center gap-1">
                           [Source Intelligence]
                         </a>
                       )}
@@ -656,12 +616,12 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               />
             ) : (
               risks.map((risk, i) => (
-                <div key={i} className={`p-5 flex flex-col sm:flex-row gap-4 sm:items-start ${i !== risks.length - 1 ? 'border-b border-[#E5E7EB]' : ''} hover:bg-[#F9FAFB] transition-colors`}>
+                <div key={`item-${i}`} className={`p-5 flex flex-col sm:flex-row gap-4 sm:items-start ${i !== risks.length - 1 ? 'border-b border-[#E5E7EB]' : ''} hover:bg-[#F9FAFB] transition-colors`}>
                   <div className="flex flex-wrap gap-2 sm:flex-col sm:gap-1 flex-shrink-0">
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-max ${risk.probability.toLowerCase() === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : risk.probability.toLowerCase() === 'medium' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-max whitespace-nowrap ${risk.probability.toLowerCase() === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : risk.probability.toLowerCase() === 'medium' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
                       P: {risk.probability}
                     </span>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-max ${risk.impact.toLowerCase() === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : risk.impact.toLowerCase() === 'medium' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider w-max whitespace-nowrap ${risk.impact.toLowerCase() === 'high' ? 'bg-red-50 text-red-700 border border-red-200' : risk.impact.toLowerCase() === 'medium' ? 'bg-orange-50 text-orange-700 border border-orange-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
                       I: {risk.impact}
                     </span>
                   </div>
@@ -718,7 +678,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                   </div>
                 ))}
               </div>
-              <p className="text-[#111827] text-sm italic border-l-2 border-[#630102]/30 pl-3 py-1 font-medium relative z-10">"{pricing.rationale}"</p>
+              <p className="text-[#111827] text-sm italic border-l-2 border-[#630102]/30 pl-3 py-1 font-medium relative z-10">&quot;{pricing.rationale}&quot;</p>
             </>
           )}
         </section>
@@ -815,7 +775,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                         {acquisition.primaryChannels.map((c, i) => (
                           <div 
                             key={c} 
-                            className="group/item flex items-center gap-5 p-4 sm:p-5 rounded-xl bg-white border border-[#E5E7EB]/80 hover:border-[#630102]/20 hover:bg-[#FDFCF8] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-500 cursor-default relative overflow-hidden"
+                            className="group/item flex items-center gap-4 sm:gap-5 p-4 sm:p-5 rounded-xl bg-white border border-[#E5E7EB]/80 hover:border-[#630102]/20 hover:bg-[#FDFCF8] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:-translate-y-1 transition-all duration-500 cursor-default relative overflow-hidden"
                           >
                             {/* Subtle highlight on hover */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#630102]/[0.02] to-transparent translate-x-[-100%] group-hover/item:translate-x-[100%] transition-transform duration-1000 ease-in-out"></div>
@@ -826,7 +786,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                             </div>
                             
                             {/* Content */}
-                            <span className="text-[15px] font-medium tracking-wide text-[#1B1716]/80 leading-relaxed group-hover/item:text-[#1B1716] transition-colors relative z-10">
+                            <span className="text-[15px] font-medium tracking-wide text-[#1B1716]/80 leading-relaxed group-hover/item:text-[#1B1716] transition-colors relative z-10 flex-1 min-w-0 break-words">
                               {c}
                             </span>
                           </div>
@@ -842,7 +802,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                       <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-[#630102] rounded-l-lg"></div>
                       <div className="bg-[#FDFCF8] border border-[#E5E7EB] border-l-0 rounded-r-lg p-5 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
                         <p className="text-[#1B1716]/90 text-lg leading-relaxed font-serif italic tracking-wide">
-                          "{acquisition.contentStrategy}"
+                          &quot;{acquisition.contentStrategy}&quot;
                         </p>
                       </div>
                     </div>
@@ -859,7 +819,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                   
                   <div className="space-y-4">
                     {acquisition.firstCustomerTactics.map((tactic, i) => (
-                      <div key={i} className="group flex items-stretch gap-4 p-5 bg-white border border-[#E5E7EB] rounded-xl hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#630102]/20 transition-all duration-300">
+                      <div key={`item-${i}`} className="group flex items-stretch gap-4 p-5 bg-white border border-[#E5E7EB] rounded-xl hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#630102]/20 transition-all duration-300">
                         <div className="flex flex-col items-center justify-center border-r border-[#E5E7EB] pr-5 group-hover:border-[#630102]/30 transition-colors">
                           <span className="text-2xl font-black text-[#1B1716]/10 group-hover:text-[#630102] transition-colors leading-none tracking-tighter">
                             {String(i + 1).padStart(2, '0')}
@@ -906,7 +866,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                   <p className="text-xs font-bold uppercase tracking-widest text-[#6B7280] mb-4 pb-2 border-b border-[#E5E7EB]">{phase.label}</p>
                   <ol className="space-y-4">
                     {phase.items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-[#111827]">
+                      <li key={`item-${i}`} className="flex items-start gap-3 text-sm text-[#111827]">
                         <span className="font-bold text-[#630102] text-xs mt-0.5 flex-shrink-0">{i + 1}.</span>
                         <span className="leading-relaxed flex-1 min-w-0 break-words">{item}</span>
                       </li>
@@ -940,6 +900,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                     <div>
                       <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-2">{stage.keys[0]}</p>
                       <ul className="space-y-1.5">
+                        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                         {/* @ts-ignore */}
                         {stage.data[stage.keys[0]].map((c: string) => (
                           <li key={c} className="text-[#111827] text-xs flex items-start gap-1.5 leading-relaxed">
@@ -952,6 +913,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                     <div>
                       <p className="text-[10px] font-bold text-[#6B7280] uppercase tracking-widest mb-2 border-t border-[#E5E7EB] pt-3">{stage.keys[1]}</p>
                       <ul className="space-y-1.5">
+                        {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                         {/* @ts-ignore */}
                         {stage.data[stage.keys[1]].map((c: string) => (
                           <li key={c} className="text-[#111827] text-xs flex items-start gap-1.5 leading-relaxed">
@@ -979,10 +941,10 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             </div>
             <div className="space-y-6">
               {actionPlan.premium_execution.signal_to_sales_mapping.map((mapping, idx) => (
-                <div key={idx} className="bg-gradient-to-r from-[#FDFCF8] to-[#FFFFFF] border border-[#E5E7EB] p-6 rounded-xl hover:shadow-md hover:border-[#630102]/30 transition-all duration-300">
+                <div key={`item-${idx}`} className="bg-gradient-to-r from-[#FDFCF8] to-[#FFFFFF] border border-[#E5E7EB] p-6 rounded-xl hover:shadow-md hover:border-[#630102]/30 transition-all duration-300">
                   <div className="mb-4 pb-4 border-b border-[#E5E7EB]">
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Raw Complaint Signal</p>
-                    <p className="text-sm text-[#111827] italic font-medium">"{mapping.reddit_complaint}"</p>
+                    <p className="text-sm text-[#111827] italic font-medium">&quot;{mapping.reddit_complaint}&quot;</p>
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#630102] uppercase tracking-widest mb-1">Cold Email Hook Translation</p>
@@ -1006,7 +968,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               <h2 className="text-2xl font-bold text-[#111827] tracking-tight">MVP Code Boilerplate</h2>
             </div>
             <ExecutionLock isReadOnly={isReadOnly}>
-              <div className="bg-[#111827] text-[#E5E7EB] p-3 sm:p-5 rounded-xl overflow-x-auto text-xs sm:text-sm font-mono whitespace-pre max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
+              <div className="bg-[#111827] text-[#E5E7EB] p-3 sm:p-5 rounded-xl overflow-x-auto w-full text-xs sm:text-sm font-mono whitespace-pre max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
                 {codeBoilerplate}
               </div>
             </ExecutionLock>

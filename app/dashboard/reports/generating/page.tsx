@@ -154,7 +154,7 @@ function GeneratingContent() {
               { text: "Financial projections", done: status.includes("Synthesizing") || status.includes("Drafting") || status.includes("ready") || isCached },
               { text: "Action plan", done: status.includes("ready") || isCached }
             ].map((step, i) => (
-              <div key={i} className="flex items-center gap-3">
+              <div key={`item-${i}`} className="flex items-center gap-3">
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-colors duration-500 ${step.done ? "bg-emerald-500/20" : "bg-[#1B1716]/5"}`}>
                   {step.done ? (
                     <CheckCircle className="w-3 h-3 text-emerald-600" />

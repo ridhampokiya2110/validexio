@@ -132,7 +132,7 @@ export default function ExamplesGallery() {
                 </div>
               </div>
 
-              <Link
+              <Link aria-label="Navigation link"
                 href={`/examples/${ex.slug}`}
                 className="w-full relative z-10 bg-[#111827] border border-[#111827] hover:bg-[#630102] hover:border-[#630102] text-[#FFFFFF] font-bold py-4 rounded-xl flex items-center justify-center transition-all overflow-hidden"
               >

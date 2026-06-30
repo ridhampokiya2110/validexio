@@ -2,9 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { prisma } from "@/lib/db";
-
-
-
+import { RealtimePlanListener } from "@/components/dashboard/RealtimePlanListener";
 async function getCachedUser(userId: string) {
   try {
     return await prisma.user.findUnique({
@@ -47,5 +45,10 @@ export default async function Layout({ children }: { children: React.ReactNode }
     availableCredits: 10,
   };
 
-  return <DashboardLayout user={user}>{children}</DashboardLayout>;
+  return (
+    <>
+      {session?.user?.id && <RealtimePlanListener userId={session.user.id} />}
+      <DashboardLayout user={user}>{children}</DashboardLayout>
+    </>
+  );
 }

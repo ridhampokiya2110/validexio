@@ -112,7 +112,7 @@ export default function FreeCodeGenerator() {
                   />
                 </div>
 
-                <button
+                <button aria-label="Button action"
                   type="submit"
                   className="w-full bg-[#FFEDAB] text-[#1B1716] font-black text-lg py-4 rounded-lg flex items-center justify-center hover:bg-[#ffe175] transition-colors border border-[#1B1716]/10 shadow-sm"
                 >
@@ -132,7 +132,7 @@ export default function FreeCodeGenerator() {
                 <div className="font-mono text-sm font-bold text-[#1B1716]/80 flex flex-col items-center gap-2">
                   {loadingMessages.map((msg, idx) => (
                     <motion.div 
-                      key={idx}
+                      key={`item-${idx}`}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ 
                         opacity: idx <= loadingStep ? 1 : 0.3,
@@ -178,7 +178,7 @@ export default function FreeCodeGenerator() {
                         <p className="text-white/80 text-sm mb-4">
                           Want the complete scalable backend architecture and B2B leads for this idea?
                         </p>
-                        <Link 
+                        <Link aria-label="Navigation link" 
                           href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder"
                           className="w-full bg-[#FFEDAB] text-[#1B1716] font-black py-3 rounded flex items-center justify-center hover:bg-white transition-colors text-sm"
                         >

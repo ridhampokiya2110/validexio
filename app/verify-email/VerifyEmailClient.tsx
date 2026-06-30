@@ -62,7 +62,7 @@ export default function VerifyEmailClient() {
         </div>
         <h1 className="text-2xl font-bold text-[#1B1716] mb-2">Email Verified</h1>
         <p className="text-[#1B1716]/60 text-sm mb-8">{message}</p>
-        <Link href="/login" className="btn-primary w-full">
+        <Link aria-label="Navigation link" href="/login" className="btn-primary w-full">
           Sign In to Continue
         </Link>
       </div>
@@ -76,7 +76,7 @@ export default function VerifyEmailClient() {
       </div>
       <h1 className="text-2xl font-bold text-[#1B1716] mb-2">Verification Failed</h1>
       <p className="text-red-600/80 text-sm mb-8">{message}</p>
-      <Link href="/login" className="btn-secondary w-full">
+      <Link aria-label="Navigation link" href="/login" className="btn-secondary w-full">
         Return to Login
       </Link>
     </div>

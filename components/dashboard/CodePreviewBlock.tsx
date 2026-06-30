@@ -19,7 +19,7 @@ export default function CodePreviewBlock({ code, title }: { code: string, title?
           <Code2 className="w-4 h-4 text-cherry" />
           <h3 className="text-[#1B1716] font-semibold text-sm">React UI Code (MVP)</h3>
         </div>
-        <button 
+        <button aria-label="Button action" type="button" 
           onClick={handleCopy}
           className="flex items-center gap-1.5 text-xs font-medium text-[#1B1716]/60 hover:text-[#1B1716] transition-colors"
         >

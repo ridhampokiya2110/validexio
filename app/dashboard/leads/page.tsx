@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { Mail, Linkedin, Globe, CheckCircle2, Copy, ExternalLink, Target } from "lucide-react";
 
 export const metadata = { title: "Lead Generation" };
@@ -83,7 +84,7 @@ export default async function LeadsPage() {
                             <Mail className="w-3.5 h-3.5 text-[#1B1716]/40 flex-shrink-0" />
                             <span className="text-xs text-[#1B1716] font-medium truncate">{lead.email}</span>
                           </div>
-                          <button className="text-[#1B1716]/30 hover:text-cherry opacity-0 group-hover/action:opacity-100 transition-all">
+                          <button aria-label="Button action" type="button" className="text-[#1B1716]/30 hover:text-cherry opacity-0 group-hover/action:opacity-100 transition-all">
                             <Copy className="w-3.5 h-3.5" />
                           </button>
                         </div>
@@ -92,12 +93,12 @@ export default async function LeadsPage() {
                       {lead.linkedin && (
                         <div className="flex items-center justify-between group/action p-2 rounded-md hover:bg-[#1B1716]/5 transition-colors">
                           <div className="flex items-center gap-2 overflow-hidden">
-                            <Linkedin className="w-3.5 h-3.5 text-[#0077b5] flex-shrink-0" />
+                            <Link aria-label="Navigation link"edin className="w-3.5 h-3.5 text-[#0077b5] flex-shrink-0" />
                             <span className="text-xs text-[#1B1716] font-medium truncate">
                               {lead.linkedin.replace("https://", "").replace("www.", "")}
                             </span>
                           </div>
-                          <a href={lead.linkedin.startsWith("http") ? lead.linkedin : `https://${lead.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-[#1B1716]/30 hover:text-cherry opacity-0 group-hover/action:opacity-100 transition-all">
+                          <a aria-label="Link action" href={lead.linkedin.startsWith("http") ? lead.linkedin : `https://${lead.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-[#1B1716]/30 hover:text-cherry opacity-0 group-hover/action:opacity-100 transition-all">
                             <ExternalLink className="w-3.5 h-3.5" />
                           </a>
                         </div>

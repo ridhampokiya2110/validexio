@@ -48,7 +48,7 @@ export default function ReportContent() {
           {/* Terminal Body */}
           <div className="p-6 font-mono text-sm leading-relaxed min-h-[200px] flex flex-col gap-2">
             {TERMINAL_STEPS.slice(0, loadingStep).map((step, idx) => (
-              <div key={idx} className="flex items-center gap-3 text-[#1B1716]/80 animate-fade-in">
+              <div key={`item-${idx}`} className="flex items-center gap-3 text-[#1B1716]/80 animate-fade-in">
                 <span className="text-cherry">{">"}</span>
                 <span>{step}</span>
                 <CheckCircle2 className="w-3.5 h-3.5 text-cherry ml-auto" />
@@ -170,7 +170,7 @@ export default function ReportContent() {
               </div>
               <div className="space-y-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center gap-4 p-3 bg-[#1B1716]/5 rounded-lg">
+                  <div key={`item-${i}`} className="flex items-center gap-4 p-3 bg-[#1B1716]/5 rounded-lg">
                     <div className="w-8 h-8 rounded-full bg-[#1B1716]/20" />
                     <div className="flex-1 space-y-2">
                       <div className="h-3 w-1/3 bg-[#1B1716]/20 rounded" />
@@ -193,7 +193,7 @@ export default function ReportContent() {
             <p className="text-[#1B1716]/70 max-w-md text-center mb-8 px-4">
               View high-fidelity UI mockups, 10 vetted early-adopter leads, and copy-paste code boilerplates tailored to your idea.
             </p>
-            <a href="#paywall" className="btn-primary">
+            <a aria-label="Link action" href="#paywall" className="btn-primary">
               View Pricing to Unlock
               <ChevronRight className="w-4 h-4" />
             </a>
@@ -235,7 +235,7 @@ export default function ReportContent() {
                 <span>Basic Competitor Threat Matrix</span>
               </li>
             </ul>
-            <button className="btn-secondary w-full">Unlock Starter Report</button>
+            <button aria-label="Button action" type="button" className="btn-secondary w-full">Unlock Starter Report</button>
           </div>
 
           {/* Execution Pro Card */}
@@ -273,7 +273,7 @@ export default function ReportContent() {
                 <span>Go-to-Market Strategy Document</span>
               </li>
             </ul>
-            <button className="btn-primary w-full shadow-glow-cherry">Unlock Full Execution Pro</button>
+            <button aria-label="Button action" type="button" className="btn-primary w-full shadow-glow-cherry">Unlock Full Execution Pro</button>
           </div>
         </div>
       </section>

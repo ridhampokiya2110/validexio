@@ -116,7 +116,7 @@ export default function StartupGallery() {
                       </span>
                     </div>
                     
-                    <button className="p-2 rounded-lg text-[#1B1716]/50 hover:text-[#1B1716] hover:bg-cherry/20 border border-transparent hover:border-cherry/30 transition-all">
+                    <button aria-label="Button action" type="button" className="p-2 rounded-lg text-[#1B1716]/50 hover:text-[#1B1716] hover:bg-cherry/20 border border-transparent hover:border-cherry/30 transition-all">
                       <Share2 className="w-4 h-4" />
                     </button>
                   </div>
@@ -136,7 +136,7 @@ export default function StartupGallery() {
               Is your idea the next unicorn, or does it belong in the graveyard?
             </h2>
             
-            <button onClick={() => router.push('/pricing')} className="relative z-10 flex items-center gap-3 px-8 py-5 bg-[#75070C] hover:bg-[#910505] text-white font-bold text-lg rounded-xl transition-all shadow-[0_0_30px_rgba(117,7,12,0.4)] hover:shadow-[0_0_50px_rgba(117,7,12,0.6)] border border-[#a10505] hover:scale-105 animate-pulse-glow">
+            <button aria-label="Button action" type="button" onClick={() => router.push('/pricing')} className="relative z-10 flex items-center gap-3 px-8 py-5 bg-[#75070C] hover:bg-[#910505] text-white font-bold text-lg rounded-xl transition-all shadow-[0_0_30px_rgba(117,7,12,0.4)] hover:shadow-[0_0_50px_rgba(117,7,12,0.6)] border border-[#a10505] hover:scale-105 animate-pulse-glow">
               Get Your Reality Check Now
               <ArrowRight className="w-5 h-5 text-butter" />
             </button>

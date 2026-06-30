@@ -10,7 +10,7 @@ export default function MasterpieceDashboard() {
       {/* SIDEBAR - Keep it slightly dark for contrast, but sleek */}
       <aside className="w-64 flex-shrink-0 bg-[#F5F3EB] border-r border-noir/10 flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         <div className="p-6 border-b border-noir/5">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link aria-label="Navigation link" href="/" className="flex items-center gap-2 group">
             <div className="w-8 h-8 rounded-lg bg-cherry flex items-center justify-center shadow-lg group-hover:shadow-[0_0_15px_rgba(117,7,12,0.4)] transition-all">
               <Zap className="w-4 h-4 text-cherry" />
             </div>
@@ -27,7 +27,7 @@ export default function MasterpieceDashboard() {
             { label: "B2B Leads", icon: BarChart3 },
             { label: "Code Assets", icon: FileCode2 },
           ].map((item) => (
-            <button
+            <button aria-label="Button action" type="button"
               key={item.label}
               className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
                 item.active 
@@ -54,7 +54,7 @@ export default function MasterpieceDashboard() {
         {/* HEADER */}
         <header className="h-20 flex items-center justify-between px-8 bg-white/70 backdrop-blur-md border-b border-noir/5 sticky top-0 z-10">
           <h1 className="text-lg font-bold text-noir/50">Project: <span className="text-noir">Validexio Alpha</span></h1>
-          <button className="flex items-center gap-2 px-5 py-2.5 bg-cherry hover:bg-[#910505] text-white text-sm font-bold rounded-lg transition-all shadow-[0_4px_12px_rgba(117,7,12,0.2)]">
+          <button aria-label="Button action" type="button" className="flex items-center gap-2 px-5 py-2.5 bg-cherry hover:bg-[#910505] text-white text-sm font-bold rounded-lg transition-all shadow-[0_4px_12px_rgba(117,7,12,0.2)]">
             <Download className="w-4 h-4" />
             Export PDF Report
           </button>
@@ -132,7 +132,7 @@ export default function MasterpieceDashboard() {
               <h2 className="text-2xl font-bold text-noir mb-6 tracking-tight">Generated UI/UX Assets</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {[1, 2].map((i) => (
-                  <div key={i} className="group relative rounded-2xl overflow-hidden border border-noir/10 shadow-sm aspect-video bg-[#F5F3EB] cursor-pointer">
+                  <div key={`item-${i}`} className="group relative rounded-2xl overflow-hidden border border-noir/10 shadow-sm aspect-video bg-[#F5F3EB] cursor-pointer">
                     <div className="absolute inset-0 bg-gradient-to-br from-white via-[#FDFCF8] to-[#F5F3EB] transition-transform duration-500 group-hover:scale-[1.02] flex flex-col">
                       <div className="h-10 border-b border-noir/5 flex items-center px-4 gap-1.5 bg-white/50 backdrop-blur-sm">
                         <div className="w-3 h-3 rounded-full bg-[#FDFCF8]/10" />
@@ -176,7 +176,7 @@ export default function MasterpieceDashboard() {
                         <td className="px-6 py-4 text-noir/50 font-mono text-xs">{row.email}</td>
                         <td className="px-6 py-4 text-cherry font-medium">{row.pain}</td>
                         <td className="px-6 py-4 text-right">
-                          <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-noir/10 text-noir/70 hover:bg-cherry hover:text-white hover:border-cherry transition-colors text-xs font-bold shadow-sm">
+                          <button aria-label="Button action" type="button" className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-noir/10 text-noir/70 hover:bg-cherry hover:text-white hover:border-cherry transition-colors text-xs font-bold shadow-sm">
                             <Copy className="w-3 h-3" />
                             Copy Pitch
                           </button>
@@ -198,7 +198,7 @@ export default function MasterpieceDashboard() {
                     Your architecture is compiled. Download the complete Node.js boilerplate code and No-Code workflow blueprints to launch today.
                   </p>
                 </div>
-                <button className="relative z-10 flex-shrink-0 flex items-center gap-3 px-8 py-4 bg-cherry hover:bg-[#910505] text-white font-bold rounded-xl transition-all shadow-[0_8px_20px_rgba(117,7,12,0.2)] hover:shadow-[0_12px_25px_rgba(117,7,12,0.3)] hover:-translate-y-1">
+                <button aria-label="Button action" type="button" className="relative z-10 flex-shrink-0 flex items-center gap-3 px-8 py-4 bg-cherry hover:bg-[#910505] text-white font-bold rounded-xl transition-all shadow-[0_8px_20px_rgba(117,7,12,0.2)] hover:shadow-[0_12px_25px_rgba(117,7,12,0.3)] hover:-translate-y-1">
                   <Download className="w-5 h-5" />
                   Download .ZIP Architecture
                 </button>

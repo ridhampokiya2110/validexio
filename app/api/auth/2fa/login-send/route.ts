@@ -23,7 +23,8 @@ export async function POST(req: Request) {
     }
 
     // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const crypto = require('crypto');
+    const otp = crypto.randomInt(100000, 999999).toString();
     const expires = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
     // Save token for validation

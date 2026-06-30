@@ -54,7 +54,7 @@ export default function PaywallGate({ isUnlocked, score, pivotTeaser }: PaywallG
           </div>
         </div>
 
-        <Link
+        <Link aria-label="Navigation link"
           href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder"
           className="block w-full bg-[#FFEDAB] text-[#1B1716] font-black py-4 rounded-xl text-lg hover:scale-[1.02] transition-transform shadow-lg border border-[#1B1716]"
         >

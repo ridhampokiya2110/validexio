@@ -38,12 +38,19 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: "Missing user_id" }, { status: 400 });
       }
 
+      let creditsToAdd = 0;
+      if (tier === "STARTER") creditsToAdd = 1;
+      else if (tier === "PRO") creditsToAdd = 1;
+      else if (tier === "TEAM") creditsToAdd = 3;
+      else if (tier === "ENTERPRISE") creditsToAdd = 15;
+
       // Upgrade user in Database
       await prisma.user.update({
         where: { id: userId },
         data: {
           tier: tier as any,
           lemonSqueezyCustomerId: customerId,
+          availableCredits: { increment: creditsToAdd }
         }
       });
 

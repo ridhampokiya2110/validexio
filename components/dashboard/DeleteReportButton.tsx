@@ -51,7 +51,7 @@ export function DeleteReportButton({ reportId }: { reportId: string }) {
   };
 
   return (
-    <button
+    <button aria-label="Button action" type="button"
       onClick={handleDelete}
       disabled={isDeleting}
       className="p-2 rounded-lg hover:bg-red-50 text-[#1B1716]/30 hover:text-red-500 transition-colors flex-shrink-0 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"

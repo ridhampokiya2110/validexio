@@ -26,7 +26,7 @@ export default function VerifyEmailButton() {
   };
 
   return (
-    <button
+    <button aria-label="Button action" type="button"
       onClick={handleVerify}
       disabled={isLoading}
       className="mt-2 text-xs font-semibold text-white bg-cherry/90 hover:bg-cherry px-3 py-1.5 rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"

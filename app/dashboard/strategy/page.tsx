@@ -35,7 +35,7 @@ export default async function StrategyPage() {
           </div>
           <h3 className="text-lg font-bold text-[#1B1716] mb-2">No strategies yet</h3>
           <p className="text-[#1B1716]/45 text-sm mb-6">Validate an idea to get a customized Go-to-Market strategy.</p>
-          <Link href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
+          <Link aria-label="Navigation link" href="/dashboard/validate" className="btn-primary text-sm">Validate an Idea</Link>
         </div>
       ) : (
         reports.map((r, i) => {
@@ -45,7 +45,7 @@ export default async function StrategyPage() {
           if (!actionPlan || !acquisition) return null;
 
           return (
-            <div key={i} className="glass-card p-6 border border-[#1B1716]/10">
+            <div key={`item-${i}`} className="glass-card p-6 border border-[#1B1716]/10">
               <div className="flex items-center gap-3 mb-6 border-b border-[#1B1716]/10 pb-4">
                 <Rocket className="w-6 h-6 text-cherry" />
                 <h2 className="text-xl font-bold text-[#1B1716]">{r.idea.title} Strategy</h2>
@@ -69,7 +69,7 @@ export default async function StrategyPage() {
                         
                         <div className="flex flex-col gap-3 relative z-10">
                           {acquisition.primaryChannels?.map((ch: string, i: number) => (
-                            <div key={i} className="group/item flex items-start gap-4 p-3.5 rounded-xl bg-white border border-[#E5E7EB]/80 hover:border-[#630102]/20 hover:bg-[#FDFCF8] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-500 overflow-hidden relative">
+                            <div key={`item-${i}`} className="group/item flex items-start gap-4 p-3.5 rounded-xl bg-white border border-[#E5E7EB]/80 hover:border-[#630102]/20 hover:bg-[#FDFCF8] hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-all duration-500 overflow-hidden relative">
                               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#630102]/[0.02] to-transparent translate-x-[-100%] group-hover/item:translate-x-[100%] transition-transform duration-1000 ease-in-out"></div>
                               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-b from-[#630102] to-[#3a0001] border border-[#630102]/20 group-hover/item:shadow-[0_0_15px_rgba(99,1,2,0.2)] transition-all duration-500 flex-shrink-0 relative z-10 mt-0.5">
                                 <span className="text-[#FFEDAB] font-bold text-[10px] tracking-tighter">0{i + 1}</span>
