@@ -1,8 +1,11 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { Redis } from "@upstash/redis";
 import { Ratelimit } from "@upstash/ratelimit";
+
+const { auth } = NextAuth(authConfig);
 
 const redis = process.env.UPSTASH_REDIS_REST_URL
   ? new Redis({

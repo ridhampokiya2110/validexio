@@ -93,7 +93,7 @@ export default async function LeadsPage() {
                       {lead.linkedin && (
                         <div className="flex items-center justify-between group/action p-2 rounded-md hover:bg-[#1B1716]/5 transition-colors">
                           <div className="flex items-center gap-2 overflow-hidden">
-                            <Link aria-label="Navigation link"edin className="w-3.5 h-3.5 text-[#0077b5] flex-shrink-0" />
+                            <Linkedin className="w-3.5 h-3.5 text-[#0077b5] flex-shrink-0" />
                             <span className="text-xs text-[#1B1716] font-medium truncate">
                               {lead.linkedin.replace("https://", "").replace("www.", "")}
                             </span>

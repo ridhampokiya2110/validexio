@@ -8,6 +8,7 @@ import { prisma } from "@/lib/db";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { headers } from "next/headers";
+import { authConfig } from "./auth.config";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -18,6 +19,7 @@ const loginSchema = z.object({
 const hasDB = !!process.env.DATABASE_URL;
 
 const nextAuthResult = NextAuth({
+  ...authConfig,
   adapter: hasDB ? PrismaAdapter(prisma) : undefined,
 
   providers: [
@@ -124,57 +126,8 @@ const nextAuthResult = NextAuth({
     }),
   ],
 
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
-
   callbacks: {
-    async jwt({ token, user, account }) {
-      if (user) {
-        token.id = user.id;
-        token.role = (user as { role?: string }).role;
-        token.tier = (user as { tier?: string }).tier;
-        token.profession = (user as { profession?: string }).profession;
-        token.phone = (user as { phone?: string }).phone;
-      }
-      if (account) {
-        token.provider = account.provider;
-      }
-
-      // If user data changes after login (like onboarding), we need to fetch it from DB
-      // We can do it here by checking DB if needed, but it's simpler to update the token during onboarding endpoint
-      // NextAuth doesn't automatically refetch the user on every request
-      
-      // Let's refetch user to keep session fresh with latest profession/phone if we only have an ID
-      // Note: We cannot run Prisma in the JWT callback because this callback is executed
-      // on the Edge runtime by Next.js Middleware!
-      /*
-      if (token.id && !token.profession) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { profession: true, phone: true }
-        });
-        if (dbUser) {
-          token.profession = dbUser.profession;
-          token.phone = dbUser.phone;
-        }
-      }
-      */
-      return token;
-    },
-
-    async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id = token.id as string;
-        (session.user as { role?: string }).role = token.role as string;
-        (session.user as { tier?: string }).tier = token.tier as string;
-        (session.user as { profession?: string }).profession = token.profession as string;
-        (session.user as { phone?: string }).phone = token.phone as string;
-      }
-      return session;
-    },
-
+    ...authConfig.callbacks,
     async signIn({ user, account }) {
       if (!user.email) return false;
 
@@ -202,13 +155,6 @@ const nextAuthResult = NextAuth({
 
       return true;
     },
-  },
-
-  pages: {
-    signIn: "/login",
-    signOut: "/",
-    error: "/login",
-    verifyRequest: "/verify-email",
   },
 
   events: {

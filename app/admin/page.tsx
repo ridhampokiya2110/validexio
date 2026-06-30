@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { Zap, Users, BarChart3, ShieldAlert, CheckCircle, Plus, Ban, Loader2, MessageSquare, LayoutDashboard } from "lucide-react";
+import { Zap, Users, BarChart3, ShieldAlert, CheckCircle, Loader2, MessageSquare, LayoutDashboard, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface KPI {
@@ -88,29 +88,15 @@ export default function AdminConsole() {
     fetchData();
   }, []);
 
-  const handleGrantCredit = async (userId: string) => {
+  const handleDeleteUser = async (userId: string) => {
+    if (!window.confirm("Are you sure you want to completely delete this user and all their data? This action cannot be undone.")) return;
     try {
-      setProcessingId(`grant-${userId}`);
-      const res = await fetch(`/api/v1/admin/users/${userId}/grant-credit`, { method: "POST" });
-      if (!res.ok) throw new Error("Failed to grant credit");
+      setProcessingId(`delete-${userId}`);
+      const res = await fetch(`/api/v1/admin/users/${userId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete user");
       
-      setUsers(users.map(u => u.id === userId ? { ...u, availableCredits: u.availableCredits + 1 } : u));
-      toast.success("Credit granted");
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
-  const handleBanUser = async (userId: string, currentStatus: boolean) => {
-    try {
-      setProcessingId(`ban-${userId}`);
-      const res = await fetch(`/api/v1/admin/users/${userId}/ban`, { method: "POST" });
-      if (!res.ok) throw new Error("Failed to ban user");
-      
-      setUsers(users.map(u => u.id === userId ? { ...u, isBanned: !currentStatus } : u));
-      toast.success(currentStatus ? "User unbanned" : "User banned");
+      setUsers(users.filter(u => u.id !== userId));
+      toast.success("User completely deleted");
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -235,11 +221,11 @@ export default function AdminConsole() {
           </button>
         </nav>
         <div className="p-4 border-t border-[#1B1716]/10 flex flex-col gap-2">
-          <Link aria-label="Navigation link" href="/dashboard" className="text-xs font-semibold text-[#1B1716]/60 hover:text-cherry transition-colors block px-2">
-            &larr; Exit to App
-          </Link>
           <button aria-label="Button action" type="button" 
-            onClick={() => signOut({ callbackUrl: '/login' })}
+            onClick={async () => {
+              await signOut({ redirect: false });
+              window.location.href = '/';
+            }}
             className="text-left text-xs font-semibold text-[#1B1716]/60 hover:text-red-600 transition-colors block px-2 py-1"
           >
             Log Out
@@ -308,62 +294,65 @@ export default function AdminConsole() {
                       <td className="p-4 font-mono text-xs text-[#1B1716]/50 truncate max-w-[100px]">{user.id}</td>
                       <td className="p-4 font-medium text-[#1B1716]">
                         {user.email}
-                        {user.isBanned && <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold uppercase tracking-wider rounded-md border border-red-200">Banned</span>}
                       </td>
-                      <td className="p-4 font-mono text-[#1B1716] flex items-center gap-2">
-                        <select 
-                          value={user.tier}
-                          onChange={(e) => handleUpdateTier(user.id, e.target.value)}
-                          disabled={processingId === `tier-${user.id}`}
-                          className="bg-[#1B1716]/5 border border-[#1B1716]/10 text-[#1B1716] text-xs rounded-md px-2 py-1 font-semibold focus:outline-none focus:ring-1 focus:ring-[#1B1716]/20 disabled:opacity-50"
-                        >
-                          <option value="FREE">FREE</option>
-                          <option value="STARTER">STARTER</option>
-                          <option value="PRO">PRO</option>
-                          <option value="TEAM">TEAM</option>
-                          <option value="ENTERPRISE">ENTERPRISE</option>
-                        </select>
-                        <span className="text-xs">[</span>
-                        <input
-                          type="number"
-                          min="0"
-                          value={editingCredits[user.id] ?? user.availableCredits}
-                          onChange={(e) => setEditingCredits({ ...editingCredits, [user.id]: parseInt(e.target.value) || 0 })}
-                          className="w-12 bg-transparent border-b border-[#1B1716]/20 text-center text-xs focus:outline-none"
-                        />
-                        <span className="text-xs">cr ]</span>
-                        {editingCredits[user.id] !== undefined && editingCredits[user.id] !== user.availableCredits && (
-                          <button aria-label="Button action" type="button"
-                            onClick={() => handleUpdateTier(user.id, user.tier, editingCredits[user.id])}
-                            className="ml-2 text-[10px] bg-cherry text-white px-2 py-0.5 rounded"
-                          >
-                            Save
-                          </button>
-                        )}
+                      <td className="p-4 font-sans flex items-center gap-3">
+                        <div className="flex items-center gap-2 bg-[#1B1716]/[0.03] p-1.5 rounded-lg border border-[#1B1716]/10 hover:border-[#1B1716]/20 transition-all focus-within:ring-2 focus-within:ring-cherry/20 focus-within:border-cherry/30">
+                          <div className="relative">
+                            <select 
+                              value={user.tier}
+                              onChange={(e) => handleUpdateTier(user.id, e.target.value)}
+                              disabled={processingId === `tier-${user.id}`}
+                              className="appearance-none bg-white border border-[#1B1716]/10 text-[#1B1716] text-[11px] rounded-md pl-2 pr-6 py-1.5 font-bold tracking-wide shadow-sm focus:outline-none focus:ring-1 focus:ring-cherry/50 disabled:opacity-50 cursor-pointer hover:bg-gray-50 transition-colors"
+                            >
+                              <option value="FREE">FREE</option>
+                              <option value="STARTER">STARTER</option>
+                              <option value="PRO">PRO</option>
+                              <option value="TEAM">TEAM</option>
+                              <option value="ENTERPRISE">ENTERPRISE</option>
+                            </select>
+                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1.5 text-[#1B1716]/50">
+                              <svg className="h-3 w-3 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
+                          </div>
+
+                          <div className="h-4 w-[1px] bg-[#1B1716]/10 mx-0.5"></div>
+
+                          <div className="relative flex items-center bg-white rounded-md border border-[#1B1716]/10 shadow-sm overflow-hidden focus-within:ring-1 focus-within:ring-cherry/50 group transition-all">
+                            <div className="pl-2 pr-1 flex items-center justify-center bg-[#1B1716]/[0.02] border-r border-[#1B1716]/10 h-full">
+                              <Zap className="w-3 h-3 text-[#1B1716]/50 group-focus-within:text-cherry transition-colors" />
+                            </div>
+                            <input
+                              type="number"
+                              min="0"
+                              value={editingCredits[user.id] ?? user.availableCredits}
+                              onChange={(e) => setEditingCredits({ ...editingCredits, [user.id]: parseInt(e.target.value) || 0 })}
+                              className="w-14 bg-transparent py-1.5 pr-2 text-center text-xs font-bold text-[#1B1716] focus:outline-none [-moz-appearance:_textfield] [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none"
+                              placeholder="0"
+                            />
+                          </div>
+
+                          {editingCredits[user.id] !== undefined && editingCredits[user.id] !== user.availableCredits && (
+                            <button aria-label="Button action" type="button"
+                              onClick={() => handleUpdateTier(user.id, user.tier, editingCredits[user.id])}
+                              className="ml-1 bg-gradient-to-tr from-cherry to-orange-500 hover:opacity-90 text-white p-1.5 rounded-md shadow-md hover:shadow-lg transition-all active:scale-95 flex items-center justify-center animate-in fade-in zoom-in duration-200"
+                              title="Save Changes"
+                            >
+                              <CheckCircle className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
                       </td>
                       <td className="p-4 text-[#1B1716]/60 text-sm">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </td>
                       <td className="p-4 text-right flex items-center justify-end gap-2">
                         <button aria-label="Button action" type="button" 
-                          onClick={() => handleGrantCredit(user.id)}
-                          disabled={processingId === `grant-${user.id}`}
-                          className="p-2 border border-[#1B1716]/10 rounded-lg text-[#1B1716]/60 hover:bg-[#1B1716]/5 hover:text-[#1B1716] transition-colors disabled:opacity-50"
-                          title="Grant +1 Credit"
+                          onClick={() => handleDeleteUser(user.id)}
+                          disabled={processingId === `delete-${user.id}`}
+                          className="p-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50"
+                          title="Delete User Completely"
                         >
-                          {processingId === `grant-${user.id}` ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                        </button>
-                        <button aria-label="Button action" type="button" 
-                          onClick={() => handleBanUser(user.id, user.isBanned)}
-                          disabled={processingId === `ban-${user.id}`}
-                          className={`p-2 border rounded-lg transition-colors disabled:opacity-50 ${
-                            user.isBanned 
-                              ? "border-amber-200 text-amber-600 hover:bg-amber-50" 
-                              : "border-red-200 text-red-600 hover:bg-red-50"
-                          }`}
-                          title={user.isBanned ? "Unban User" : "Ban User"}
-                        >
-                          {processingId === `ban-${user.id}` ? <Loader2 className="w-4 h-4 animate-spin" /> : <Ban className="w-4 h-4" />}
+                          {processingId === `delete-${user.id}` ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
                         </button>
                       </td>
                     </tr>

@@ -230,7 +230,14 @@ export default function RootLayout({
                   "Production React/Next.js code generation",
                   "B2B lead generation via LinkedIn/Apollo APIs",
                   "Automated competitor teardowns",
-                  "TAM/SAM/SOM market sizing",
+                  "TAM/SAM/SOM market sizing"
+                ],
+                "offers": [
+                  {
+                    "@type": "Offer",
+                    "name": "Pro",
+                    "price": "39",
+                    "priceCurrency": "USD",
                     "description": "Full execution payload: code, leads, UI, architecture"
                   },
                   {
@@ -338,11 +345,11 @@ export default function RootLayout({
                   }
                 ]
               }
-            ]).replace(/</g, '\\u003c'),
+            ]`,
           }}
         />
       </head>
-      <body className={`${inter.variable} ${outfit.variable} font-sans bg-[#FDFCF8] text-[#1B1716] antialiased overflow-x-hidden selection:bg-cherry/20 selection:text-cherry`}>
+      <body className={inter.variable + " " + outfit.variable + " font-sans bg-[#FDFCF8] text-[#1B1716] antialiased overflow-x-hidden selection:bg-cherry/20 selection:text-cherry"}>
         <Providers>
           <PwaRegistry />
           <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />

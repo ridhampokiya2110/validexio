@@ -82,10 +82,9 @@ export function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle */}
-        <button aria-label="Button action" type="button"
+        <button aria-label="Toggle menu" type="button"
           className="md:hidden p-2 rounded-lg hover:bg-[#1B1716]/10 transition-colors"
           onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Toggle menu"
         >
           <div className="w-5 h-4 flex flex-col justify-between">
             <span className={`block h-0.5 bg-[#1B1716] transition-all duration-200 ${menuOpen ? "rotate-45 translate-y-1.5" : ""}`} />

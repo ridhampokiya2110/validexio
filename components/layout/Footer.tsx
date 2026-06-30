@@ -31,7 +31,7 @@ export function Footer() {
                 rel="noopener noreferrer" 
                 className="inline-flex items-center gap-2 text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors"
               >
-                <Link aria-label="Navigation link"edin className="w-4 h-4" />
+                <Linkedin className="w-4 h-4" />
                 Follow us on LinkedIn
               </a>
             </div>

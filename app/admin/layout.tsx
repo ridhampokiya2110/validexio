@@ -1,6 +1,8 @@
 import { requireSuperAdmin } from "@/lib/guards/admin.guard";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const isSuperAdmin = await requireSuperAdmin();
   

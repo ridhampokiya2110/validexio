@@ -4,7 +4,7 @@
   "description": "From Concept to Customer in 60 Seconds.",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "dev:worker": "npx tsx scripts/worker.ts",
     "build": "next build",
     "start": "next start",
