@@ -118,7 +118,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
                 const isActive =
                   item.href === "/dashboard"
                     ? pathname === "/dashboard"
-                    : pathname.startsWith(item.href);
+                    : pathname?.startsWith(item.href);
 
                 return (
                   <Link aria-label="Navigation link"
@@ -218,7 +218,7 @@ export default function DashboardLayout({
 
   // Bypass the standard sidebar layout if we are viewing a specific report
   // The route matches /dashboard/reports/[id] where [id] is present
-  const isReportDetail = pathname.match(/^\/dashboard\/reports\/[^/]+$/);
+  const isReportDetail = pathname?.match(/^\/dashboard\/reports\/[^/]+$/);
 
   if (isReportDetail) {
     return <>{children}</>;
@@ -316,7 +316,7 @@ export default function DashboardLayout({
 
 function Breadcrumb() {
   const pathname = usePathname();
-  const segments = pathname.split("/").filter(Boolean);
+  const segments = (pathname || "").split("/").filter(Boolean);
 
   const labels: Record<string, string> = {
     dashboard: "Overview",
