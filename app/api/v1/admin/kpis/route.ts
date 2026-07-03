@@ -34,7 +34,7 @@ export async function GET() {
       prisma.user.count(),
       prisma.validationSession.count(),
       prisma.supportTicket.count({ where: { status: "OPEN" } }),
-      prisma.subscription.count({ where: { status: "ACTIVE" } })
+      prisma.user.count({ where: { tier: "PRO" } })
     ]);
 
     // Mock MRR calculation based on active Pro subscriptions
