@@ -202,6 +202,9 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
         growthOpportunities: marketResult.growthOpportunities,
         acquisitionStrategy: marketResult.acquisitionStrategy,
         actionPlan: marketResult.actionPlan,
+        launchPlatforms: marketResult.launchPlatforms,
+        mvpPrioritization: marketResult.mvpPrioritization,
+        complianceCheck: marketResult.complianceCheck,
         salesFunnel: marketResult.salesFunnel,
         
         // From Product Strategy

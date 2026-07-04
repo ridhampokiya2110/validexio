@@ -230,6 +230,9 @@ model ValidationReport {
   growthOpportunities   Json 
   acquisitionStrategy   Json 
   actionPlan            Json 
+  launchPlatforms       Json?
+  mvpPrioritization     Json?
+  complianceCheck       Json?
 
   uiMockupDescriptions Json? 
   uiMockupImages       Json? 

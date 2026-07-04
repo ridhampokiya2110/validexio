@@ -43,8 +43,12 @@ export default function ReportLayout({ children }: { children: ReactNode }) {
           <TOCLink href="#risks" active={activeSection === "risks"} icon={<AlertTriangle className="w-4 h-4" />} label="Risk Analysis" onClick={() => setActiveSection("risks")} />
           <TOCLink href="#growth" active={activeSection === "growth"} icon={<Lightbulb className="w-4 h-4" />} label="Growth Opportunities" onClick={() => setActiveSection("growth")} />
           <TOCLink href="#acquisition" active={activeSection === "acquisition"} icon={<Rocket className="w-4 h-4" />} label="Acquisition Tactics" onClick={() => setActiveSection("acquisition")} />
+          <TOCLink href="#launch-platforms" active={activeSection === "launch-platforms"} icon={<Rocket className="w-4 h-4" />} label="Launch Platforms" onClick={() => setActiveSection("launch-platforms")} />
+          <TOCLink href="#b2b-leads" active={activeSection === "b2b-leads"} icon={<Users className="w-4 h-4" />} label="B2B Leads" onClick={() => setActiveSection("b2b-leads")} />
           <TOCLink href="#action-plan" active={activeSection === "action-plan"} icon={<CheckCircle className="w-4 h-4" />} label="90-Day Action Plan" onClick={() => setActiveSection("action-plan")} />
+          <TOCLink href="#mvp-prioritization" active={activeSection === "mvp-prioritization"} icon={<Target className="w-4 h-4" />} label="MVP Prioritization" onClick={() => setActiveSection("mvp-prioritization")} />
           <TOCLink href="#sales-funnel" active={activeSection === "sales-funnel"} icon={<TrendingUp className="w-4 h-4" />} label="Sales Funnel" onClick={() => setActiveSection("sales-funnel")} />
+          <TOCLink href="#compliance-check" active={activeSection === "compliance-check"} icon={<Shield className="w-4 h-4" />} label="Compliance Check" onClick={() => setActiveSection("compliance-check")} />
           <TOCLink href="#code-boilerplate" active={activeSection === "code-boilerplate"} icon={<FileText className="w-4 h-4" />} label="Code Boilerplate" onClick={() => setActiveSection("code-boilerplate")} />
         </div>
       </aside>

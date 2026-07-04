@@ -3,6 +3,7 @@
 
 import Link from "next/link";
 import { Lock } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 interface PremiumLockProps {
   isLocked: boolean;
@@ -11,7 +12,11 @@ interface PremiumLockProps {
 }
 
 export function PremiumLock({ isLocked, title, description }: PremiumLockProps) {
+  const { data: session } = useSession();
+  
   if (!isLocked) return null;
+
+  const targetHref = session?.user ? "/dashboard/billing" : "/pricing";
 
   return (
     <div className="relative group w-full bg-white rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_30px_rgb(0,0,0,0.04)] h-[300px]">
@@ -37,7 +42,7 @@ export function PremiumLock({ isLocked, title, description }: PremiumLockProps) 
           {description}
         </p>
         <Link aria-label="Navigation link"
-          href="/pricing"
+          href={targetHref}
           className="inline-flex items-center justify-center px-8 py-3.5 bg-[#111827] text-white rounded-xl font-bold hover:bg-[#2A313C] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5"
         >
           Upgrade to Premium

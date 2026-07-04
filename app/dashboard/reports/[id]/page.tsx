@@ -9,6 +9,7 @@ async function getReport(reportId: string, userId: string) {
     where: { id: reportId, userId },
     include: {
       idea: true,
+      leads: true,
     },
   });
 }

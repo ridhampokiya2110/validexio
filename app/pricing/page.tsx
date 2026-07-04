@@ -18,6 +18,9 @@ const fullPlans = [
     features: [
       "Executive Validation Scorecard",
       "High-Level Strategic SWOT Analysis",
+      "Launch Platforms (Locked)",
+      "MVP Prioritization (Locked)",
+      "Compliance Risk Check (Locked)",
       "Competitor Intelligence (Locked)",
       "Precision B2B Target Leads (Locked)",
       "High-Fidelity Data Engine UI Mockups (Locked)",
@@ -36,9 +39,13 @@ const fullPlans = [
     features: [
       "1 Standard Execution Credit",
       "Basic Validation Score & Analysis",
+      "Launch Platforms Strategy",
+      "MVP Prioritization Matrix",
+      "Compliance Risk Assessment",
       "Up to 3 Direct Competitors Analyzed",
       "Text-Only UI Components (No raw code)",
       "Standard Unit Economics Breakdown",
+      "Customer Personas (Locked)",
       "Investor Simulator (1 Persona, 5 QA Rounds)",
       "Standard processing time (24h)",
       "7-Day access to the report"
@@ -55,6 +62,10 @@ const fullPlans = [
     features: [
       "1 Full Execution Credit",
       "Comprehensive Validation Score",
+      "Launch Platforms Strategy",
+      "MVP Prioritization Matrix",
+      "Compliance Risk Assessment",
+      "Detailed Customer Personas",
       "Up to 5 Direct Competitors Analyzed",
       "Tech Architecture & Fake Door Code",
       "Early Adopter Psych & GTM Kit",
@@ -192,14 +203,20 @@ export default function PricingPage() {
 
   useEffect(() => {
     // Check for Indian IP
-    fetch('https://ipapi.co/json/')
-      .then(res => res.json())
-      .then(data => {
-        if (data.country_code === 'IN') {
-          setIsIndianUser(true);
+    const checkIp = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.country_code === 'IN') {
+            setIsIndianUser(true);
+          }
         }
-      })
-      .catch(err => console.error("Error fetching location", err));
+      } catch (err) {
+        // Silently fail if adblockers block the IP check
+      }
+    };
+    checkIp();
 
     // Check for affiliate parameter in URL
     if (typeof window !== 'undefined') {

@@ -149,6 +149,29 @@ export const MarketAnalysisSchema = z.object({
     day90: z.array(z.string()),
   }),
 
+  launchPlatforms: z.array(
+    z.object({
+      platform: z.string(),
+      reason: z.string(),
+      url: z.string().optional(),
+    })
+  ),
+
+  mvpPrioritization: z.object({
+    mustHave: z.array(z.string()),
+    shouldHave: z.array(z.string()),
+    couldHave: z.array(z.string()),
+    wontHave: z.array(z.string()),
+  }),
+
+  complianceCheck: z.array(
+    z.object({
+      requirement: z.string(),
+      description: z.string(),
+      riskLevel: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
+    })
+  ),
+
   salesFunnel: z.object({
     awareness: z.object({
       channels: z.array(z.string()),
@@ -248,7 +271,10 @@ You are analyzing the market for a startup idea.
 RUTHLESS SCORING: Most ideas need a pivot. Give a score from 10 to 100. Provide a simple, profitable pivot if the score is low.
 COMPETITORS (CRITICAL RULE): Read the provided real-world competitor data carefully. You MUST ONLY use the exact competitors provided in the JSON/text. DO NOT invent, guess, or hallucinate competitors. If the provided competitor list is empty or says 'No competitors found', you MUST state 'No verified competitors exist in this area yet' and treat it as a massive market opportunity. Do not make up fake businesses under any circumstances.
 FINANCIALS & METRICS (CRITICAL RULE): Do not invent fake statistics, market sizes, or numbers. If you do not have exact data from the provided context, you MUST use a logical, bottom-up estimation based on the provided Pricing, Target Market, and Competitors, and explain the math briefly (e.g., "Assuming 100 local businesses paying $50/mo = $5k/mo"). Do not output generic $1B TAMs. Everything must be grounded in reality and explicitly marked as an estimation if calculated.
-SOCIAL PROOF (CRITICAL RULE): You have been provided with real Reddit and HackerNews data in the context. YOU MUST use actual quotes, upvotes, and frustrations from this data to build the customer personas, market saturation reasoning, and signal-to-sales mapping. DO NOT invent generic pain points if real social proof is provided. Quote the real frustrations exactly.`;
+SOCIAL PROOF (CRITICAL RULE): You have been provided with real Reddit and HackerNews data in the context. YOU MUST use actual quotes, upvotes, and frustrations from this data to build the customer personas, market saturation reasoning, and signal-to-sales mapping. DO NOT invent generic pain points if real social proof is provided. Quote the real frustrations exactly.
+LAUNCH PLATFORMS: Based on whether the business is local/physical or digital, provide specific platforms (e.g., Google Business, Product Hunt) where they should launch to get their first 5 customers.
+MVP PRIORITIZATION: Provide a MoSCoW matrix (Must, Should, Could, Won't) to prevent founders from overbuilding.
+COMPLIANCE: Briefly check for obvious regulatory/legal requirements (e.g., GDPR, FDA, Local Permits).`;
 
 const PRODUCT_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are generating the product blueprint and landing page copy for a startup idea.
@@ -435,7 +461,10 @@ Provide a Validation Score (0-100), a short 2-sentence market opportunity, a ris
     },
     growthOpportunities: [],
     acquisitionStrategy: { primaryChannels: [], firstCustomerTactics: [], communityBuilding: "", contentStrategy: "", partnershipOpportunities: [] },
-    actionPlan: { day30: [], day60: [], day90: [] }
+    actionPlan: { day30: [], day60: [], day90: [] },
+    launchPlatforms: [],
+    mvpPrioritization: { mustHave: [], shouldHave: [], couldHave: [], wontHave: [] },
+    complianceCheck: []
   };
 }
 

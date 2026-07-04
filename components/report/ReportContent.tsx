@@ -166,6 +166,38 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
     features: Array<{ title: string; description: string }>;
   } | null;
 
+  const launchPlatforms = (Array.isArray(report.launchPlatforms) ? report.launchPlatforms : []) as Array<{
+    platform: string;
+    reason: string;
+    url?: string;
+  }>;
+
+  const mvpPrioritization = {
+    mustHave: [], shouldHave: [], couldHave: [], wontHave: [],
+    ...(typeof report.mvpPrioritization === 'object' && report.mvpPrioritization ? report.mvpPrioritization : {})
+  } as {
+    mustHave: string[];
+    shouldHave: string[];
+    couldHave: string[];
+    wontHave: string[];
+  };
+
+  const complianceCheck = (Array.isArray(report.complianceCheck) ? report.complianceCheck : []) as Array<{
+    requirement: string;
+    description: string;
+    riskLevel: string;
+  }>;
+
+  const leads = (Array.isArray(report.leads) ? report.leads : []) as Array<{
+    id: string;
+    name: string;
+    title: string;
+    company: string;
+    email?: string;
+    linkedin?: string;
+    twitter?: string;
+  }>;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto break-words bg-[#FDFCF8] font-sans antialiased selection:bg-cherry/20 selection:text-cherry">
       {/* Back + Header */}
@@ -473,7 +505,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Customer Personas</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {personas.length === 0 || report.isLite ? (
+            {personas.length === 0 || report.isLite || userTier === "STARTER" ? (
               <div className="md:col-span-3">
                 <PremiumLock 
                   isLocked={true} 
@@ -836,6 +868,146 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                 </div>
               </div>
             </>
+          )}
+        </section>
+
+        {/* Launch Platforms */}
+        <section id="launch-platforms" className="glass-card p-6 sm:p-8 animate-fade-in-scale delay-[950ms] group hover:border-[#111827]/20 transition-all duration-500">
+          <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
+            <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
+              <Rocket className="w-5 h-5 text-[#630102]" />
+            </div>
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Launch Platforms</h2>
+          </div>
+          {launchPlatforms.length === 0 || report.isLite ? (
+            <PremiumLock 
+              isLocked={true} 
+              title="Launch Strategy Locked" 
+              description="Upgrade to Premium to discover the exact platforms (local or digital) where you should launch to get your first 5 customers." 
+            />
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-5">
+              {launchPlatforms.map((platform) => (
+                <div key={platform.platform} className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-5 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
+                  <h3 className="font-bold text-[#111827] mb-2 text-lg">{platform.platform}</h3>
+                  <p className="text-sm text-[#6B7280] leading-relaxed mb-3">{platform.reason}</p>
+                  {platform.url && (
+                    <a aria-label="Link action" href={platform.url} target="_blank" rel="noopener noreferrer" className="text-[#630102] text-sm font-semibold hover:underline inline-flex items-center gap-1">
+                      Visit Platform <ExternalLink className="w-3 h-3" />
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* B2B Leads */}
+        <section id="b2b-leads" className="glass-card p-6 sm:p-8 animate-fade-in-scale delay-[975ms] group hover:border-[#111827]/20 transition-all duration-500">
+          <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
+            <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
+              <Users className="w-5 h-5 text-[#630102]" />
+            </div>
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">B2B Leads (Auto-Generated)</h2>
+          </div>
+          {leads.length === 0 ? (
+            <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-6 text-center">
+              <p className="text-[#6B7280] text-sm">No B2B leads generated for this report or your tier does not include lead generation.</p>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {leads.map((lead) => (
+                <div key={lead.id} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow duration-300">
+                  <h3 className="font-bold text-[#111827] text-base truncate">{lead.name}</h3>
+                  <p className="text-sm font-medium text-[#630102] truncate mb-2">{lead.title} @ {lead.company}</p>
+                  <div className="space-y-1.5 mt-4">
+                    {lead.email && <p className="text-xs text-[#6B7280] truncate">Email: <span className="font-semibold text-[#111827]">{lead.email}</span></p>}
+                    {lead.linkedin && <a aria-label="Link action" href={lead.linkedin} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0077b5] hover:underline block truncate">LinkedIn Profile</a>}
+                    {lead.twitter && <a aria-label="Link action" href={lead.twitter} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1DA1F2] hover:underline block truncate">Twitter Profile</a>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* MVP Prioritization */}
+        <section id="mvp-prioritization" className="glass-card p-6 sm:p-8 animate-fade-in-scale delay-[990ms] group hover:border-[#111827]/20 transition-all duration-500">
+          <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
+            <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
+              <Target className="w-5 h-5 text-[#630102]" />
+            </div>
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">MVP Prioritization (MoSCoW)</h2>
+          </div>
+          {mvpPrioritization.mustHave.length === 0 || report.isLite ? (
+            <PremiumLock 
+              isLocked={true} 
+              title="MVP Strategy Locked" 
+              description="Upgrade to Premium to get a strict prioritization matrix that prevents overbuilding." 
+            />
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-5">
+              <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-5">
+                <h3 className="text-emerald-700 font-bold text-xs uppercase tracking-wider mb-3 pb-2 border-b border-[#E5E7EB]">Must Have</h3>
+                <ul className="space-y-2 text-sm text-[#111827]">
+                  {mvpPrioritization.mustHave.map((item, i) => <li key={`mh-${i}`} className="flex gap-2"><span className="text-emerald-500 font-bold">•</span>{item}</li>)}
+                </ul>
+              </div>
+              <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-5">
+                <h3 className="text-blue-700 font-bold text-xs uppercase tracking-wider mb-3 pb-2 border-b border-[#E5E7EB]">Should Have</h3>
+                <ul className="space-y-2 text-sm text-[#111827]">
+                  {mvpPrioritization.shouldHave.map((item, i) => <li key={`sh-${i}`} className="flex gap-2"><span className="text-blue-500 font-bold">•</span>{item}</li>)}
+                </ul>
+              </div>
+              <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-5">
+                <h3 className="text-yellow-700 font-bold text-xs uppercase tracking-wider mb-3 pb-2 border-b border-[#E5E7EB]">Could Have</h3>
+                <ul className="space-y-2 text-sm text-[#111827]">
+                  {mvpPrioritization.couldHave.map((item, i) => <li key={`ch-${i}`} className="flex gap-2"><span className="text-yellow-500 font-bold">•</span>{item}</li>)}
+                </ul>
+              </div>
+              <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-5">
+                <h3 className="text-red-700 font-bold text-xs uppercase tracking-wider mb-3 pb-2 border-b border-[#E5E7EB]">Won&apos;t Have (For Now)</h3>
+                <ul className="space-y-2 text-sm text-[#111827]">
+                  {mvpPrioritization.wontHave.map((item, i) => <li key={`wh-${i}`} className="flex gap-2"><span className="text-red-500 font-bold">•</span>{item}</li>)}
+                </ul>
+              </div>
+            </div>
+          )}
+        </section>
+
+        {/* Compliance Check */}
+        <section id="compliance-check" className="glass-card p-6 sm:p-8 animate-fade-in-scale delay-[1050ms] group hover:border-[#111827]/20 transition-all duration-500">
+          <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
+            <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
+              <ShieldCheck className="w-5 h-5 text-[#630102]" />
+            </div>
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Regulatory & Compliance Check</h2>
+          </div>
+          {complianceCheck.length === 0 || report.isLite ? (
+            <PremiumLock 
+              isLocked={true} 
+              title="Compliance Intel Locked" 
+              description="Upgrade to Premium to get an analysis of legal and regulatory requirements for your idea." 
+            />
+          ) : (
+            <div className="space-y-4">
+              {complianceCheck.map((item, i) => (
+                <div key={`comp-${i}`} className="bg-white border border-[#E5E7EB] p-5 rounded-xl flex flex-col sm:flex-row gap-4 sm:items-start hover:shadow-sm transition-shadow">
+                  <div className="flex-shrink-0">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider whitespace-nowrap
+                      ${item.riskLevel === 'CRITICAL' || item.riskLevel === 'HIGH' ? 'bg-red-50 text-red-700 border border-red-200' :
+                        item.riskLevel === 'MEDIUM' ? 'bg-orange-50 text-orange-700 border border-orange-200' :
+                        'bg-emerald-50 text-emerald-700 border border-emerald-200'}`}>
+                      {item.riskLevel} RISK
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[#111827] text-sm mb-1">{item.requirement}</h3>
+                    <p className="text-sm text-[#6B7280] leading-relaxed">{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </section>
 

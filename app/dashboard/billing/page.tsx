@@ -24,17 +24,26 @@ async function getCountryCode() {
   // Extract client IP
   const forwardedFor = headersList.get("x-forwarded-for");
   const realIp = headersList.get("x-real-ip");
-  const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : realIp?.trim();
-  
-  if (!ip) return "US";
+  let ip = forwardedFor ? forwardedFor.split(",")[0].trim() : realIp?.trim();
   
   // Fallback if not on Vercel or running locally
   try {
-    const res = await fetch(`https://api.country.is/${ip}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    
+    // If local dev, don't pass the local IP so the API uses the machine's public IP
+    const url = (!ip || ip === "::1" || ip === "127.0.0.1") 
+      ? "https://api.country.is/" 
+      : `https://api.country.is/${ip}`;
+      
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(timeoutId);
+    
     if (!res.ok) return "US";
     const data = await res.json();
     return data.country || "US";
-  } catch {
+  } catch (error) {
+    // If the request fails or times out, fail fast to prevent slow page loads
     return "US";
   }
 }
@@ -85,6 +94,9 @@ export default async function BillingPage() {
       features: [
         "1 Basic Validation Score",
         "Market Saturation Check",
+        "Launch Platforms (Locked)",
+        "MVP Prioritization (Locked)",
+        "Compliance Risk Check (Locked)",
         "Anti-Roadmap & Pivot Strategy",
         "Investor Simulator (1 Persona, 3 QA Rounds)",
         "Blurred Mockups & Tech Stack",
@@ -101,9 +113,13 @@ export default async function BillingPage() {
       features: [
         "1 Standard Execution Credit",
         "Basic Validation Score & Analysis",
+        "Launch Platforms Strategy",
+        "MVP Prioritization Matrix",
+        "Compliance Risk Assessment",
         "Up to 3 Direct Competitors Analyzed",
         "Text-Only UI Components (No raw code)",
         "Standard Unit Economics Breakdown",
+        "Customer Personas (Locked)",
         "Investor Simulator (1 Persona, 5 QA Rounds)",
         "Standard processing time (24h)",
         "7-Day access to the report"
@@ -118,6 +134,10 @@ export default async function BillingPage() {
       features: [
         "1 Full Execution Credit",
         "Comprehensive Validation Score",
+        "Launch Platforms Strategy",
+        "MVP Prioritization Matrix",
+        "Compliance Risk Assessment",
+        "Detailed Customer Personas",
         "Up to 5 Direct Competitors Analyzed",
         "Tech Architecture & Fake Door Code",
         "Early Adopter Psych & GTM Kit",
