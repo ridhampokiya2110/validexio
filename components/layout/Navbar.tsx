@@ -55,6 +55,7 @@ export function Navbar() {
             { label: "Wall of Roasts", href: "/gallery" },
             { label: "About", href: "/about" },
             { label: "Blog", href: "/blog" },
+            { label: "Free Tools", href: "/free-tools/tam-calculator" },
           ].map((item) => (
             <Link aria-label="Navigation link"
               key={item.label}
@@ -104,6 +105,7 @@ export function Navbar() {
             { label: "Wall of Roasts", href: "/gallery" },
             { label: "About", href: "/about" },
             { label: "Blog", href: "/blog" },
+            { label: "Free Tools", href: "/free-tools/tam-calculator" },
           ].map((item) => (
             <Link aria-label="Navigation link"
               key={item.label}
