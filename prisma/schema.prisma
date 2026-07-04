@@ -40,6 +40,10 @@ model User {
   // Lemon Squeezy Billing
   lemonSqueezyCustomerId     String? @unique
   lemonSqueezySubscriptionId String? @unique
+
+  // Razorpay Billing
+  razorpayCustomerId         String? @unique
+  
   availableCredits           Int     @default(0)
 
   createdAt   DateTime  @default(now())

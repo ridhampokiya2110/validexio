@@ -109,7 +109,7 @@ const fullPlans = [
       "24/7 Priority SLA Support",
       "Investor Simulator (All Personas, Unlimited QA + API)"
     ],
-    href: "/contact",
+    href: "/register?plan=enterprise",
     tierKey: "ENTERPRISE",
     featured: false,
   },
@@ -171,7 +171,7 @@ function PricingCard({ plan, currency, handleCheckout, loading }: { plan: any; c
               <Loader2 className="w-5 h-5 animate-spin mx-auto" />
             ) : (
               <>
-                {plan.cta}
+                {plan.cta || (plan.tierKey === "FREE" ? "Get Started" : "Upgrade Now")}
                 <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
               </>
             )}
@@ -211,7 +211,7 @@ export default function PricingPage() {
   }, []);
 
   const handleCheckout = async (plan: any) => {
-    if (plan.tierKey === "FREE" || plan.tierKey === "ENTERPRISE") {
+    if (plan.tierKey === "FREE") {
       router.push(plan.href);
       return;
     }
@@ -223,23 +223,47 @@ export default function PricingPage() {
 
     setLoading(plan.tierKey);
     try {
-      const res = await fetch("/api/lemonsqueezy/checkout", {
+      const res = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           tier: plan.tierKey,
-          discountCode: isIndianUser ? `INDIA${plan.tierKey}` : (isAffiliate ? "PARTNER10" : undefined)
         }),
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Failed to create checkout");
-      if (data.url) {
-        window.location.href = data.url;
-        // Do not clear loading state, let the browser navigate
-      } else {
-        setLoading(null);
-      }
+      if (!res.ok) throw new Error(data.error || "Failed to create order");
+      
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Validexio",
+        description: `Upgrade to ${plan.name}`,
+        order_id: data.id,
+        handler: function (response: any) {
+          // Razorpay returns razorpay_payment_id, razorpay_order_id, razorpay_signature here
+          // The webhook will handle the database upgrade
+          alert("Payment successful! Your account is being upgraded.");
+          router.push("/dashboard");
+        },
+        prefill: {
+          name: session.user.name || "",
+          email: session.user.email || "",
+        },
+        theme: {
+          color: "#630102",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        console.error("Payment Failed", response.error);
+        alert("Payment failed. Please try again.");
+      });
+      
+      rzp.open();
+      setLoading(null);
     } catch (error) {
       console.error(error);
       alert("Failed to initiate checkout. Please try again.");
@@ -286,22 +310,7 @@ export default function PricingPage() {
 
           <div className="flex flex-col gap-8 lg:gap-8 w-full max-w-[1200px] mx-auto mt-12">
 
-            {/* VIP Affiliate Banner */}
-            {isAffiliate && (
-              <div className="mb-4 max-w-3xl mx-auto w-full bg-gradient-to-r from-[#630102] via-[#8C0203] to-[#630102] p-[1.5px] rounded-2xl shadow-2xl animate-[shimmer_2s_infinite] bg-[length:200%_auto]">
-                <div className="bg-white/95 backdrop-blur-md rounded-[15px] p-6 text-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#630102]/5 to-transparent pointer-events-none" />
-                  <div className="relative z-10 flex flex-col items-center justify-center gap-2">
-                    <div className="inline-flex items-center justify-center bg-[#FFE4E4] text-[#630102] px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase mb-2">
-                      Special Offer
-                    </div>
-                    <h3 className="text-2xl font-black text-[#111827]">
-                      You've unlocked a <span className="text-[#630102]">10% VIP Discount</span>!
-                    </h3>
-                  </div>
-                </div>
-              </div>
-            )}
+
 
             {fullPlans.map((plan) => (
               <PricingCard key={plan.name} plan={plan} currency={currency} handleCheckout={handleCheckout} loading={loading} />
