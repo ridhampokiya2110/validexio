@@ -50,8 +50,10 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     // 1. Fire off all external independent API calls in PARALLEL to minimize loading time
     console.log(`[Job ${jobId}] Firing parallel data gathering requests...`);
     
+    const isLite = idea.isLite || false;
+    
     const tavilyPromise = (async () => {
-      if ((tier as string) === "FREE") return "No real-time market data available.";
+      if (isLite) return "No real-time market data available.";
       try {
         const { fetchCompetitorIntel } = await import("../api/tavily");
         return await fetchCompetitorIntel(idea.title, idea.industry);
@@ -62,7 +64,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const serpApiPromise = (async () => {
-      if ((tier as string) === "FREE") return "No real-time local competitor data available.";
+      if (isLite) return "No real-time local competitor data available.";
       try {
         const { fetchRealCompetitors } = await import("../api/serpapi");
         return await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors);
@@ -73,7 +75,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const hnPromise = (async () => {
-      if ((tier as string) === "FREE") return "";
+      if (isLite) return "";
       try {
         const { fetchHNSentiment } = await import("../api/hackernews");
         return await fetchHNSentiment(idea.title, idea.industry);
@@ -84,7 +86,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const redditPromise = (async () => {
-      if ((tier as string) === "FREE") return "";
+      if (isLite) return "";
       try {
         const { fetchRedditFrustrations } = await import("../api/reddit");
         return await fetchRedditFrustrations(idea.title, idea.industry);
@@ -96,6 +98,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
 
     const apolloPromise = (async () => {
       try {
+        if (isLite) return [];
         if (maxLeads > 0) {
           return await fetchB2BLeads(idea.industry, idea.location || "global", maxLeads);
         }
@@ -107,7 +110,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     const mockupPromise = (async () => {
-      if ((tier as string) === "FREE" || (tier as string) === "STARTER") return [];
+      if (isLite || (tier as string) === "STARTER") return [];
       try {
         const { generateUIMockups } = await import("../api/mockupEngine");
         return await generateUIMockups(idea.title, idea.industry, 2);
@@ -149,8 +152,8 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       codeBoilerplate: "/* Locked - Upgrade to Premium */"
     };
 
-    if ((tier as string) === "FREE") {
-      console.log(`[Job ${jobId}] Calling generateFreeStartupMarket for FREE tier...`);
+    if (isLite) {
+      console.log(`[Job ${jobId}] Calling generateFreeStartupMarket for LITE tier...`);
       const { generateFreeStartupMarket } = await import("../gemini");
       marketResult = await generateFreeStartupMarket(payload);
     } else {
@@ -210,6 +213,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
         uiMockupImages: uiMockupImages,
         processingTime,
         geminiModel: "gemini-flash-latest",
+        isLite: isLite,
       },
     });
 
@@ -257,11 +261,13 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
   } catch (error) {
     console.error(`[Job ${jobId}] Failed:`, error);
     
-    // Refund the credit on failure
-    await prisma.user.update({
-      where: { id: userId },
-      data: { availableCredits: { increment: 1 } },
-    }).catch(() => {});
+    // Refund the credit on failure only if it's not a lite validation
+    if (!idea.isLite) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { availableCredits: { increment: 1 } },
+      }).catch(() => {});
+    }
 
     await prisma.idea.update({
       where: { id: idea.id },

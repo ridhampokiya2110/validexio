@@ -191,6 +191,7 @@ model Idea {
   pricingModel String?
   stage        IdeaStage  @default(IDEA)
   status       IdeaStatus @default(PENDING)
+  isLite       Boolean    @default(false)
 
   documentContext Json?
 
@@ -235,6 +236,7 @@ model ValidationReport {
   processingTime Int? 
   geminiModel    String? 
   tokensUsed     Int?
+  isLite         Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

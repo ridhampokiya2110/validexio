@@ -11,32 +11,15 @@ export async function GET(req: Request) {
 
     const profile = await prisma.affiliateProfile.findUnique({
       where: { userId: session.user.id },
-      include: {
-        orders: {
-          orderBy: { createdAt: "desc" },
-          select: {
-            id: true,
-            createdAt: true,
-            discountAmount: true,
-            status: true,
-          }
-        }
-      }
     });
 
     if (!profile) {
       return NextResponse.json({ registered: false });
     }
 
-    const totalReferrals = profile.orders.length;
+    const totalReferrals = 0;
     
-    const ledger = profile.orders.map(o => ({
-      id: o.id,
-      date: o.createdAt,
-      discountApplied: o.discountAmount,
-      commission: Math.floor(o.discountAmount * 2),
-      status: o.status,
-    }));
+    const ledger: any[] = [];
 
     return NextResponse.json({
       registered: true,

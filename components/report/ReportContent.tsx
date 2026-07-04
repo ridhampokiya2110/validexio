@@ -364,7 +364,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Competitor Analysis</h2>
           </div>
           <div className="space-y-6">
-            {competitors.length === 0 ? (
+            {competitors.length === 0 || report.isLite ? (
               <PremiumLock 
                 isLocked={true} 
                 title="Real-time Competitor Intel Locked" 
@@ -473,7 +473,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Customer Personas</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {personas.length === 0 ? (
+            {personas.length === 0 || report.isLite ? (
               <div className="md:col-span-3">
                 <PremiumLock 
                   isLocked={true} 
@@ -536,7 +536,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Revenue Potential</h2>
           </div>
 
-          {revenue.year1 === "Locked" ? (
+          {revenue.year1 === "Locked" || revenue.year1 === "-" || report.isLite ? (
             <PremiumLock 
               isLocked={true} 
               title="Financial Forecasting Locked" 
@@ -608,7 +608,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Risk Analysis</h2>
           </div>
           <div className="border border-[#E5E7EB] rounded-lg overflow-hidden">
-            {risks.length === 0 ? (
+            {risks.length === 0 || report.isLite ? (
               <PremiumLock 
                 isLocked={true} 
                 title="Risk Analysis Locked" 
@@ -639,7 +639,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
 
         {/* Pricing Recommendation */}
         <section className="glass-card p-6 sm:p-8 relative overflow-hidden animate-fade-in-scale delay-[700ms] group hover:border-[#111827]/20 transition-all duration-500">
-          {pricing.strategy.includes("Locked") ? (
+          {pricing.strategy.includes("Locked") || pricing.strategy === "Pending..." || report.isLite ? (
             <PremiumLock 
               isLocked={true} 
               title="Pricing Strategy Locked" 
@@ -692,7 +692,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Growth Opportunities</h2>
           </div>
           <div className="grid gap-5">
-            {growth.length === 0 ? (
+            {growth.length === 0 || report.isLite ? (
               <PremiumLock 
                 isLocked={true} 
                 title="Growth Strategy Locked" 
@@ -720,7 +720,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
 
         {/* First Customer Acquisition - Premium Redesign */}
         <section id="acquisition" className="relative p-8 sm:p-10 animate-fade-in-scale delay-[900ms] group bg-white border border-[#E5E7EB] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden">
-          {acquisition.primaryChannels.length === 0 ? (
+          {acquisition.primaryChannels.length === 0 || report.isLite ? (
             <PremiumLock 
               isLocked={true} 
               title="Go-to-Market Blueprint Locked" 
@@ -848,7 +848,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">90-Day Action Plan</h2>
           </div>
           <div className="grid md:grid-cols-3 gap-0 border border-[#E5E7EB] rounded-lg overflow-hidden">
-            {actionPlan.day30.length === 0 ? (
+            {actionPlan.day30.length === 0 || report.isLite ? (
               <div className="md:col-span-3">
                 <PremiumLock 
                   isLocked={true} 

@@ -42,7 +42,6 @@ async function getCountryCode() {
 async function getCachedUser(userId: string) {
     return await prisma.user.findUnique({
       where: { id: userId },
-      include: { subscription: true },
     });
   }
 

@@ -12,35 +12,14 @@ export async function POST(
     const resolvedParams = await params;
     const competitorSlug = resolvedParams.competitor.toLowerCase();
 
-    // Safely query the database for the competitor
-    const competitorData = await prisma.competitorMatrix.findUnique({
-      where: { slug: competitorSlug },
+    // Models CompetitorMatrix and InterceptTracking are removed.
+    // Returning a mock to prevent 404s breaking the frontend tracker
+    return NextResponse.json({ 
+      competitor: {
+        slug: competitorSlug,
+        name: competitorSlug,
+      } 
     });
-
-    if (!competitorData) {
-      return NextResponse.json(
-        { error: 'Competitor not found' },
-        { status: 404 }
-      );
-    }
-
-    // Trigger background entry in market_interceptions without awaiting it fully to keep response fast
-    // We do await it here for serverless environments where execution might halt immediately,
-    // but in a real high-scale scenario we might fire and forget.
-    try {
-      await prisma.interceptTracking.create({
-        data: {
-          competitorSlug: competitorSlug,
-          incomingReferrer: referrer,
-          capturedUtmSource: utmSource,
-        },
-      });
-    } catch (trackingError) {
-      console.error("Failed to track interception:", trackingError);
-      // We don't fail the request if tracking fails
-    }
-
-    return NextResponse.json({ competitor: competitorData });
   } catch (error) {
     console.error("Error in Compare API:", error);
     return NextResponse.json(

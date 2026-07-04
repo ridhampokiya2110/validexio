@@ -37,7 +37,6 @@ export async function POST(req: NextRequest) {
     // Rate limiting check (simplified - use Upstash Redis in production)
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: { subscription: true },
     });
 
     if (!user) {
@@ -45,14 +44,20 @@ export async function POST(req: NextRequest) {
     }
 
     // Check usage limits and credits
+    let isLiteRequest = false;
+
     if (user.availableCredits <= 0) {
-      return NextResponse.json(
-        {
-          error: "INSUFFICIENT_CREDITS",
-          message: "You have 0 credits remaining. Please upgrade or purchase more credits to validate this idea.",
-        },
-        { status: 402 }
-      );
+      if (user.tier === "FREE") {
+        isLiteRequest = true;
+      } else {
+        return NextResponse.json(
+          {
+            error: "INSUFFICIENT_CREDITS",
+            message: "You have 0 credits remaining. Please upgrade or purchase more credits to validate this idea.",
+          },
+          { status: 402 }
+        );
+      }
     }
 
     // Parse and validate input
@@ -113,16 +118,19 @@ export async function POST(req: NextRequest) {
         location: locationString,
         pricingModel: pricingDetails,
         status: "PENDING",
+        isLite: isLiteRequest,
         // Store document context if provided
         ...(documentContext ? { documentContext: documentContext as any } : {}),
       },
     });
 
-    // Deduct credit
-    await prisma.user.update({
-      where: { id: userId },
-      data: { availableCredits: { decrement: 1 } },
-    });
+    // Deduct credit only if not a Lite request
+    if (!isLiteRequest) {
+      await prisma.user.update({
+        where: { id: userId },
+        data: { availableCredits: { decrement: 1 } },
+      });
+    }
 
     // Instead of synchronously analyzing the idea here (which takes 15s and breaks the flow),
     // we return the idea ID instantly. The frontend will redirect to the Generating page,

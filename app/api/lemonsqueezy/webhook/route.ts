@@ -44,18 +44,49 @@ export async function POST(req: Request) {
       else if (tier === "TEAM") creditsToAdd = 3;
       else if (tier === "ENTERPRISE") creditsToAdd = 15;
 
+      const latestLiteIdea = await prisma.idea.findFirst({
+        where: { userId, isLite: true },
+        orderBy: { createdAt: "desc" },
+      });
+
+      let finalCreditsToAdd = creditsToAdd;
+      if (latestLiteIdea && creditsToAdd > 0) {
+        finalCreditsToAdd -= 1; // Consume 1 credit for the auto-upgrade
+      }
+
       // Upgrade user in Database
       await prisma.user.update({
         where: { id: userId },
         data: {
           tier: tier as any,
           lemonSqueezyCustomerId: customerId,
-          availableCredits: { increment: creditsToAdd }
+          availableCredits: { increment: finalCreditsToAdd }
         }
       });
 
       console.log(`[Lemon Squeezy] Successfully upgraded user ${userId} to ${tier}`);
-      // Here you would also add jobs to BullMQ or trigger Data Engine generation logic as you did with Stripe
+
+      if (latestLiteIdea) {
+        await prisma.idea.update({
+          where: { id: latestLiteIdea.id },
+          data: { isLite: false, status: "PROCESSING" }
+        });
+
+        await prisma.validationReport.deleteMany({
+          where: { ideaId: latestLiteIdea.id }
+        });
+
+        const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
+        await dispatchValidationJob({
+          industry: latestLiteIdea.industry,
+          businessIdea: latestLiteIdea.title,
+          pricingModel: latestLiteIdea.pricingModel || "",
+          ideaId: latestLiteIdea.id,
+          userId: userId
+        } as any);
+
+        console.log(`[Lemon Squeezy] Auto-upgraded Lite idea ${latestLiteIdea.id} for user ${userId}`);
+      }
     }
 
     return NextResponse.json({ success: true });
