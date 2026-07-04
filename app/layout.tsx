@@ -332,9 +332,9 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/logo-icon-cherry.png",
-    shortcut: "/logo-icon-cherry.png",
-    apple: "/logo-icon-cherry.png",
+    icon: "/app-icon-512.png",
+    shortcut: "/app-icon-512.png",
+    apple: "/app-icon-512.png",
   },
   alternates: {
     canonical: "https://validexio.com",
