@@ -508,8 +508,7 @@ export function GlobalSEO() {
                       "@type": "Answer",
                       "text": "The fastest way is to use Validexio to validate the market demand and instantly generate the underlying database schemas and UI wireframes in 60 seconds."
                     }
-                  },
-
+                  }
                 ]
               }
             ]`,
