@@ -212,13 +212,21 @@ export default function ValidatePage() {
   }, []);
 
   useEffect(() => {
-    if (form.title || form.description || form.industry) {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify(form));
+    try {
+      if (form.title || form.description || form.industry) {
+        localStorage.setItem(DRAFT_KEY, JSON.stringify(form));
+      }
+    } catch (e) {
+      console.warn("Failed to save draft to localStorage:", e);
     }
   }, [form]);
 
   const clearDraft = () => {
-    localStorage.removeItem(DRAFT_KEY);
+    try {
+      localStorage.removeItem(DRAFT_KEY);
+    } catch (e) {
+      console.warn("Failed to remove draft from localStorage:", e);
+    }
     setHasDraft(false);
   };
 
