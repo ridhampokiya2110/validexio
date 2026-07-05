@@ -126,10 +126,10 @@ export default function GlobalCompetitorsGlobe() {
 
         {/* Globe Container */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "100px" }}
+          transition={{ duration: 0.8 }}
           className="relative w-full flex justify-center items-center"
         >
           <div className="relative cursor-grab active:cursor-grabbing">
@@ -138,7 +138,6 @@ export default function GlobalCompetitorsGlobe() {
               width={dimensions.width}
               height={dimensions.height}
               backgroundColor="rgba(255,255,255,0)"
-              globeImageUrl="/water.png"
               showAtmosphere={true}
               atmosphereColor="#52A5EF"
               atmosphereAltitude={0.1}
