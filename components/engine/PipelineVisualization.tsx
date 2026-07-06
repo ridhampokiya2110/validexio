@@ -88,7 +88,7 @@ export function PipelineVisualization() {
             <div className="bg-[#FFFFFF] border border-[#1B1716]/10 shadow-[4px_4px_0px_#1B1716] p-5 font-mono text-xs text-[#1B1716]">
               <div className="flex gap-2 border-b border-[#1B1716]/10 pb-3 mb-3">
                 <Code2 className="w-4 h-4 text-cherry" />
-                <span className="font-bold uppercase tracking-widest text-[#1B1716]/50">Gemini.Compile()</span>
+                <span className="font-bold uppercase tracking-widest text-[#1B1716]/50">DataEngine.Compile()</span>
               </div>
               <div className="space-y-2 opacity-80">
                 <p className="text-[#1B1716]/50">/* Generating MVP Architecture */</p>

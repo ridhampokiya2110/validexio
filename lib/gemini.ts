@@ -45,14 +45,14 @@ export const MarketAnalysisSchema = z.object({
     sam: z.string(),
     som: z.string(),
     growth: z.string(),
-    trends: z.array(z.string()),
+    trends: z.array(z.string()).max(3),
   }),
 
   swotAnalysis: z.object({
-    strengths: z.array(z.string()),
-    weaknesses: z.array(z.string()),
-    opportunities: z.array(z.string()),
-    threats: z.array(z.string()),
+    strengths: z.array(z.string()).max(3),
+    weaknesses: z.array(z.string()).max(3),
+    opportunities: z.array(z.string()).max(3),
+    threats: z.array(z.string()).max(3),
   }),
 
   competitorIntelligence: z.array(
@@ -62,32 +62,32 @@ export const MarketAnalysisSchema = z.object({
       sourceUrl: z.string(),
       website: z.string().optional(),
       description: z.string(),
-      strengths: z.array(z.string()),
-      weaknesses: z.array(z.string()).optional(),
+      strengths: z.array(z.string()).max(3),
+      weaknesses: z.array(z.string()).max(3).optional(),
       pricing: z.string(),
       differentiator: z.string(),
     })
-  ),
+  ).max(2),
 
   customerPersonas: z.array(
     z.object({
       name: z.string(),
       age: z.string(),
       title: z.string(),
-      painPoints: z.array(z.string()),
-      goals: z.array(z.string()),
+      painPoints: z.array(z.string()).max(2),
+      goals: z.array(z.string()).max(2),
       buyingBehavior: z.string(),
-      channels: z.array(z.string()),
+      channels: z.array(z.string()).max(2),
       willingnessToPay: z.string(),
     })
-  ),
+  ).max(2),
 
   revenuePotential: z.object({
     year1: z.string(),
     year2: z.string(),
     year3: z.string(),
-    assumptions: z.array(z.string()),
-    revenueStreams: z.array(z.string()),
+    assumptions: z.array(z.string()).max(3),
+    revenueStreams: z.array(z.string()).max(2),
     unitEconomics: z.object({
       competitorPricingTiers: z.array(
         z.object({
@@ -95,7 +95,7 @@ export const MarketAnalysisSchema = z.object({
           price: z.string(),
           billingModel: z.string(),
         })
-      ),
+      ).max(2),
       suggestedPricingStrategy: z.object({
         recommendedPrice: z.string(),
         justification: z.string(),
@@ -111,7 +111,7 @@ export const MarketAnalysisSchema = z.object({
       impact: z.enum(["LOW", "MEDIUM", "HIGH"]),
       mitigation: z.string(),
     })
-  ),
+  ).max(3),
 
   pricingRecommendation: z.object({
     strategy: z.string(),
@@ -119,10 +119,10 @@ export const MarketAnalysisSchema = z.object({
       z.object({
         name: z.string(),
         price: z.string(),
-        features: z.array(z.string()),
+        features: z.array(z.string()).max(3),
         target: z.string(),
       })
-    ),
+    ).max(3),
     rationale: z.string(),
   }),
 
@@ -134,20 +134,20 @@ export const MarketAnalysisSchema = z.object({
       impact: z.enum(["LOW", "MEDIUM", "HIGH"]),
       timeframe: z.string(),
     })
-  ),
+  ).max(2),
 
   acquisitionStrategy: z.object({
-    primaryChannels: z.array(z.string()),
-    firstCustomerTactics: z.array(z.string()),
+    primaryChannels: z.array(z.string()).max(2),
+    firstCustomerTactics: z.array(z.string()).max(2),
     communityBuilding: z.string(),
     contentStrategy: z.string(),
-    partnershipOpportunities: z.array(z.string()),
+    partnershipOpportunities: z.array(z.string()).max(2),
   }),
 
   actionPlan: z.object({
-    day30: z.array(z.string()),
-    day60: z.array(z.string()),
-    day90: z.array(z.string()),
+    day30: z.array(z.string()).max(3),
+    day60: z.array(z.string()).max(3),
+    day90: z.array(z.string()).max(3),
   }),
 
   launchPlatforms: z.array(
@@ -156,13 +156,13 @@ export const MarketAnalysisSchema = z.object({
       reason: z.string(),
       url: z.string().optional(),
     })
-  ),
+  ).max(2),
 
   mvpPrioritization: z.object({
-    mustHave: z.array(z.string()),
-    shouldHave: z.array(z.string()),
-    couldHave: z.array(z.string()),
-    wontHave: z.array(z.string()),
+    mustHave: z.array(z.string()).max(3),
+    shouldHave: z.array(z.string()).max(3),
+    couldHave: z.array(z.string()).max(3),
+    wontHave: z.array(z.string()).max(2),
   }),
 
   complianceCheck: z.array(
@@ -171,24 +171,24 @@ export const MarketAnalysisSchema = z.object({
       description: z.string(),
       riskLevel: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
     })
-  ),
+  ).max(2),
 
   salesFunnel: z.object({
     awareness: z.object({
-      channels: z.array(z.string()),
-      content: z.array(z.string()),
+      channels: z.array(z.string()).max(2),
+      content: z.array(z.string()).max(2),
     }),
     consideration: z.object({
-      touchpoints: z.array(z.string()),
-      objections: z.array(z.string()),
+      touchpoints: z.array(z.string()).max(2),
+      objections: z.array(z.string()).max(2),
     }),
     conversion: z.object({
-      triggers: z.array(z.string()),
-      incentives: z.array(z.string()),
+      triggers: z.array(z.string()).max(2),
+      incentives: z.array(z.string()).max(2),
     }),
     retention: z.object({
-      strategies: z.array(z.string()),
-      metrics: z.array(z.string()),
+      strategies: z.array(z.string()).max(2),
+      metrics: z.array(z.string()).max(2),
     }),
   }),
   market_sizing_and_pricing: z.object({
@@ -209,10 +209,10 @@ export const ProductStrategySchema = z.object({
     z.object({
       screen: z.string(),
       description: z.string(),
-      keyElements: z.array(z.string()),
+      keyElements: z.array(z.string()).max(3),
       userFlow: z.string(),
     })
-  ),
+  ).max(2),
   landingPageCopy: z.object({
     headline: z.string(),
     subheadline: z.string(),
@@ -224,7 +224,7 @@ export const ProductStrategySchema = z.object({
         title: z.string(),
         description: z.string(),
       })
-    ),
+    ).max(3),
   }),
   adaptive_tech_stack: z.object({
     database_schema: z.string(),
@@ -270,6 +270,7 @@ NO emojis. Respond ONLY with valid JSON.`;
 
 const MARKET_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are analyzing the market for a startup idea.
+TOKEN LIMIT RULE (CRITICAL): You MUST be extremely concise to avoid output token limits. Keep all text strings very short (1-2 sentences maximum). Limit ALL arrays (like competitors, personas, risks, action plans) to a MAXIMUM of 3 items. DO NOT exceed this.
 RUTHLESS SCORING: Most ideas need a pivot. Give a score from 10 to 100. Provide a simple, profitable pivot if the score is low.
 COMPETITORS (CRITICAL RULE): Read the provided real-world competitor data carefully. You MUST ONLY use the exact competitors provided in the JSON/text. DO NOT invent, guess, or hallucinate competitors. If the provided competitor list is empty or says 'No competitors found', you MUST state 'No verified competitors exist in this area yet' and treat it as a massive market opportunity. Do not make up fake businesses under any circumstances.
 FINANCIALS & METRICS (CRITICAL RULE): Do not invent fake statistics, market sizes, or numbers. If you do not have exact data from the provided context, you MUST use a logical, bottom-up estimation based on the provided Pricing, Target Market, and Competitors, and explain the math briefly (e.g., "Assuming 100 local businesses paying $50/mo = $5k/mo"). Do not output generic $1B TAMs. Everything must be grounded in reality and explicitly marked as an estimation if calculated.
@@ -281,6 +282,7 @@ COMPLIANCE: Briefly check for obvious regulatory/legal requirements (e.g., GDPR,
 
 const PRODUCT_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are generating the product blueprint and landing page copy for a startup idea.
+TOKEN LIMIT RULE (CRITICAL): Keep all descriptions and copy extremely concise. Do not write long paragraphs. Limit all arrays to a MAXIMUM of 3 items.
 Keep the landing page words very catchy, simple, and clear. Focus on user benefits.
 For the \`codeBoilerplate\`, write a complete, beautiful React component using Tailwind CSS and lucide-react. Keep the code under 150 lines to prevent truncation. Do not include large SVG strings.`;
 
@@ -309,6 +311,7 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
     try {
       const result = await model.generateContent(fullPrompt);
       text = result.response.text();
+      console.log("Finish Reason:", result.response.candidates?.[0]?.finishReason);
       break;
     } catch (error: any) {
       console.error(`Gemini API error (Retries left: ${retries - 1}):`, error.message || error);
@@ -329,16 +332,17 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
   let parsed;
   try {
     parsed = JSON.parse(text);
-  } catch (parseError) {
-    console.error("JSON Parse Error. The model likely truncated the response due to token limits.");
+  } catch (parseError: any) {
+    console.error("JSON Parse Error:", parseError.message);
+    console.log("Attempting to repair truncated/invalid JSON with jsonrepair...");
     try {
-      parsed = JSON.parse(text + '"\n}\n}');
-    } catch {
-      try {
-        parsed = JSON.parse(text + '}\n}');
-      } catch {
-        throw new Error("Data Engine generated incomplete response. Try a shorter description.");
-      }
+      const { jsonrepair } = require('jsonrepair');
+      const repaired = jsonrepair(text);
+      parsed = JSON.parse(repaired);
+      console.log("JSON successfully repaired!");
+    } catch (repairError) {
+      console.error("JSON Repair Error:", repairError);
+      throw new Error("Data Engine generated incomplete response. Try a shorter description.");
     }
   }
 

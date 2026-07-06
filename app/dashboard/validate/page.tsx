@@ -1000,7 +1000,7 @@ export default function ValidatePage() {
                 )}
               </div>
               <p className="text-[#1B1716]/70 text-xs mt-3 border-t border-[#1B1716]/10 pt-3">
-                Gemini will analyze your idea{documentDisplay ? " and uploaded document" : ""} and generate a comprehensive report in under 60 seconds.
+                The Data Engine will analyze your idea{documentDisplay ? " and uploaded document" : ""} and generate a comprehensive report in under 60 seconds.
                 {documentDisplay && (
                   <span className="block mt-1 text-cherry/70">
                     Your {documentDisplay.documentTypeLabel} will be reviewed for investor-readiness in the report.

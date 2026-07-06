@@ -455,7 +455,7 @@ const features = [
     icon: Brain,
     title: "market validation Engine",
     description:
-      "Get a comprehensive 0–100 validation score backed by Gemini's analysis of market data, competition, and timing.",
+      "Get a comprehensive 0–100 validation score backed by our Data Engine's analysis of market data, competition, and timing.",
     color: "text-cherry",
     bg: "bg-cherry/10",
   },
@@ -579,7 +579,7 @@ const steps = [
     number: "02",
     title: "Data Engine Analyzes Everything",
     description:
-      "Our Gemini-powered engine scans market data, competitor landscapes, customer behavior, and business viability in real time.",
+      "Our proprietary Data Engine scans market data, competitor landscapes, customer behavior, and business viability in real time.",
     icon: Brain,
   },
   {
