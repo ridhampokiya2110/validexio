@@ -37,12 +37,12 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     maxPersonas = 5;
   } else if ((tier as string) === "TEAM") {
     maxLeads = 8;
-    maxCompetitors = 7;
-    maxPersonas = 10;
+    maxCompetitors = 5;
+    maxPersonas = 5;
   } else if ((tier as string) === "ENTERPRISE") {
     maxLeads = 8;
-    maxCompetitors = 10;
-    maxPersonas = 10;
+    maxCompetitors = 7;
+    maxPersonas = 7;
   } else if ((tier as string) === "STARTER") {
     maxLeads = 0;
     maxCompetitors = 3;
@@ -148,6 +148,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       // Pass uploaded document context if exists
       documentContext: (idea as any).documentContext || undefined,
       maxPersonas,
+      maxCompetitors,
     };
     
     // 3. Call Gemini in PARALLEL (Market Analysis & Product Strategy)

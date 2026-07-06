@@ -94,15 +94,29 @@ async function fetchLeadsViaSerpApi(industry: string, location: string, limit: n
       company = company.replace(/\| LinkedIn/gi, "").trim();
       title = title.replace(/\| LinkedIn/gi, "").trim();
       
-      // Skip generic linkedin pages
-      if (name.includes("LinkedIn") || name.toLowerCase().includes("profiles")) continue;
+      // Skip generic linkedin pages, jobs, overviews
+      if (
+        name.includes("LinkedIn") || 
+        name.toLowerCase().includes("profiles") ||
+        title.toLowerCase().includes("overview") ||
+        title.toLowerCase().includes("jobs") ||
+        title.toLowerCase().includes("posts") ||
+        name.split(" ").length > 4 // People rarely have 5+ word names in LinkedIn titles
+      ) {
+        continue;
+      }
+
+      // Guess email better (e.g. John Doe at TechCorp -> jdoe@techcorp.com or john@techcorp.com)
+      const firstName = name.split(' ')[0]?.toLowerCase().replace(/[^a-z]/g, "") || "";
+      const cleanCompany = company.split(' ')[0]?.toLowerCase().replace(/[^a-z0-9]/g, "") || "company";
+      const guessedEmail = `${firstName}@${cleanCompany}.com`;
 
       leads.push({
         name,
         title,
         company,
         linkedinUrl: result.link || "",
-        email: `${name.split(' ')[0]?.toLowerCase()}@${company.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}.com`
+        email: guessedEmail
       });
     }
 

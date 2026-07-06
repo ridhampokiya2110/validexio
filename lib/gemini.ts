@@ -31,10 +31,10 @@ const safetySettings = [
 
 // --- 1. Market Analysis Schema ---
 export const MarketAnalysisSchema = z.object({
-  validationScore: z.number().min(0).max(100),
-  marketOpportunity: z.number().min(0).max(100),
-  productMarketFit: z.number().min(0).max(100),
-  riskScore: z.number().min(0).max(100),
+  validationScore: z.number().min(0),
+  marketOpportunity: z.number().min(0),
+  productMarketFit: z.number().min(0),
+  riskScore: z.number().min(0),
 
   marketSaturation: z.object({
     score: z.number(),
@@ -45,14 +45,14 @@ export const MarketAnalysisSchema = z.object({
     sam: z.string(),
     som: z.string(),
     growth: z.string(),
-    trends: z.array(z.string()).max(3),
+    trends: z.array(z.string()),
   }),
 
   swotAnalysis: z.object({
-    strengths: z.array(z.string()).max(3),
-    weaknesses: z.array(z.string()).max(3),
-    opportunities: z.array(z.string()).max(3),
-    threats: z.array(z.string()).max(3),
+    strengths: z.array(z.string()),
+    weaknesses: z.array(z.string()),
+    opportunities: z.array(z.string()),
+    threats: z.array(z.string()),
   }),
 
   competitorIntelligence: z.array(
@@ -62,32 +62,32 @@ export const MarketAnalysisSchema = z.object({
       sourceUrl: z.string(),
       website: z.string().optional(),
       description: z.string(),
-      strengths: z.array(z.string()).max(3),
-      weaknesses: z.array(z.string()).max(3).optional(),
+      strengths: z.array(z.string()),
+      weaknesses: z.array(z.string()).optional(),
       pricing: z.string(),
       differentiator: z.string(),
     })
-  ).max(2),
+  ),
 
   customerPersonas: z.array(
     z.object({
       name: z.string(),
       age: z.string(),
       title: z.string(),
-      painPoints: z.array(z.string()).max(2),
-      goals: z.array(z.string()).max(2),
+      painPoints: z.array(z.string()),
+      goals: z.array(z.string()),
       buyingBehavior: z.string(),
-      channels: z.array(z.string()).max(2),
+      channels: z.array(z.string()),
       willingnessToPay: z.string(),
     })
-  ).max(2),
+  ),
 
   revenuePotential: z.object({
     year1: z.string(),
     year2: z.string(),
     year3: z.string(),
-    assumptions: z.array(z.string()).max(3),
-    revenueStreams: z.array(z.string()).max(2),
+    assumptions: z.array(z.string()),
+    revenueStreams: z.array(z.string()),
     unitEconomics: z.object({
       competitorPricingTiers: z.array(
         z.object({
@@ -95,7 +95,7 @@ export const MarketAnalysisSchema = z.object({
           price: z.string(),
           billingModel: z.string(),
         })
-      ).max(2),
+      ),
       suggestedPricingStrategy: z.object({
         recommendedPrice: z.string(),
         justification: z.string(),
@@ -111,7 +111,7 @@ export const MarketAnalysisSchema = z.object({
       impact: z.enum(["LOW", "MEDIUM", "HIGH"]),
       mitigation: z.string(),
     })
-  ).max(3),
+  ),
 
   pricingRecommendation: z.object({
     strategy: z.string(),
@@ -119,10 +119,10 @@ export const MarketAnalysisSchema = z.object({
       z.object({
         name: z.string(),
         price: z.string(),
-        features: z.array(z.string()).max(3),
+        features: z.array(z.string()),
         target: z.string(),
       })
-    ).max(3),
+    ),
     rationale: z.string(),
   }),
 
@@ -134,20 +134,20 @@ export const MarketAnalysisSchema = z.object({
       impact: z.enum(["LOW", "MEDIUM", "HIGH"]),
       timeframe: z.string(),
     })
-  ).max(2),
+  ),
 
   acquisitionStrategy: z.object({
-    primaryChannels: z.array(z.string()).max(2),
-    firstCustomerTactics: z.array(z.string()).max(2),
+    primaryChannels: z.array(z.string()),
+    firstCustomerTactics: z.array(z.string()),
     communityBuilding: z.string(),
     contentStrategy: z.string(),
-    partnershipOpportunities: z.array(z.string()).max(2),
+    partnershipOpportunities: z.array(z.string()),
   }),
 
   actionPlan: z.object({
-    day30: z.array(z.string()).max(3),
-    day60: z.array(z.string()).max(3),
-    day90: z.array(z.string()).max(3),
+    day30: z.array(z.string()),
+    day60: z.array(z.string()),
+    day90: z.array(z.string()),
   }),
 
   launchPlatforms: z.array(
@@ -156,13 +156,13 @@ export const MarketAnalysisSchema = z.object({
       reason: z.string(),
       url: z.string().optional(),
     })
-  ).max(2),
+  ),
 
   mvpPrioritization: z.object({
-    mustHave: z.array(z.string()).max(3),
-    shouldHave: z.array(z.string()).max(3),
-    couldHave: z.array(z.string()).max(3),
-    wontHave: z.array(z.string()).max(2),
+    mustHave: z.array(z.string()),
+    shouldHave: z.array(z.string()),
+    couldHave: z.array(z.string()),
+    wontHave: z.array(z.string()),
   }),
 
   complianceCheck: z.array(
@@ -171,24 +171,24 @@ export const MarketAnalysisSchema = z.object({
       description: z.string(),
       riskLevel: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
     })
-  ).max(2),
+  ),
 
   salesFunnel: z.object({
     awareness: z.object({
-      channels: z.array(z.string()).max(2),
-      content: z.array(z.string()).max(2),
+      channels: z.array(z.string()),
+      content: z.array(z.string()),
     }),
     consideration: z.object({
-      touchpoints: z.array(z.string()).max(2),
-      objections: z.array(z.string()).max(2),
+      touchpoints: z.array(z.string()),
+      objections: z.array(z.string()),
     }),
     conversion: z.object({
-      triggers: z.array(z.string()).max(2),
-      incentives: z.array(z.string()).max(2),
+      triggers: z.array(z.string()),
+      incentives: z.array(z.string()),
     }),
     retention: z.object({
-      strategies: z.array(z.string()).max(2),
-      metrics: z.array(z.string()).max(2),
+      strategies: z.array(z.string()),
+      metrics: z.array(z.string()),
     }),
   }),
   market_sizing_and_pricing: z.object({
@@ -209,10 +209,10 @@ export const ProductStrategySchema = z.object({
     z.object({
       screen: z.string(),
       description: z.string(),
-      keyElements: z.array(z.string()).max(3),
+      keyElements: z.array(z.string()),
       userFlow: z.string(),
     })
-  ).max(2),
+  ),
   landingPageCopy: z.object({
     headline: z.string(),
     subheadline: z.string(),
@@ -224,7 +224,7 @@ export const ProductStrategySchema = z.object({
         title: z.string(),
         description: z.string(),
       })
-    ).max(3),
+    ),
   }),
   adaptive_tech_stack: z.object({
     database_schema: z.string(),
@@ -260,6 +260,7 @@ export interface IdeaInput {
   socialProofContext?: string; // Reddit & HackerNews
   documentContext?: DocumentContext; // Uploaded PDF/PPT
   maxPersonas?: number;
+  maxCompetitors?: number;
 }
 
 const COMMON_SYSTEM_PROMPT = `You are a startup advisor. 
@@ -270,7 +271,7 @@ NO emojis. Respond ONLY with valid JSON.`;
 
 const MARKET_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are analyzing the market for a startup idea.
-TOKEN LIMIT RULE (CRITICAL): You MUST be extremely concise to avoid output token limits. Keep all text strings very short (1-2 sentences maximum). Limit ALL arrays (like competitors, personas, risks, action plans) to a MAXIMUM of 3 items. DO NOT exceed this.
+TOKEN LIMIT RULE: You are generating a massive report. You MUST keep all text descriptions, summaries, and bullet points concise (1-2 sentences max) to ensure you do not hit the 8192 output token limit.
 RUTHLESS SCORING: Most ideas need a pivot. Give a score from 10 to 100. Provide a simple, profitable pivot if the score is low.
 COMPETITORS (CRITICAL RULE): Read the provided real-world competitor data carefully. You MUST ONLY use the exact competitors provided in the JSON/text. DO NOT invent, guess, or hallucinate competitors. If the provided competitor list is empty or says 'No competitors found', you MUST state 'No verified competitors exist in this area yet' and treat it as a massive market opportunity. Do not make up fake businesses under any circumstances.
 FINANCIALS & METRICS (CRITICAL RULE): Do not invent fake statistics, market sizes, or numbers. If you do not have exact data from the provided context, you MUST use a logical, bottom-up estimation based on the provided Pricing, Target Market, and Competitors, and explain the math briefly (e.g., "Assuming 100 local businesses paying $50/mo = $5k/mo"). Do not output generic $1B TAMs. Everything must be grounded in reality and explicitly marked as an estimation if calculated.
@@ -282,7 +283,6 @@ COMPLIANCE: Briefly check for obvious regulatory/legal requirements (e.g., GDPR,
 
 const PRODUCT_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are generating the product blueprint and landing page copy for a startup idea.
-TOKEN LIMIT RULE (CRITICAL): Keep all descriptions and copy extremely concise. Do not write long paragraphs. Limit all arrays to a MAXIMUM of 3 items.
 Keep the landing page words very catchy, simple, and clear. Focus on user benefits.
 For the \`codeBoilerplate\`, write a complete, beautiful React component using Tailwind CSS and lucide-react. Keep the code under 150 lines to prevent truncation. Do not include large SVG strings.`;
 
@@ -384,6 +384,7 @@ STARTUP IDEA:
 - Pricing Model: ${idea.pricingModel || "Not specified"}${pricingContext}${marketContextString}${competitorContextString}${socialProofString}${documentContextString}
 
 PERSONAS: You MUST generate EXACTLY ${idea.maxPersonas || 3} distinct customer personas based on the data. Do not generate more or less than ${idea.maxPersonas || 3}.
+COMPETITORS: You MUST generate EXACTLY ${idea.maxCompetitors || 3} distinct competitors based on the provided SerpAPI data. Do not generate more or less.
 
 Return the exact JSON structure required. Use real competitors from the SerpAPI data if provided.`;
 
