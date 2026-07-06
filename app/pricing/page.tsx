@@ -231,47 +231,20 @@ export default function PricingPage() {
 
     setLoading(plan.tierKey);
     try {
-      const res = await fetch("/api/razorpay/order", {
+      const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          tier: plan.tierKey,
-        }),
+        body: JSON.stringify({ tier: plan.tierKey }),
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "Failed to create order");
+      if (!res.ok) throw new Error(data.error || "Failed to create checkout");
       
-      const options = {
-        key: data.keyId,
-        amount: data.amount,
-        currency: data.currency,
-        name: "Validexio",
-        description: `Upgrade to ${plan.name}`,
-        order_id: data.id,
-        handler: function (response: any) {
-          // Razorpay returns razorpay_payment_id, razorpay_order_id, razorpay_signature here
-          // The webhook will handle the database upgrade
-          alert("Payment successful! Your account is being upgraded.");
-          router.push("/dashboard");
-        },
-        prefill: {
-          name: session.user.name || "",
-          email: session.user.email || "",
-        },
-        theme: {
-          color: "#630102",
-        },
-      };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on("payment.failed", function (response: any) {
-        console.error("Payment Failed", response.error);
-        alert("Payment failed. Please try again.");
-      });
-      
-      rzp.open();
-      setLoading(null);
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (error) {
       console.error(error);
       alert("Failed to initiate checkout. Please try again.");
