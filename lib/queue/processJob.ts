@@ -29,19 +29,24 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
   const tier = user?.tier || "FREE";
   let maxLeads = 0;
   let maxCompetitors = 3;
+  let maxPersonas = 3;
 
   if ((tier as string) === "PRO") {
     maxLeads = 5;
     maxCompetitors = 5;
+    maxPersonas = 5;
   } else if ((tier as string) === "TEAM") {
     maxLeads = 8;
     maxCompetitors = 7;
+    maxPersonas = 10;
   } else if ((tier as string) === "ENTERPRISE") {
     maxLeads = 8;
     maxCompetitors = 10;
+    maxPersonas = 10;
   } else if ((tier as string) === "STARTER") {
     maxLeads = 0;
     maxCompetitors = 3;
+    maxPersonas = 3;
   }
 
   try {
@@ -142,9 +147,10 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       socialProofContext: socialProofContext || undefined,
       // Pass uploaded document context if exists
       documentContext: (idea as any).documentContext || undefined,
+      maxPersonas,
     };
     
-    // 3. Call Gemini (Part 1: Market Analysis)
+    // 3. Call Gemini in PARALLEL (Market Analysis & Product Strategy)
     let marketResult: any;
     let productResult: any = {
       uiMockupDescriptions: [],
@@ -157,18 +163,15 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       const { generateFreeStartupMarket } = await import("../gemini");
       marketResult = await generateFreeStartupMarket(payload);
     } else {
-      console.log(`[Job ${jobId}] Calling analyzeStartupMarket...`);
-      marketResult = await analyzeStartupMarket(payload);
-
-      // 4. Call Gemini (Part 2: Product Strategy) - ONLY FOR PREMIUM
-      console.log(`[Job ${jobId}] Calling generateStartupProduct...`);
-      const marketSummary = JSON.stringify({
-        validationScore: marketResult.validationScore,
-        targetPersonas: marketResult.customerPersonas.map((p: any) => p.name),
-        competitors: marketResult.competitorIntelligence.map((c: any) => c.name),
-        pricing: marketResult.pricingRecommendation.strategy,
-      });
-      productResult = await generateStartupProduct(payload, marketSummary);
+      console.log(`[Job ${jobId}] Firing Gemini calls (Market & Product) in parallel...`);
+      
+      const [marketRes, productRes] = await Promise.all([
+        analyzeStartupMarket(payload),
+        generateStartupProduct(payload)
+      ]);
+      
+      marketResult = marketRes;
+      productResult = productRes;
       
       // Enforce Starter tier limitations on code
       if ((tier as string) === "STARTER") {

@@ -908,7 +908,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
               <Users className="w-5 h-5 text-[#630102]" />
             </div>
-            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">B2B Leads (Auto-Generated)</h2>
+            <h2 className="text-2xl font-bold text-[#111827] tracking-tight">B2B Leads</h2>
           </div>
           {leads.length === 0 ? (
             <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-6 text-center">

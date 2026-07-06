@@ -255,10 +255,11 @@ export interface IdeaInput {
   pricingModel?: string;
   priceTarget?: string;
   billingFrequency?: string;
-  marketContext?: string; // Tavily
+  marketContext?: string; // Tavily/SerpApi
   competitorContext?: string; // SerpAPI
   socialProofContext?: string; // Reddit & HackerNews
   documentContext?: DocumentContext; // Uploaded PDF/PPT
+  maxPersonas?: number;
 }
 
 const COMMON_SYSTEM_PROMPT = `You are a startup advisor. 
@@ -273,7 +274,8 @@ RUTHLESS SCORING: Most ideas need a pivot. Give a score from 10 to 100. Provide 
 COMPETITORS (CRITICAL RULE): Read the provided real-world competitor data carefully. You MUST ONLY use the exact competitors provided in the JSON/text. DO NOT invent, guess, or hallucinate competitors. If the provided competitor list is empty or says 'No competitors found', you MUST state 'No verified competitors exist in this area yet' and treat it as a massive market opportunity. Do not make up fake businesses under any circumstances.
 FINANCIALS & METRICS (CRITICAL RULE): Do not invent fake statistics, market sizes, or numbers. If you do not have exact data from the provided context, you MUST use a logical, bottom-up estimation based on the provided Pricing, Target Market, and Competitors, and explain the math briefly (e.g., "Assuming 100 local businesses paying $50/mo = $5k/mo"). Do not output generic $1B TAMs. Everything must be grounded in reality and explicitly marked as an estimation if calculated.
 SOCIAL PROOF (CRITICAL RULE): You have been provided with real Reddit and HackerNews data in the context. YOU MUST use actual quotes, upvotes, and frustrations from this data to build the customer personas, market saturation reasoning, and signal-to-sales mapping. DO NOT invent generic pain points if real social proof is provided. Quote the real frustrations exactly.
-LAUNCH PLATFORMS: Based on whether the business is local/physical or digital, provide specific platforms (e.g., Google Business, Product Hunt) where they should launch to get their first 5 customers.
+LAUNCH PLATFORMS (CRITICAL RULE): Provide highly specific, niche platforms (e.g., specific subreddits, specialized Slack communities, local physical hubs). DO NOT say generic things like "Google Ads", "Facebook Ads", "Product Hunt", or "Twitter". Be creative and laser-focused on where these exact personas hang out.
+90-DAY ACTION PLAN (CRITICAL RULE): Provide a highly actionable, technical, and marketing week-by-week breakdown tailored EXACTLY to this specific idea. Do NOT output generic business advice like "Build MVP" or "Talk to customers". Be hyper-specific.
 MVP PRIORITIZATION: Provide a MoSCoW matrix (Must, Should, Could, Won't) to prevent founders from overbuilding.
 COMPLIANCE: Briefly check for obvious regulatory/legal requirements (e.g., GDPR, FDA, Local Permits).`;
 
@@ -377,21 +379,37 @@ STARTUP IDEA:
 - Location/Geography: ${idea.location || "Global"}
 - Pricing Model: ${idea.pricingModel || "Not specified"}${pricingContext}${marketContextString}${competitorContextString}${socialProofString}${documentContextString}
 
+PERSONAS: You MUST generate EXACTLY ${idea.maxPersonas || 3} distinct customer personas based on the data. Do not generate more or less than ${idea.maxPersonas || 3}.
+
 Return the exact JSON structure required. Use real competitors from the SerpAPI data if provided.`;
 
   return callGemini(prompt, MARKET_PROMPT, MarketAnalysisSchema);
 }
 
-export async function generateStartupProduct(idea: IdeaInput, marketSummary: string): Promise<ProductStrategyReport> {
+export async function generateStartupProduct(idea: IdeaInput): Promise<ProductStrategyReport> {
+  const marketContextString = idea.marketContext 
+    ? `\nGENERAL MARKET RESEARCH:\n${idea.marketContext}`
+    : "";
+    
+  const competitorContextString = idea.competitorContext
+    ? `\nREAL LOCAL/GLOBAL COMPETITORS:\n${idea.competitorContext}`
+    : "";
+
+  const socialProofString = idea.socialProofContext
+    ? `\nREAL SOCIAL PROOF & FRUSTRATIONS:\n${idea.socialProofContext}`
+    : "";
+
+  let documentContextString = "";
+  if (idea.documentContext && idea.documentContext.extractedText) {
+    documentContextString = `\n\nFOUNDER'S UPLOADED DOCUMENT:\n${idea.documentContext.extractedText.slice(0, 5000)}`;
+  }
+
   const prompt = `Generate the product strategy and landing page for this startup:
 
 STARTUP IDEA:
 - Title: ${idea.title}
 - Description: ${idea.description}
-- Industry: ${idea.industry}
-
-MARKET SUMMARY (Base your landing page on this):
-${marketSummary}
+- Industry: ${idea.industry}${marketContextString}${competitorContextString}${socialProofString}${documentContextString}
 
 Return the exact JSON structure required, including the React landing page code boilerplate.`;
 
@@ -423,7 +441,7 @@ Provide a Validation Score (0-100), a short 2-sentence market opportunity, a ris
 - Industry: ${idea.industry}`;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash-8b",
+    model: "gemini-flash-latest",
     generationConfig: {
       temperature: 0.5,
       responseMimeType: "application/json",
