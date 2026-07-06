@@ -1,6 +1,6 @@
 import { prisma } from "../db";
 import { analyzeStartupMarket, generateStartupProduct } from "../gemini";
-import { fetchB2BLeads } from "../api/apollo";
+
 
 export interface GenerateJobPayload {
   ideaId: string;
@@ -68,13 +68,35 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       }
     })();
 
-    const serpApiPromise = (async () => {
+    const localCompetitorPromise = (async () => {
       if (isLite) return "No real-time local competitor data available.";
       try {
-        const { fetchRealCompetitors } = await import("../api/serpapi");
-        return await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors);
+        let overpassData = "";
+        let serpapiData = "";
+        
+        // 1. Fetch SerpApi data (Global or Local depending on what is provided)
+        try {
+          const { fetchRealCompetitors } = await import("../api/serpapi");
+          serpapiData = await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors);
+        } catch (e) {
+          console.warn(`[Job ${jobId}] SerpApi search failed:`, e);
+        }
+
+        // 2. Fetch Overpass data ONLY if a local city/state is provided
+        if (idea.location && idea.location.toLowerCase() !== "global") {
+          try {
+            const { fetchOverpassCompetitors } = await import("../api/overpass");
+            overpassData = await fetchOverpassCompetitors(idea.industry, idea.location, maxCompetitors);
+          } catch (e) {
+            console.warn(`[Job ${jobId}] Overpass search failed:`, e);
+          }
+        }
+        
+        // Merge them for the absolute best dataset
+        const merged = [serpapiData, overpassData].filter(d => d && d !== "No real-time local competitor data available.").join("\n\n---\n\n");
+        return merged || "No real-time local competitor data available.";
       } catch (e) {
-        console.error(`[Job ${jobId}] SerpAPI/Overpass search failed:`, e);
+        console.error(`[Job ${jobId}] Competitor search failed:`, e);
         return "No real-time local competitor data available.";
       }
     })();
@@ -101,15 +123,47 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       }
     })();
 
-    const apolloPromise = (async () => {
+    const wikiPromise = (async () => {
+      if (isLite) return "";
       try {
-        if (isLite) return [];
-        if (maxLeads > 0) {
-          return await fetchB2BLeads(idea.industry, idea.location || "global", maxLeads);
-        }
-        return [];
+        const { fetchIndustryBackground } = await import("../api/wikipedia");
+        return await fetchIndustryBackground(idea.industry);
       } catch (e) {
-        console.error(`[Job ${jobId}] Failed to fetch Apollo leads:`, e);
+        console.error(`[Job ${jobId}] Wikipedia search failed:`, e);
+        return "";
+      }
+    })();
+
+    const leadsPromise = (async () => {
+      try {
+        if (isLite || maxLeads <= 0) return [];
+        
+        let localLeads: any[] = [];
+        let globalLeads: any[] = [];
+
+        // 1. Fetch Local Leads (Rich business data via OSM) if a location is provided
+        if (idea.location && idea.location.toLowerCase() !== "global") {
+          try {
+            const { fetchLocalLeadsViaOSM } = await import("../api/overpass");
+            localLeads = await fetchLocalLeadsViaOSM(idea.industry, idea.location, maxLeads);
+          } catch(e) { console.error("OSM Lead Fetch failed", e); }
+        }
+        
+        // 2. Fetch Global / Executive Leads (via Tavily + Clearbit)
+        try {
+          const { fetchB2BLeads } = await import("../api/leads");
+          const remainingLimit = maxLeads - localLeads.length;
+          
+          // Only fetch global if we need more to fulfill the tier limit, or if no local leads found
+          if (remainingLimit > 0 || localLeads.length === 0) {
+             globalLeads = await fetchB2BLeads(idea.industry, idea.location || "global", remainingLimit > 0 ? remainingLimit : maxLeads);
+          }
+        } catch(e) { console.error("Global Lead Fetch failed", e); }
+
+        const combined = [...localLeads, ...globalLeads];
+        return combined.slice(0, maxLeads);
+      } catch (e) {
+        console.error(`[Job ${jobId}] Failed to fetch smart leads:`, e);
         return [];
       }
     })();
@@ -126,11 +180,12 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     })();
 
     // Wait for the context needed for Gemini
-    const [marketContext, competitorContext, hnContext, redditContext] = await Promise.all([
+    const [marketContext, competitorContext, hnContext, redditContext, wikiContext] = await Promise.all([
       tavilyPromise, 
-      serpApiPromise,
+      localCompetitorPromise,
       hnPromise,
-      redditPromise
+      redditPromise,
+      wikiPromise
     ]);
     
     const socialProofContext = [hnContext, redditContext].filter(Boolean).join("\n\n");
@@ -145,6 +200,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       marketContext: marketContext !== "No real-time market data available." ? marketContext : undefined,
       competitorContext: competitorContext !== "No real-time local competitor data available." ? competitorContext : undefined,
       socialProofContext: socialProofContext || undefined,
+      wikiContext: wikiContext || undefined,
       // Pass uploaded document context if exists
       documentContext: (idea as any).documentContext || undefined,
       maxPersonas,
@@ -180,8 +236,8 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       }
     }
 
-    // Wait for the remaining parallel tasks to finish (they usually finish while Gemini is thinking)
-    const [uiMockupImages, apolloLeads] = await Promise.all([mockupPromise, apolloPromise]);
+    // Wait for the remaining parallel tasks to finish
+    const [uiMockupImages, allLeads] = await Promise.all([mockupPromise, leadsPromise]);
 
     const processingTime = Date.now() - startTime;
 
@@ -224,10 +280,10 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
       },
     });
 
-    // 7. Insert Real Leads from Apollo
-    if (apolloLeads && apolloLeads.length > 0) {
+    // 7. Insert Real Leads from the new Free Premium Lead Engine
+    if (allLeads && allLeads.length > 0) {
       await prisma.lead.createMany({
-        data: apolloLeads.map((lead: any) => ({
+        data: allLeads.map((lead: any) => ({
           reportId: createdReport.id,
           name: lead.name,
           title: lead.title,
@@ -235,7 +291,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
           email: lead.email || `${lead.name.split(' ')[0].toLowerCase()}@${lead.company.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}.com`,
           linkedin: lead.linkedinUrl,
           relevanceScore: 90 + Math.floor(Math.random() * 10),
-          notes: `Found via Apollo.io search for ${idea.industry} in ${idea.location || "global"}`,
+          notes: lead.notes || `Found via Free Premium Search Engine for ${idea.industry} in ${idea.location || "global"}`,
           status: "NEW",
         })),
       });

@@ -910,10 +910,12 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             </div>
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">B2B Leads</h2>
           </div>
-          {leads.length === 0 ? (
-            <div className="bg-[#FDFCF8] border border-[#E5E7EB] rounded-xl p-6 text-center">
-              <p className="text-[#6B7280] text-sm">No B2B leads generated for this report or your tier does not include lead generation.</p>
-            </div>
+          {leads.length === 0 || report.isLite || userTier === "STARTER" || userTier === "FREE" ? (
+            <PremiumLock 
+              isLocked={true} 
+              title="B2B Lead Generation Locked" 
+              description="Upgrade to Pro or higher to instantly generate verified contact details for your startup ideas." 
+            />
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {leads.map((lead) => (

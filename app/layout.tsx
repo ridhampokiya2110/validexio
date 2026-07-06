@@ -8,6 +8,7 @@ import { PwaRegistry } from "@/components/pwa-registry";
 import { Providers } from "@/components/providers";
 import type { Viewport } from "next";
 import { GlobalSEO } from "@/components/seo/GlobalSEO";
+import { indianKeywords } from "@/lib/seo/india-seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -289,7 +290,8 @@ export const metadata: Metadata = {
     "saas customer support strategy",
     "automated knowledge base generator",
     "startup feedback loop automation",
-    "b2b saas net promoter score tracker"
+    "b2b saas net promoter score tracker",
+    ...indianKeywords
   ],
   authors: [{ name: "Validexio" }],
   creator: "Validexio",

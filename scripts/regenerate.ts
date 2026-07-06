@@ -4,7 +4,7 @@ dotenv.config({ path: ".env.local" });
 async function regenerate() {
   const { prisma } = await import("../lib/db");
   const { analyzeStartupMarket, generateStartupProduct } = await import("../lib/gemini");
-  const { fetchB2BLeads } = await import("../lib/api/apollo");
+  const { fetchB2BLeads } = await import("../lib/api/leads");
 
   const ideaId = "cmr8xjp1d0003s00pu8c3v2eq";
   const userId = "cmqdxx0rg0003u8gs5i5cudez";

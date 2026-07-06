@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Pricing — Validexio Data Engine Startup Validator | Free, Pro ₹1499, Team ₹2999",
-  description: "Simple one-time pricing. Free startup validation forever. Pro plan at ₹1499 ($39) includes React code, 10 B2B leads, UI mockups, and full market analysis.",
+  description: "Simple one-time pricing. Free startup validation forever. Pro plan at ₹1499 ($39) includes React code, 5 B2B leads, UI mockups, and full market analysis.",
   keywords: [
     "Validexio pricing",
     "startup validator India rupees",

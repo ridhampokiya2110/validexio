@@ -27,6 +27,12 @@ export default async function LeadsPage() {
 
   const reportsWithLeads = await getLeads(session.user.id);
   const totalLeads = reportsWithLeads.reduce((sum, r) => sum + r.leads.length, 0);
+  
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { tier: true }
+  });
+  const tier = user?.tier || "FREE";
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
@@ -39,7 +45,20 @@ export default async function LeadsPage() {
         </div>
       </div>
 
-      {reportsWithLeads.length === 0 ? (
+      {tier === "FREE" || tier === "STARTER" ? (
+        <div className="glass-card p-16 text-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center mx-auto mb-4">
+            <Target className="w-8 h-8 text-[#630102]/60" />
+          </div>
+          <h3 className="text-lg font-bold text-[#1B1716] mb-2">Lead Generation Locked</h3>
+          <p className="text-[#1B1716]/50 text-sm max-w-md mx-auto mb-6">
+            Your current plan ({tier}) does not include B2B Lead Generation. Upgrade to Pro or higher to instantly generate verified contact details for your startup ideas.
+          </p>
+          <Link href="/dashboard/billing" className="btn-primary inline-flex">
+            Upgrade Plan
+          </Link>
+        </div>
+      ) : reportsWithLeads.length === 0 ? (
         <div className="glass-card p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#1B1716]/5 border border-[#1B1716]/10 flex items-center justify-center mx-auto mb-4">
             <Target className="w-8 h-8 text-[#1B1716]/40" />

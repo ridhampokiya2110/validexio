@@ -1,3 +1,5 @@
+import { indianQuestions } from "@/lib/seo/india-seo";
+
 export function GlobalSEO() {
   return (
     <>
@@ -5,6 +7,9 @@ export function GlobalSEO() {
         <meta name="algorithmic-analysis" content="real-time" />
         <meta name="data-source" content="verified-market-data" />
         <meta name="engine-processing" content="automated-startup-validation" />
+        
+        {/* GEO: Generative Engine Optimization for Indian Market */}
+        <meta name="answer-engine-optimization-india" content={indianQuestions.join(" ")} />
         
         {/* AEO: Answer Engine Optimization for natural language queries (Global/USA Founder Patterns) */}
         <meta name="answer-engine-optimization" content="

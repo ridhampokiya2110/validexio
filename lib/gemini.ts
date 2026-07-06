@@ -258,6 +258,7 @@ export interface IdeaInput {
   marketContext?: string; // Tavily/SerpApi
   competitorContext?: string; // SerpAPI
   socialProofContext?: string; // Reddit & HackerNews
+  wikiContext?: string; // Wikipedia
   documentContext?: DocumentContext; // Uploaded PDF/PPT
   maxPersonas?: number;
   maxCompetitors?: number;
@@ -366,6 +367,10 @@ export async function analyzeStartupMarket(idea: IdeaInput): Promise<MarketAnaly
     ? `\nREAL SOCIAL PROOF & FRUSTRATIONS (REDDIT & HACKERNEWS):\n${idea.socialProofContext}`
     : "";
 
+  const wikiContextString = idea.wikiContext
+    ? `\nFACTUAL INDUSTRY BACKGROUND (WIKIPEDIA - USE FOR MARKET SIZING & HISTORY):\n${idea.wikiContext}`
+    : "";
+
   // Build document context string if a PDF/PPT was uploaded
   let documentContextString = "";
   if (idea.documentContext && idea.documentContext.extractedText) {
@@ -381,7 +386,7 @@ STARTUP IDEA:
 - Industry: ${idea.industry}
 - Target Market: ${idea.targetMarket || "Not specified"}
 - Location/Geography: ${idea.location || "Global"}
-- Pricing Model: ${idea.pricingModel || "Not specified"}${pricingContext}${marketContextString}${competitorContextString}${socialProofString}${documentContextString}
+- Pricing Model: ${idea.pricingModel || "Not specified"}${pricingContext}${marketContextString}${competitorContextString}${socialProofString}${wikiContextString}${documentContextString}
 
 PERSONAS: You MUST generate EXACTLY ${idea.maxPersonas || 3} distinct customer personas based on the data. Do not generate more or less than ${idea.maxPersonas || 3}.
 COMPETITORS: You MUST generate EXACTLY ${idea.maxCompetitors || 3} distinct competitors based on the provided SerpAPI data. Do not generate more or less.
@@ -404,6 +409,10 @@ export async function generateStartupProduct(idea: IdeaInput): Promise<ProductSt
     ? `\nREAL SOCIAL PROOF & FRUSTRATIONS:\n${idea.socialProofContext}`
     : "";
 
+  const wikiContextString = idea.wikiContext
+    ? `\nFACTUAL INDUSTRY BACKGROUND:\n${idea.wikiContext}`
+    : "";
+
   let documentContextString = "";
   if (idea.documentContext && idea.documentContext.extractedText) {
     documentContextString = `\n\nFOUNDER'S UPLOADED DOCUMENT:\n${idea.documentContext.extractedText.slice(0, 5000)}`;
@@ -414,7 +423,7 @@ export async function generateStartupProduct(idea: IdeaInput): Promise<ProductSt
 STARTUP IDEA:
 - Title: ${idea.title}
 - Description: ${idea.description}
-- Industry: ${idea.industry}${marketContextString}${competitorContextString}${socialProofString}${documentContextString}
+- Industry: ${idea.industry}${marketContextString}${competitorContextString}${socialProofString}${wikiContextString}${documentContextString}
 
 Return the exact JSON structure required, including the React landing page code boilerplate.`;
 
