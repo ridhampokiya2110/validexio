@@ -149,19 +149,29 @@ export async function POST(req: NextRequest) {
       data: { status: "PROCESSING" },
     });
 
-    console.log("Dispatching validation job to BullMQ queue...");
-    // Import dynamically so it doesn't break Edge runtime if imported globally
-    const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
-    
-    await dispatchValidationJob({
-      sessionId: "system", // Legacy field
-      industry: idea.industry,
-      businessIdea: idea.title,
-      pricingModel: idea.pricingModel || "",
-      // Pass the ideaId and userId so the worker knows what to process
-      ideaId: idea.id,
-      userId: userId
-    } as any);
+    if (!process.env.REDIS_HOST) {
+      console.log("No REDIS_HOST found. Bypassing BullMQ and processing directly in background...");
+      // Fire and forget (it will run in the background)
+      processValidationJob({
+        ideaId: idea.id,
+        userId: userId,
+        industry: idea.industry,
+        businessIdea: idea.title,
+        pricingModel: idea.pricingModel || ""
+      } as any).catch(err => console.error("Background validation error:", err));
+    } else {
+      console.log("Dispatching validation job to BullMQ queue...");
+      const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
+      
+      await dispatchValidationJob({
+        sessionId: "system", // Legacy field
+        industry: idea.industry,
+        businessIdea: idea.title,
+        pricingModel: idea.pricingModel || "",
+        ideaId: idea.id,
+        userId: userId
+      } as any);
+    }
 
     return NextResponse.json({
       success: true,
