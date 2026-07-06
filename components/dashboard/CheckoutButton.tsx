@@ -15,17 +15,38 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured }: Checkout
   const handleCheckout = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/lemonsqueezy/checkout", {
+      const res = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ tier: tierName.toUpperCase() }),
       });
       const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert("Checkout failed: " + data.error);
-      }
+
+      if (!res.ok) throw new Error(data.error || "Failed to create order");
+      
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency,
+        name: "Validexio",
+        description: `Upgrade to ${tierName}`,
+        order_id: data.id,
+        handler: function (response: any) {
+          alert("Payment successful! Your account is being upgraded.");
+          window.location.href = "/dashboard";
+        },
+        theme: {
+          color: "#630102",
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.on("payment.failed", function (response: any) {
+        console.error("Payment Failed", response.error);
+        alert("Payment failed. Please try again.");
+      });
+      
+      rzp.open();
     } catch (error) {
       console.error(error);
       alert("Something went wrong");

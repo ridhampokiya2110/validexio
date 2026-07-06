@@ -4,6 +4,7 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 
 const apiKey = process.env.GEMINI_API_KEY as string;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : (null as unknown as GoogleGenerativeAI);
@@ -193,13 +194,13 @@ export const MarketAnalysisSchema = z.object({
   market_sizing_and_pricing: z.object({
     tam_sam_som_values: z.string(),
     calculated_entry_price_strategy: z.string()
-  }),
+  }).optional(),
   signal_to_sales_mapping: z.array(
     z.object({
       reddit_complaint: z.string(),
       email_hook: z.string()
     })
-  ),
+  ).optional(),
 });
 
 // --- 2. Product Strategy Schema ---
@@ -228,7 +229,7 @@ export const ProductStrategySchema = z.object({
   adaptive_tech_stack: z.object({
     database_schema: z.string(),
     cloud_blueprint: z.string()
-  }),
+  }).optional(),
   codeBoilerplate: z.string(),
 });
 
@@ -283,6 +284,9 @@ For the \`codeBoilerplate\`, write a complete, beautiful React component using T
 
 // Helper for Gemini calls with retry
 async function callGemini(prompt: string, systemInstruction: string, schema: any): Promise<any> {
+  const schemaString = JSON.stringify(zodToJsonSchema(schema), null, 2);
+  const fullPrompt = `${prompt}\n\nREQUIRED JSON SCHEMA:\nYou MUST return your answer as a raw JSON object that perfectly matches the following JSON Schema:\n${schemaString}\n\nDo not wrap it in any top-level key that is not in the schema. Do not return an array if the schema is an object. DO NOT include markdown \`\`\`json wrappers.`;
+
   const model = genAI.getGenerativeModel({
     model: "gemini-flash-latest",
     systemInstruction,
@@ -301,9 +305,8 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
 
   while (retries > 0) {
     try {
-      const result = await model.generateContent(prompt);
-      const response = result.response;
-      text = response.text();
+      const result = await model.generateContent(fullPrompt);
+      text = result.response.text();
       break;
     } catch (error: any) {
       console.error(`Gemini API error (Retries left: ${retries - 1}):`, error.message || error);
@@ -319,6 +322,7 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
   }
 
   text = text.replace(/\`\`\`json/g, "").replace(/\`\`\`/g, "").trim();
+  console.log("Raw Gemini Text:", text.substring(0, 500) + '...');
 
   let parsed;
   try {

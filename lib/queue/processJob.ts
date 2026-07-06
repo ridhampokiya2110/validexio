@@ -262,7 +262,10 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
     console.log(`[Job ${jobId}] Completed successfully in ${processingTime}ms`);
     return { success: true, ideaId };
   } catch (error) {
-    console.error(`[Job ${jobId}] Failed:`, error);
+    console.error(`[Job ${jobId}] Failed with error message:`, error?.message || 'Unknown error');
+    try {
+      console.error(`[Job ${jobId}] Stack:`, error?.stack);
+    } catch(e) {}
     
     // Refund the credit on failure only if it's not a lite validation
     if (!idea.isLite) {

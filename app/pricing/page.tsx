@@ -199,7 +199,6 @@ export default function PricingPage() {
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
   const [isIndianUser, setIsIndianUser] = useState(false);
-  const [isAffiliate, setIsAffiliate] = useState(false);
 
   useEffect(() => {
     // Check for Indian IP
@@ -217,14 +216,6 @@ export default function PricingPage() {
       }
     };
     checkIp();
-
-    // Check for affiliate parameter in URL
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      if (params.has('aff')) {
-        setIsAffiliate(true);
-      }
-    }
   }, []);
 
   const handleCheckout = async (plan: any) => {
