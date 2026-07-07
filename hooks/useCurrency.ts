@@ -10,9 +10,24 @@ export function useCurrency() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // We instantly set loaded to true since we no longer fetch IP data
-    // This removes any pricing flashes on load and keeps pricing universally in USD
-    setIsLoaded(true);
+    const fetchCurrency = async () => {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.country_code === 'IN') {
+            setCurrency("INR");
+          } else if (['AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES'].includes(data.country_code)) {
+            setCurrency("EUR");
+          }
+        }
+      } catch (err) {
+        // Silently fail and fallback to USD
+      } finally {
+        setIsLoaded(true);
+      }
+    };
+    fetchCurrency();
   }, []);
 
   return { currency, isLoaded };

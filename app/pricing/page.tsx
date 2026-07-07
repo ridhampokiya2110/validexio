@@ -198,25 +198,6 @@ export default function PricingPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
-  const [isIndianUser, setIsIndianUser] = useState(false);
-
-  useEffect(() => {
-    // Check for Indian IP
-    const checkIp = async () => {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.country_code === 'IN') {
-            setIsIndianUser(true);
-          }
-        }
-      } catch (err) {
-        // Silently fail if adblockers block the IP check
-      }
-    };
-    checkIp();
-  }, []);
 
   const handleCheckout = async (plan: any) => {
     if (plan.tierKey === "FREE") {
