@@ -198,6 +198,18 @@ export default function PricingPage() {
   const { data: session } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState<string | null>(null);
+  const [isPartner, setIsPartner] = useState(false);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
+    if (hasRef) {
+      localStorage.setItem("is_partner", "true");
+      setIsPartner(true);
+    } else if (localStorage.getItem("is_partner") === "true") {
+      setIsPartner(true);
+    }
+  }, []);
 
   const handleCheckout = async (plan: any) => {
     if (plan.tierKey === "FREE") {
@@ -212,10 +224,20 @@ export default function PricingPage() {
 
     setLoading(plan.tierKey);
     try {
+      let finalDiscountCode: string | undefined = undefined;
+      if (currency === "INR") {
+        finalDiscountCode = isPartner ? `${plan.tierKey}PARTNER10` : `INDIA${plan.tierKey}`;
+      } else if (isPartner) {
+        finalDiscountCode = "PARTNER10";
+      }
+
       const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: plan.tierKey }),
+        body: JSON.stringify({ 
+          tier: plan.tierKey,
+          discountCode: finalDiscountCode
+        }),
       });
       const data = await res.json();
 

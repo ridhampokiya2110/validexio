@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { useCurrency } from "@/hooks/useCurrency";
 
 interface CheckoutButtonProps {
   isCurrentPlan: boolean;
@@ -11,14 +12,38 @@ interface CheckoutButtonProps {
 
 export function CheckoutButton({ isCurrentPlan, tierName, isFeatured }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
+  const { currency } = useCurrency();
+  const [isPartner, setIsPartner] = useState(false);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
+    if (hasRef) {
+      localStorage.setItem("is_partner", "true");
+      setIsPartner(true);
+    } else if (localStorage.getItem("is_partner") === "true") {
+      setIsPartner(true);
+    }
+  }, []);
 
   const handleCheckout = async () => {
     try {
       setLoading(true);
+      
+      let finalDiscountCode: string | undefined = undefined;
+      if (currency === "INR") {
+        finalDiscountCode = isPartner ? `${tierName.toUpperCase()}PARTNER10` : `INDIA${tierName.toUpperCase()}`;
+      } else if (isPartner) {
+        finalDiscountCode = "PARTNER10";
+      }
+
       const res = await fetch("/api/lemonsqueezy/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier: tierName.toUpperCase() }),
+        body: JSON.stringify({ 
+          tier: tierName.toUpperCase(),
+          discountCode: finalDiscountCode
+        }),
       });
       const data = await res.json();
 
