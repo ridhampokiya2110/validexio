@@ -5,7 +5,7 @@ import { RuthlessStats } from "@/components/RuthlessStats";
 import { useCurrency } from "@/hooks/useCurrency";
 import { CompetitorComparison } from "@/components/CompetitorComparison";
 import { SecureCheckoutBadge } from "@/components/SecureCheckoutBadge";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import GlobalCompetitorsGlobe from "@/components/marketing/GlobalCompetitorsGlobe";
 import {
   ArrowRight,
@@ -81,9 +81,18 @@ function HeroSection() {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-center text-lg sm:text-xl text-[#1B1716]/65 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
-          From Concept to Customer in 60 Seconds.
-        </p>
+        <div className="flex flex-col items-center justify-center space-y-3 mb-10 animate-fade-in delay-200 text-center px-4 w-full max-w-4xl mx-auto">
+          <p className="text-[1.15rem] sm:text-xl md:text-2xl font-semibold text-[#1B1716]/75 tracking-tight leading-snug max-w-[90%] sm:max-w-none mx-auto text-balance">
+            From Concept to Customer in 60 Seconds.
+          </p>
+          <p className="text-[0.95rem] sm:text-base md:text-lg font-medium text-[#1B1716]/60 max-w-[95%] sm:max-w-2xl mx-auto text-balance">
+            Data-backed validation for your startup idea without writing a single line of code.
+            <br className="hidden sm:block" />
+            Get brutal reality checks, target personas, and GTM strategies instantly.
+          </p>
+        </div>
+
+
 
         {/* CTA Group */}
         <div className="flex justify-center w-full mb-16 animate-fade-in delay-300 px-4">
@@ -99,16 +108,21 @@ function HeroSection() {
         </div>
 
         {/* Social Proof */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#1B1716]/45 animate-fade-in delay-400">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm font-medium text-[#1B1716]/60 animate-fade-in delay-400 mt-6 sm:mt-8">
           {[
             "Secure, one-time payments",
             "Free tier available",
             "Results in under 60 seconds",
           ].map((item, i) => (
-            <div key={`item-${i}`} className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" />
-              <span>{item}</span>
-            </div>
+            <React.Fragment key={`item-${i}`}>
+              <div className="flex items-center gap-1.5 sm:gap-2">
+                <CheckCircle className="w-4 h-4 text-cherry flex-shrink-0" />
+                <span>{item}</span>
+              </div>
+              {i < 2 && (
+                <div className="hidden sm:block w-1 h-1 rounded-full bg-[#1B1716]/20 mx-1" />
+              )}
+            </React.Fragment>
           ))}
         </div>
 
@@ -223,7 +237,7 @@ function HeroSection() {
               </div>
 
               {/* Bottom Right: Action Plan */}
-              <div className="col-span-12 lg:col-span-5 flex flex-col sm:flex-row lg:flex-col gap-2 sm:gap-4">
+              <div className="col-span-12 lg:col-span-5 flex flex-col sm:flex-row lg:col-span-5 lg:flex-col gap-2 sm:gap-4">
                 <div className="flex-1 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-lg sm:rounded-xl p-3 sm:p-5 relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-700" />
                   <p className="text-[10px] sm:text-[11px] font-black text-emerald-700 uppercase tracking-widest mb-2 sm:mb-4 flex items-center gap-1.5 sm:gap-2 relative z-10">
@@ -1062,14 +1076,18 @@ function CTASection() {
             Don&apos;t build in the dark. Get data-driven clarity in 60 seconds and
             start executing with confidence.
           </p>
-          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center">
-            <Rocket className="w-5 h-5 mr-2 shrink-0" />
-            <span>Start Validating for Free</span>
-            <ArrowRight className="w-5 h-5 ml-2 shrink-0" />
+          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 flex items-center justify-center w-full sm:w-auto max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
+            <Rocket className="w-5 h-5 mr-2 flex-shrink-0" />
+            <span className="truncate">Start Validating for Free</span>
+            <ArrowRight className="w-5 h-5 ml-2 flex-shrink-0" />
           </Link>
-          <p className="mt-4 text-[#1B1716]/35 text-sm">
-            Free tier available · Secure, one-time payments · Takes 60 seconds
-          </p>
+          <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-[#1B1716]/45 text-sm font-medium">
+            <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" /> Free tier available</span>
+            <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-[#1B1716]/20"></span>
+            <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" /> Secure, one-time payments</span>
+            <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-[#1B1716]/20"></span>
+            <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" /> Takes 60 seconds</span>
+          </div>
         </div>
       </div>
     </section>
@@ -1163,7 +1181,7 @@ function ValueAnchoringSection() {
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-cherry/10 to-transparent rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none transition-transform duration-700 group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cherry/[0.02] pointer-events-none" />
             
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-cherry text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1 rounded-b-xl shadow-md">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-cherry text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-md z-20">
               The Smart Choice
             </div>
 
