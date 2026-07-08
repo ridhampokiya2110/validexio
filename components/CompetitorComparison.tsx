@@ -42,10 +42,10 @@ export function CompetitorComparison() {
     <section className="w-full pt-12 pb-24 bg-transparent relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
         <div className="flex flex-col items-center text-center mb-10 sm:mb-16">
-          <h2 className="text-3xl md:text-5xl font-black text-[#1B1716] mb-4 sm:mb-6 tracking-tight leading-tight px-2">
+          <h2 className="text-center text-3xl md:text-5xl font-black text-[#1B1716] mb-4 sm:mb-6 tracking-tight leading-tight px-2 mx-auto">
             Stop paying for <br className="sm:hidden" /><span className="gradient-text">glorified chatbots</span>.
           </h2>
-          <p className="text-base sm:text-lg text-[#1B1716]/60 max-w-2xl mx-auto font-medium px-4 sm:px-0">
+          <p className="text-center text-base sm:text-lg text-[#1B1716]/60 max-w-2xl mx-auto font-medium px-4 sm:px-0">
             While other tools just regurgitate Wikipedia, our proprietary intelligence engine delivers brutal reality checks, precise market sizing, and exact execution roadmaps you can deploy today.
           </p>
         </div>

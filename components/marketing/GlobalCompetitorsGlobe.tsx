@@ -113,13 +113,13 @@ export default function GlobalCompetitorsGlobe() {
               <GlobeIcon className="w-3.5 h-3.5 shrink-0" /> <span>Real-Time Global Intelligence</span>
             </div>
           </div>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-[#111827] mb-6 tracking-tight">
+          <h2 className="text-center text-4xl md:text-5xl lg:text-6xl font-black text-[#111827] mb-6 tracking-tight mx-auto">
             Map The World&apos;s <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-600">
               Hidden Competitors
             </span>
           </h2>
-          <p className="text-[#6B7280] text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-center text-[#6B7280] text-lg max-w-2xl mx-auto font-medium leading-relaxed">
             Our proprietary data engine scans and analyzes every global competitor instantly. We pinpoint exact geographic locations, unit economics, and tech stacks globally—no guessing, just raw, verified data.
           </p>
         </motion.div>

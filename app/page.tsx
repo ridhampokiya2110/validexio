@@ -74,28 +74,28 @@ function HeroSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
 
         {/* Main Headline */}
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-[#1B1716] tracking-tight leading-tight mb-6 animate-fade-in delay-100">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-[#1B1716] tracking-tight leading-tight mb-6 animate-fade-in delay-100 text-center mx-auto w-full">
           Stop <span className="gradient-text">Guessing</span>.
           <br />
           Start <span className="gradient-text">Executing</span>.
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg sm:text-xl text-[#1B1716]/65 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
+        <p className="text-center text-lg sm:text-xl text-[#1B1716]/65 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in delay-200">
           From Concept to Customer in 60 Seconds.
         </p>
 
         {/* CTA Group */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16 animate-fade-in delay-300">
-          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-8 py-3.5 w-full sm:w-auto">
-            <Rocket className="w-5 h-5 mr-2" />
-            Validate My Idea Now
-            <ArrowRight className="w-4 h-4 ml-2" />
+        <div className="flex justify-center w-full mb-16 animate-fade-in delay-300 px-4">
+          <Link 
+            aria-label="Navigation link" 
+            href="/register" 
+            className="btn-primary text-base sm:text-lg px-8 sm:px-10 py-4 inline-flex items-center justify-center shadow-[0_8px_30px_rgb(99,1,2,0.2)] hover:shadow-[0_12px_40px_rgb(99,1,2,0.3)] transition-all duration-300 hover:-translate-y-1 group ring-2 ring-transparent hover:ring-cherry/20 ring-offset-2"
+          >
+            <Rocket className="w-5 h-5 mr-2 shrink-0 transition-transform duration-300 group-hover:scale-110" />
+            <span className="font-bold tracking-wide">Validate My Idea Now</span>
+            <ArrowRight className="w-5 h-5 ml-2 shrink-0 transition-transform duration-300 group-hover:translate-x-1" />
           </Link>
-          <button aria-label="Button action" type="button" className="btn-ghost text-base px-8 py-3.5 w-full sm:w-auto gap-2">
-            <Play className="w-4 h-4 fill-current" />
-            Watch Demo
-          </button>
         </div>
 
         {/* Social Proof */}
@@ -387,7 +387,7 @@ function PremiumExecutionShowcase() {
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#111827] mb-6 tracking-tight">
             The Action <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">Plan</span>
           </h2>
-          <p className="text-[#6B7280] text-lg max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-[#6B7280] text-lg max-w-2xl mx-auto text-center font-medium leading-relaxed">
             Stop validating in theory. Upgrade to Premium and instantly generate ready-to-use tech setups, exact pricing, and ready-to-use email subjects.
           </p>
         </div>
@@ -532,7 +532,7 @@ function FeaturesSection() {
             <br className="hidden sm:block" />
             before you build
           </h2>
-          <p className="text-[#1B1716]/60 text-base sm:text-lg max-w-xl mx-auto px-4 sm:px-0">
+          <p className="text-[#1B1716]/60 text-base sm:text-lg max-w-xl mx-auto text-center px-4 sm:px-0">
             Stop wasting months building products nobody wants. Get data-driven validation and production-ready code in 60 seconds.
           </p>
         </div>
@@ -608,7 +608,7 @@ function HowItWorksSection() {
           <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-[#111827] tracking-tight mb-6 text-center mx-auto">
             From idea to <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">insight</span><br className="sm:hidden" /> in 60 seconds
           </h2>
-          <p className="text-[#6B7280] text-lg md:text-xl font-medium max-w-2xl mx-auto">
+          <p className="text-[#6B7280] text-lg md:text-xl text-center font-medium max-w-2xl mx-auto">
             Three simple steps to validate your startup idea with enterprise-grade Data Engine.
           </p>
         </div>
@@ -789,12 +789,12 @@ function PricingSection() {
             </span>
             <div className="w-8 h-[1px] bg-[#630102]/30" />
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
+          <h2 className="text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight mx-auto">
             Simple pricing.
             <br />
             <span className="gradient-text">Extraordinary</span> value.
           </h2>
-          <p className="text-[#1B1716]/60 text-lg max-w-lg mx-auto">
+          <p className="text-[#1B1716]/60 text-lg max-w-lg mx-auto text-center">
             Get the clarity you need to build with confidence.
           </p>
         </div>
@@ -991,7 +991,7 @@ function FAQSection() {
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-red-500">questions</span> founders ask before they execute.
           </h2>
-          <p className="text-[#1B1716]/60 text-lg max-w-xl mx-auto">
+          <p className="text-[#1B1716]/60 text-lg max-w-xl mx-auto text-center">
             Everything you need to know about how Validexio protects your ideas and delivers actionable intelligence.
           </p>
         </div>
@@ -1058,11 +1058,11 @@ function CTASection() {
             <br />
             <span className="gradient-text">validating</span> right now.
           </h2>
-          <p className="text-[#1B1716]/60 text-lg mb-10 max-w-lg mx-auto">
+          <p className="text-[#1B1716]/60 text-lg mb-10 max-w-lg mx-auto text-center">
             Don&apos;t build in the dark. Get data-driven clarity in 60 seconds and
             start executing with confidence.
           </p>
-          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center w-full sm:w-auto text-center mx-auto">
+          <Link aria-label="Navigation link" href="/register" className="btn-primary text-base px-6 sm:px-10 py-4 inline-flex items-center justify-center">
             <Rocket className="w-5 h-5 mr-2 shrink-0" />
             <span>Start Validating for Free</span>
             <ArrowRight className="w-5 h-5 ml-2 shrink-0" />
@@ -1108,7 +1108,7 @@ function ValueAnchoringSection() {
           <h2 className="text-4xl sm:text-5xl md:text-6xl font-black text-[#1B1716] mb-6 tracking-tight leading-tight">
             The Real Cost of <span className="text-transparent bg-clip-text bg-gradient-to-r from-cherry to-red-500">Execution</span>.
           </h2>
-          <p className="text-xl text-[#1B1716]/60 max-w-2xl mx-auto font-medium">
+          <p className="text-xl text-center text-[#1B1716]/60 max-w-2xl mx-auto font-medium">
             Why traditional validation drains your runway before you even write a single line of code.
           </p>
         </div>
@@ -1239,7 +1239,7 @@ function InvestorSimulatorSection() {
           <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-[#111827] tracking-tight mb-8">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#630102] to-[#CE202A]">Investor Simulator</span>
           </h2>
-          <p className="text-lg md:text-xl text-[#6B7280] max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-lg md:text-xl text-center text-[#6B7280] max-w-2xl mx-auto font-medium leading-relaxed">
             Stop pitching blindly. Get interrogated by a ruthless Data Engine trained on top-tier VC and Technical Architect frameworks before you face the real world.
           </p>
         </div>
