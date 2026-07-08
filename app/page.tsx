@@ -1300,7 +1300,7 @@ function InvestorSimulatorSection() {
 // =============================================
 export default function LandingPage() {
   return (
-    <main>
+    <main className="overflow-x-hidden w-full flex flex-col min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

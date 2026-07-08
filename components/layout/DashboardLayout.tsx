@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -60,6 +59,7 @@ const navItems = [
       { href: "/dashboard/analytics", icon: LineChart, label: "Analytics" },
       { href: "/dashboard/settings", icon: Settings, label: "Settings & Branding" },
       { href: "/dashboard/billing", icon: CreditCard, label: "Billing" },
+      { href: "/dashboard/affiliate", icon: Users, label: "Partner Program" },
       { href: "/dashboard/security", icon: Shield, label: "Security Center" },
       { href: "/dashboard/support", icon: LifeBuoy, label: "Support & FAQ" },
     ],

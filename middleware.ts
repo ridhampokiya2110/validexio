@@ -103,12 +103,12 @@ export default auth(async (req) => {
   // CSP
   const csp = [
     "default-src 'self'",
-    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://app.lemonsqueezy.com https://assets.lemonsqueezy.com",
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://app.lemonsqueezy.com https://assets.lemonsqueezy.com https://checkout.razorpay.com",
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' blob: data: https://lh3.googleusercontent.com https://avatars.githubusercontent.com",
-    "connect-src 'self' https://api.lemonsqueezy.com https://app.posthog.com",
-    "frame-src 'self' https://app.lemonsqueezy.com",
+    "connect-src 'self' https://api.lemonsqueezy.com https://app.posthog.com https://lumberjack-cx.razorpay.com https://api.razorpay.com",
+    "frame-src 'self' https://app.lemonsqueezy.com https://api.razorpay.com https://checkout.razorpay.com",
     "object-src 'none'",
   ].join("; ");
 

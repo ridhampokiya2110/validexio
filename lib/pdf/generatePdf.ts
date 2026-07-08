@@ -1,5 +1,4 @@
 "use client";
-
 export async function generateReportPdf(elementId: string, filename: string) {
   const element = document.getElementById(elementId);
   if (!element) {

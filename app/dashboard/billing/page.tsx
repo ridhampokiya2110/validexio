@@ -6,7 +6,8 @@ import Link from "next/link";
 import { CreditCard, CheckCircle, Zap, Star } from "lucide-react";
 import { CheckoutButton } from "@/components/dashboard/CheckoutButton";
 import { ManageSubscriptionButton } from "@/components/dashboard/ManageSubscriptionButton";
-
+import { GlobalPromoInput } from "@/components/dashboard/GlobalPromoInput";
+import { PricingPriceLine } from "@/components/dashboard/PricingPriceLine";
 
 export const metadata = { title: "Billing" };
 
@@ -24,7 +25,7 @@ async function getCountryCode() {
   // Extract client IP
   const forwardedFor = headersList.get("x-forwarded-for");
   const realIp = headersList.get("x-real-ip");
-  let ip = forwardedFor ? forwardedFor.split(",")[0].trim() : realIp?.trim();
+  const ip = forwardedFor ? forwardedFor.split(",")[0].trim() : realIp?.trim();
   
   // Fallback if not on Vercel or running locally
   try {
@@ -230,11 +231,13 @@ export default async function BillingPage() {
       </div>
 
       {/* Plans */}
+      {countryCode === "IN" && <GlobalPromoInput />}
+      
       <div className="grid md:grid-cols-3 gap-6 mt-8">
         {plans.map((plan) => (
           <div
             key={plan.name}
-            className={`relative rounded-2xl p-8 transition-all duration-300 hover:transform hover:-translate-y-1 ${
+            className={`relative rounded-2xl p-8 transition-all duration-300 hover:transform hover:-translate-y-1 flex flex-col ${
               plan.featured
                 ? "bg-gradient-to-b from-cherry/20 to-maroon/10 border-2 border-cherry/50 shadow-2xl shadow-cherry/20"
                 : "glass-card"
@@ -261,10 +264,7 @@ export default async function BillingPage() {
             <div className="mb-6">
               <h3 className="text-lg font-bold text-[#1B1716] mb-1">{plan.name}</h3>
               <p className="text-[#1B1716]/50 text-sm mb-4">{plan.description}</p>
-              <div className="flex items-baseline gap-1 mt-4">
-                <span className="text-4xl font-black text-[#1B1716]">{plan.price}</span>
-                <span className="text-[#1B1716]/70 text-sm">{plan.period}</span>
-              </div>
+              <PricingPriceLine basePrice={plan.price} period={plan.period} featured={plan.featured} />
             </div>
 
             <ul className="space-y-3 mb-8">
@@ -286,22 +286,20 @@ export default async function BillingPage() {
                   Downgrade to Free
                 </button>
               ) : (
-                <CheckoutButton
-                  isCurrentPlan={plan.current}
-                  tierName={plan.name}
-                  isFeatured={plan.featured}
-                />
+                <div className="flex-1 space-y-4">
+                  <CheckoutButton 
+                    isCurrentPlan={plan.current} 
+                    tierName={plan.name} 
+                    isFeatured={plan.featured} 
+                    currencyOverride={countryCode === "IN" ? "INR" : euCountries.includes(countryCode) ? "EUR" : "USD"}
+                    basePrice={plan.price}
+                  />
+                </div>
               )}
             </div>
           </div>
         ))}
       </div>
-
-      {countryCode === "IN" && (
-        <div className="mt-8 text-center text-sm text-[#1B1716]/70 bg-orange-50/50 border border-orange-200/50 p-4 rounded-xl">
-          🇮🇳 Based in India? Please ensure <strong>International Transactions</strong> are enabled on your Visa/Mastercard. Having trouble? <Link aria-label="Navigation link" href="/contact" className="text-cherry font-bold hover:underline">Contact us for UPI options</Link>.
-        </div>
-      )}
     </div>
   );
 }

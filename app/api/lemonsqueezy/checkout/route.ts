@@ -57,6 +57,7 @@ export async function POST(req: Request) {
       checkoutData.discount_code = discountCode;
     }
 
+
     // Create a Lemon Squeezy checkout
     const checkout = await createCheckout(storeId, variantId, {
       checkoutData: checkoutData,

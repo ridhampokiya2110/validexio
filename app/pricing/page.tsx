@@ -9,6 +9,9 @@ import { CheckCircle, ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 
+import { GlobalPromoInput } from "@/components/dashboard/GlobalPromoInput";
+import { PricingPriceLine } from "@/components/dashboard/PricingPriceLine";
+
 const fullPlans = [
   {
     name: "Free",
@@ -150,9 +153,8 @@ function PricingCard({ plan, currency, handleCheckout, loading }: { plan: any; c
         <h3 className={`text-2xl lg:text-3xl font-black mb-2 ${plan.featured ? "text-[#630102]" : "text-[#111827]"}`}>{plan.name}</h3>
         <p className="text-[#6B7280] text-[14px] leading-relaxed mb-6 font-medium max-w-[280px] mx-auto lg:mx-0">{plan.description}</p>
         <div className="flex items-baseline justify-center lg:justify-start gap-1">
-          <span className={`text-4xl lg:text-5xl xl:text-6xl font-black tracking-tight ${plan.featured ? "text-[#111827]" : "text-[#111827]"}`}>{plan.prices[currency]}</span>
+          <PricingPriceLine basePrice={plan.prices[currency]} period={plan.period} featured={plan.featured} />
         </div>
-        <div className="text-[#6B7280] text-[12px] mt-3 font-bold uppercase tracking-wider">{plan.period}</div>
       </div>
 
       {/* Features List */}
@@ -209,6 +211,11 @@ export default function PricingPage() {
     } else if (localStorage.getItem("is_partner") === "true") {
       setIsPartner(true);
     }
+
+    const promoCode = urlParams.get("promo");
+    if (promoCode) {
+      localStorage.setItem("ls_promo", promoCode);
+    }
   }, []);
 
   const handleCheckout = async (plan: any) => {
@@ -222,41 +229,13 @@ export default function PricingPage() {
       return;
     }
 
-    setLoading(plan.tierKey);
-    try {
-      let finalDiscountCode: string | undefined = undefined;
-      if (currency === "INR") {
-        finalDiscountCode = isPartner ? `${plan.tierKey}PARTNER10` : `INDIA${plan.tierKey}`;
-      } else if (isPartner) {
-        finalDiscountCode = "PARTNER10";
-      }
-
-      const res = await fetch("/api/lemonsqueezy/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          tier: plan.tierKey,
-          discountCode: finalDiscountCode
-        }),
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Failed to create checkout");
-      
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        throw new Error("No checkout URL returned");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("Failed to initiate checkout. Please try again.");
-      setLoading(null);
-    }
+    // Since they are logged in, send them to the actual billing dashboard 
+    // which handles the complex routing for Indian vs Global payments
+    router.push("/dashboard/billing");
   };
 
   return (
-    <main className="min-h-screen flex flex-col">
+    <main className="min-h-screen flex flex-col overflow-x-hidden w-full">
       <Navbar />
 
       <div className="flex-1 bg-[#FDFDFD] relative pt-32 pb-24 overflow-hidden">
@@ -294,7 +273,7 @@ export default function PricingPage() {
 
           <div className="flex flex-col gap-8 lg:gap-8 w-full max-w-[1200px] mx-auto mt-12">
 
-
+            {currency === "INR" && <GlobalPromoInput />}
 
             {fullPlans.map((plan) => (
               <PricingCard key={plan.name} plan={plan} currency={currency} handleCheckout={handleCheckout} loading={loading} />

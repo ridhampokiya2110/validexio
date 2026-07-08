@@ -1,5 +1,4 @@
 "use client";
-
 import { CheckCircle, AlertTriangle, Play } from "lucide-react";
 import { getScoreLabel, getScoreColor } from "@/lib/utils";
 

@@ -39,8 +39,8 @@ export async function fetchCompetitorIntel(idea: string, industry: string): Prom
     if (sourceData) return sourceData;
     
     throw new Error("Tavily returned empty results.");
-  } catch (error) {
-    console.warn("⚠️ Tavily failed (likely out of credits or invalid key). Falling back to SerpApi...", error.message);
+  } catch (error: any) {
+    console.warn("⚠️ Tavily failed (likely out of credits or invalid key). Falling back to SerpApi...", error?.message || error);
     return fallbackMarketResearchViaSerpApi(idea, industry);
   }
 }

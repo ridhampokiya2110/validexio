@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
 import { Calculator, Zap, ArrowRight, DollarSign, Users, TrendingUp } from "lucide-react";

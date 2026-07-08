@@ -2,6 +2,10 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import crypto from "crypto";
 
+import { Resend } from "resend";
+
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
 export async function POST(req: Request) {
   try {
     const rawBody = await req.text();
@@ -55,7 +59,7 @@ export async function POST(req: Request) {
       }
 
       // Upgrade user in Database
-      await prisma.user.update({
+      const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
           tier: tier as any,
@@ -63,6 +67,30 @@ export async function POST(req: Request) {
           availableCredits: { increment: finalCreditsToAdd }
         }
       });
+
+      if (resend && updatedUser.email) {
+        try {
+          await resend.emails.send({
+            from: process.env.RESEND_FROM_EMAIL || "support@validexio.com",
+            to: updatedUser.email,
+            subject: `Welcome to Validexio ${tier} 🎉`,
+            html: `
+              <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                <h2>Thank you for upgrading, ${updatedUser.name || "Founder"}!</h2>
+                <p>Your payment was successful and your account has been instantly upgraded to the <strong>${tier}</strong> plan.</p>
+                <p>You can now generate B2B leads, download high-fidelity mockups, and export investor PDFs.</p>
+                <p><a href="https://validexio.com/dashboard" style="display:inline-block; padding:10px 20px; background:#630102; color:#fff; text-decoration:none; border-radius:5px;">Go to Dashboard</a></p>
+                <br/>
+                <p>Happy validating,</p>
+                <p>The Validexio Team</p>
+              </div>
+            `
+          });
+          console.log(`Sent upgrade email to ${updatedUser.email}`);
+        } catch (emailErr) {
+          console.error("Failed to send upgrade email:", emailErr);
+        }
+      }
 
       console.log(`[Lemon Squeezy] Successfully upgraded user ${userId} to ${tier}`);
 
@@ -86,6 +114,48 @@ export async function POST(req: Request) {
         } as any);
 
         console.log(`[Lemon Squeezy] Auto-upgraded Lite idea ${latestLiteIdea.id} for user ${userId}`);
+      }
+
+      // Handle Affiliate Commission (20% of final paid amount)
+      const affiliateCode = customData?.affiliate_code;
+      if (affiliateCode) {
+        // LS total is in cents (USD). E.g., 4900 = $49.00
+        const totalCentsUSD = payload.data.attributes.total;
+        const totalUSD = totalCentsUSD / 100;
+        // Convert to INR roughly (83 INR per USD) to keep unified balance
+        const totalINR = Math.round(totalUSD * 83);
+        const commissionINR = Math.round(totalINR * 0.20);
+
+        try {
+          const affiliateProfile = await prisma.affiliateProfile.findUnique({
+            where: { couponCode: affiliateCode.trim() }
+          });
+          
+          if (affiliateProfile && affiliateProfile.userId !== userId) {
+            await prisma.affiliateProfile.update({
+              where: { userId: affiliateProfile.userId },
+              data: {
+                totalEarned: { increment: commissionINR },
+                pendingBalance: { increment: commissionINR }
+              }
+            });
+
+            // Log coupon usage
+            const existing = await prisma.couponUsage.findFirst({
+              where: { userId, couponCode: affiliateCode }
+            });
+            if (!existing) {
+              await prisma.couponUsage.create({
+                data: {
+                  userId: userId,
+                  couponCode: affiliateCode
+                }
+              });
+            }
+          }
+        } catch (affiliateErr) {
+          console.error("Failed to update LS affiliate commission:", affiliateErr);
+        }
       }
     }
 

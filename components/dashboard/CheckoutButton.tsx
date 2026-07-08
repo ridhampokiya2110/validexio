@@ -8,33 +8,136 @@ interface CheckoutButtonProps {
   isCurrentPlan: boolean;
   tierName: string;
   isFeatured?: boolean;
+  currencyOverride?: string;
+  basePrice?: string;
 }
 
-export function CheckoutButton({ isCurrentPlan, tierName, isFeatured }: CheckoutButtonProps) {
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
+export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOverride, basePrice }: CheckoutButtonProps) {
   const [loading, setLoading] = useState(false);
-  const { currency } = useCurrency();
-  const [isPartner, setIsPartner] = useState(false);
+  const { currency: hookCurrency } = useCurrency();
+  const currency = currencyOverride || hookCurrency;
+  const [affiliateCode, setAffiliateCode] = useState<string>("");
+  const [isValidCode, setIsValidCode] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  // Compute discounted price if basePrice is passed
+  let originalValue = 0;
+  let currencySymbol = "";
+  let isFree = false;
+
+  if (basePrice) {
+    const match = basePrice.match(/^([^\d]+)?([\d,]+(\.\d+)?)([^\d]+)?$/);
+    if (match) {
+      currencySymbol = match[1] || match[4] || "";
+      const numStr = match[2].replace(/,/g, '');
+      originalValue = parseFloat(numStr);
+      if (originalValue === 0) isFree = true;
+    }
+  }
+
+  const discountedValue = isFree ? 0 : originalValue * 0.9;
+  const showDiscount = isValidCode && originalValue > 0;
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
-    if (hasRef) {
-      localStorage.setItem("is_partner", "true");
-      setIsPartner(true);
-    } else if (localStorage.getItem("is_partner") === "true") {
-      setIsPartner(true);
+    // Initial check from local storage in case the event fired before we mounted
+    const savedCode = localStorage.getItem("affiliate_code");
+    if (savedCode) {
+      setAffiliateCode(savedCode);
+      // We assume it's valid if they got to checkout, but we'll re-verify if needed, 
+      // or we can wait for the event. Actually, we can just fire the verification again
+      // or better: let the GlobalPromoInput handle the verification and broadcast the event.
     }
+
+    const handlePromo = (e: any) => {
+      setAffiliateCode(e.detail.code);
+      setIsValidCode(e.detail.isValid);
+    };
+
+    window.addEventListener("promo_code_update", handlePromo);
+    return () => window.removeEventListener("promo_code_update", handlePromo);
   }, []);
+
+  const loadRazorpay = () => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
 
   const handleCheckout = async () => {
     try {
       setLoading(true);
       
-      let finalDiscountCode: string | undefined = undefined;
+      // Razorpay Flow for INR
       if (currency === "INR") {
-        finalDiscountCode = isPartner ? `${tierName.toUpperCase()}PARTNER10` : `INDIA${tierName.toUpperCase()}`;
-      } else if (isPartner) {
-        finalDiscountCode = "PARTNER10";
+        const res = await fetch("/api/razorpay/create-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            tier: tierName.toUpperCase(),
+            affiliateCode: isValidCode ? affiliateCode : undefined
+          }),
+        });
+        const data = await res.json();
+        
+        if (!res.ok) throw new Error(data.error || "Failed to create order");
+        
+        const isLoaded = await loadRazorpay();
+        if (!isLoaded) {
+          alert("Payment gateway failed to load. Please check your connection.");
+          return;
+        }
+
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
+          amount: data.amount,
+          currency: data.currency,
+          name: "Validexio",
+          description: `Upgrade to ${tierName}`,
+          order_id: data.orderId,
+          handler: function (response: any) {
+             window.location.href = `/dashboard/billing?success=true`;
+          },
+          prefill: {
+            name: "",
+            email: "",
+            contact: ""
+          },
+          theme: {
+            color: "#FF5C35"
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', function (response: any) {
+           alert("Payment failed: " + response.error.description);
+        });
+        rzp.open();
+        return;
+      }
+
+      // Lemon Squeezy Flow for non-INR
+      let finalDiscountCode: string | undefined = undefined;
+      
+      const lsPromo = localStorage.getItem("ls_promo");
+      if (lsPromo) {
+        finalDiscountCode = lsPromo;
+      } else if (isValidCode && affiliateCode) {
+        // Fallback just in case, though this is mostly for Indian UI
+        finalDiscountCode = affiliateCode;
       }
 
       const res = await fetch("/api/lemonsqueezy/checkout", {
@@ -64,19 +167,30 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured }: Checkout
 
   if (isCurrentPlan) {
     return (
-      <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-2.5 opacity-50 cursor-not-allowed">
+      <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-2.5 opacity-50 cursor-not-allowed rounded-xl">
         Current Plan
       </button>
     );
   }
 
   return (
-    <button aria-label="Button action" type="button"
-      onClick={handleCheckout}
-      disabled={loading}
-      className={`w-full justify-center text-sm py-2.5 ${isFeatured ? "btn-primary" : "btn-secondary"}`}
-    >
-      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : `Upgrade to ${tierName}`}
-    </button>
+    <div className="space-y-4 mt-auto">
+      <button aria-label="Button action" type="button"
+        onClick={handleCheckout}
+        disabled={loading}
+        className={`w-full flex items-center justify-center text-sm py-3 font-semibold shadow-sm hover:shadow-md transition-all active:scale-[0.98] rounded-xl ${isFeatured ? "bg-gradient-to-r from-[#630102] to-[#8C0203] hover:from-[#7f0103] hover:to-[#a10203] text-white border border-[#910505]" : "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 hover:border-gray-300"}`}
+      >
+        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+          <span className="flex flex-wrap items-center justify-center gap-1.5 text-center px-2">
+            <span>Upgrade to {tierName}</span>
+            {showDiscount && (
+              <span className={`whitespace-nowrap font-bold ${isFeatured ? "text-emerald-300" : "text-emerald-600"}`}>
+                (-10%)
+              </span>
+            )}
+          </span>
+        )}
+      </button>
+    </div>
   );
 }

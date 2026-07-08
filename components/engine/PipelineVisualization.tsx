@@ -91,11 +91,11 @@ export function PipelineVisualization() {
                 <span className="font-bold uppercase tracking-widest text-[#1B1716]/50">DataEngine.Compile()</span>
               </div>
               <div className="space-y-2 opacity-80">
-                <p className="text-[#1B1716]/50">/* Generating MVP Architecture */</p>
+                <p className="text-[#1B1716]/50">{`/* Generating MVP Architecture */`}</p>
                 <p>import &#123; createClient &#125; from '@supabase/supabase-js'</p>
                 <p>const db = createClient(URL, KEY)</p>
-                <p className="mt-2 text-cherry font-bold">// Edge Network Provisioned</p>
-                <p className="text-cherry font-bold">// Database Schema Compiled</p>
+                <p className="mt-2 text-cherry font-bold">{`// Edge Network Provisioned`}</p>
+                <p className="text-cherry font-bold">{`// Database Schema Compiled`}</p>
               </div>
             </div>
           </div>

@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Terminal, Database, Cloud, Users, Mail, Webhook, Zap, CheckCircle2, Shield, Target, BarChart3, AlertTriangle, Lightbulb, Rocket, CheckCircle, FileText } from "lucide-react";

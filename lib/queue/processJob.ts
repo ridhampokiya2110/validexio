@@ -321,7 +321,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
 
     console.log(`[Job ${jobId}] Completed successfully in ${processingTime}ms`);
     return { success: true, ideaId };
-  } catch (error) {
+  } catch (error: any) {
     console.error(`[Job ${jobId}] Failed with error message:`, error?.message || 'Unknown error');
     try {
       console.error(`[Job ${jobId}] Stack:`, error?.stack);
