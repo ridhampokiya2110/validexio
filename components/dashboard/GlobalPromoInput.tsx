@@ -9,12 +9,16 @@ export function GlobalPromoInput() {
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
-    const initialCode = hasRef || localStorage.getItem("affiliate_code") || "";
-    if (initialCode) {
-      setAffiliateCode(initialCode);
-      if (hasRef) localStorage.setItem("affiliate_code", hasRef);
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
+      const initialCode = hasRef || localStorage.getItem("affiliate_code") || "";
+      if (initialCode) {
+        setAffiliateCode(initialCode);
+        if (hasRef) localStorage.setItem("affiliate_code", hasRef);
+      }
+    } catch (err) {
+      console.warn("localStorage is not available", err);
     }
   }, []);
 
@@ -46,13 +50,18 @@ export function GlobalPromoInput() {
   const handleCodeChange = (val: string) => {
     const upperVal = val.toUpperCase();
     setAffiliateCode(upperVal);
-    
-    if (typeof window !== "undefined") {
-      if (upperVal) {
-        localStorage.setItem("affiliate_code", upperVal);
-      } else {
-        localStorage.removeItem("affiliate_code");
+    try {
+      if (typeof window !== "undefined") {
+        if (upperVal) {
+          localStorage.setItem("affiliate_code", upperVal);
+        } else {
+          localStorage.removeItem("affiliate_code");
+        }
+        // Dispatch custom event to notify checkout buttons
+        window.dispatchEvent(new Event("affiliateCodeChanged"));
       }
+    } catch (err) {
+      console.warn("localStorage is not available", err);
     }
   };
 

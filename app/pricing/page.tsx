@@ -204,18 +204,22 @@ export default function PricingPage() {
   const [isPartner, setIsPartner] = useState(false);
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
-    if (hasRef) {
-      localStorage.setItem("is_partner", "true");
-      setIsPartner(true);
-    } else if (localStorage.getItem("is_partner") === "true") {
-      setIsPartner(true);
-    }
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
+      if (hasRef) {
+        localStorage.setItem("is_partner", "true");
+        setIsPartner(true);
+      } else if (localStorage.getItem("is_partner") === "true") {
+        setIsPartner(true);
+      }
 
-    const promoCode = urlParams.get("promo");
-    if (promoCode) {
-      localStorage.setItem("ls_promo", promoCode);
+      const promoCode = urlParams.get("promo");
+      if (promoCode) {
+        localStorage.setItem("ls_promo", promoCode);
+      }
+    } catch (err) {
+      console.warn("localStorage is not available", err);
     }
   }, []);
 

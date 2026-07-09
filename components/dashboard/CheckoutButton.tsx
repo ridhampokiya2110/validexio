@@ -46,13 +46,17 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
   const showDiscount = isValidCode && originalValue > 0 && discountPercentage > 0;
 
   useEffect(() => {
-    // Initial check from local storage in case the event fired before we mounted
-    const savedCode = localStorage.getItem("affiliate_code");
-    if (savedCode) {
-      setAffiliateCode(savedCode);
-      // We assume it's valid if they got to checkout, but we'll re-verify if needed, 
-      // or we can wait for the event. Actually, we can just fire the verification again
-      // or better: let the GlobalPromoInput handle the verification and broadcast the event.
+    try {
+      // Initial check from local storage in case the event fired before we mounted
+      const savedCode = localStorage.getItem("affiliate_code");
+      if (savedCode) {
+        setAffiliateCode(savedCode);
+        // We assume it's valid if they got to checkout, but we'll re-verify if needed, 
+        // or we can wait for the event. Actually, we can just fire the verification again
+        // or better: let the GlobalPromoInput handle the verification and broadcast the event.
+      }
+    } catch (err) {
+      console.warn("localStorage is not available", err);
     }
 
     const handlePromo = (e: any) => {
