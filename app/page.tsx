@@ -49,7 +49,8 @@ import {
   SiTrustpilot,
   SiGlassdoor,
   SiYoutube,
-  SiKaggle
+  SiKaggle,
+  SiDevdotto
 } from "react-icons/si";
 
 import { FaLinkedin } from "react-icons/fa";
@@ -1085,8 +1086,6 @@ function CTASection() {
             <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" /> Free tier available</span>
             <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-[#1B1716]/20"></span>
             <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" /> Secure, one-time payments</span>
-            <span className="hidden sm:inline-block w-1 h-1 rounded-full bg-[#1B1716]/20"></span>
-            <span className="flex items-center gap-1.5"><CheckCircle className="w-4 h-4 text-cherry/60 flex-shrink-0" /> Takes 60 seconds</span>
           </div>
         </div>
       </div>
@@ -1314,6 +1313,79 @@ function InvestorSimulatorSection() {
 }
 
 // =============================================
+// LISTED ON SECTION (Social Proof)
+// =============================================
+function ListedOnSection() {
+  return (
+    <section className="py-16 bg-[#FDFCF8]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        <h3 className="text-[10px] font-bold text-[#111827]/40 uppercase tracking-[0.3em] mb-10">
+          Recognized & Published On
+        </h3>
+        
+        <div className="flex flex-wrap justify-center items-center gap-12 sm:gap-20 opacity-60 hover:opacity-100 grayscale hover:grayscale-0 transition-all duration-700">
+          
+          {/* Product Hunt */}
+          <a 
+            href="https://www.producthunt.com/" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center gap-2.5 hover:scale-105 transition-transform duration-300"
+          >
+            <SiProducthunt className="w-8 h-8 text-[#DA552F]" />
+            <span className="text-xl font-black text-[#111827] tracking-tight">Product Hunt</span>
+          </a>
+
+          {/* Dev.to */}
+          <a 
+            href="https://dev.to/" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center hover:scale-105 transition-transform duration-300"
+          >
+            <SiDevdotto className="w-12 h-12 text-[#0A0A0A]" />
+          </a>
+
+          {/* Dang.ai */}
+          <a 
+            href="https://dang.ai" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center gap-1.5 hover:scale-105 transition-transform duration-300"
+          >
+            <div className="bg-[#111827] text-white px-2 py-0.5 rounded-md text-xl font-black italic leading-none">d.</div>
+            <span className="text-2xl font-black text-[#111827] tracking-tighter">dang.ai</span>
+          </a>
+
+          {/* BetaList */}
+          <a 
+            href="https://betalist.com" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center gap-1 hover:scale-105 transition-transform duration-300"
+          >
+            <span className="text-[#E63737] font-black text-3xl leading-none -mt-1">β</span>
+            <span className="text-xl font-black text-[#111827] tracking-tight">BetaList</span>
+          </a>
+
+          {/* SaaS Hub */}
+          <a 
+            href="https://saashub.com" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center gap-1.5 hover:scale-105 transition-transform duration-300"
+          >
+            <div className="bg-[#2563EB] text-white px-1.5 py-1 rounded text-lg font-black leading-none">S</div>
+            <span className="text-xl font-black text-[#111827] tracking-tight">SaaSHub</span>
+          </a>
+
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// =============================================
 // MAIN PAGE
 // =============================================
 export default function LandingPage() {
@@ -1350,6 +1422,7 @@ export default function LandingPage() {
       <FAQSection />
       <CTASection />
       <Footer />
+      <ListedOnSection />
     </main>
   );
 }
