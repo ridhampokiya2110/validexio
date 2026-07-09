@@ -218,7 +218,7 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
                       <span className={`text-xs font-bold px-2 py-1 rounded-md bg-[#1B1716]/5 ${getScoreColor(report.validationScore)}`}>
                         {getScoreLabel(report.validationScore)}
                       </span>
-                      <span className="text-[#1B1716]/40 text-xs flex items-center gap-1.5 font-medium">
+                      <span className="text-[#1B1716]/40 text-xs flex items-center gap-1.5 font-medium" suppressHydrationWarning>
                         <Clock className="w-3.5 h-3.5" />
                         {formatRelativeTime(report.createdAt)}
                       </span>

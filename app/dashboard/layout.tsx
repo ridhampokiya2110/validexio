@@ -22,9 +22,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   const dbUser = session?.user?.id ? await getCachedUser(session.user.id) : null;
 
-  const isAdmin = (session?.user as any)?.role === "ADMIN" || session?.user?.email === "ridhampokiya10@gmail.com";
+  const isAdmin = session?.user ? ((session.user as any).role === "ADMIN" || session.user.email === "ridhampokiya10@gmail.com") : false;
 
-  const isMissingProfession = !(session.user as any).profession && !dbUser?.profession;
+  const isMissingProfession = session?.user ? (!(session.user as any).profession && !dbUser?.profession) : false;
 
   if (session?.user && isMissingProfession && !isAdmin) {
     redirect("/onboarding");
