@@ -347,10 +347,7 @@ export default function AdminConsole() {
         </nav>
         <div className="p-4 border-t border-[#1B1716]/10 flex flex-col gap-2">
           <button aria-label="Button action" type="button" 
-            onClick={async () => {
-              await signOut({ redirect: false });
-              window.location.href = '/';
-            }}
+            onClick={() => signOut({ callbackUrl: '/' })}
             className="text-left text-xs font-semibold text-[#1B1716]/60 hover:text-red-600 transition-colors block px-2 py-1"
           >
             Log Out
@@ -371,15 +368,15 @@ export default function AdminConsole() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="stat-card">
                 <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Total MRR</p>
-                <p className="text-3xl font-black text-[#1B1716]">${kpis?.totalMRR.toLocaleString()}</p>
+                <p className="text-3xl font-black text-[#1B1716]">${kpis?.totalMRR?.toLocaleString() ?? 0}</p>
               </div>
               <div className="stat-card">
                 <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Total Founders</p>
-                <p className="text-3xl font-black text-[#1B1716]">{kpis?.totalFounders.toLocaleString()}</p>
+                <p className="text-3xl font-black text-[#1B1716]">{kpis?.totalFounders?.toLocaleString() ?? 0}</p>
               </div>
               <div className="stat-card">
                 <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Ideas Validated</p>
-                <p className="text-3xl font-black text-[#1B1716]">{kpis?.ideasValidated.toLocaleString()}</p>
+                <p className="text-3xl font-black text-[#1B1716]">{kpis?.ideasValidated?.toLocaleString() ?? 0}</p>
               </div>
               <div className={`stat-card ${
                 (kpis?.activeTickets || 0) > 0 ? "border-red-200 bg-red-50/50" : ""
@@ -388,7 +385,7 @@ export default function AdminConsole() {
                 <p className={`text-3xl font-black ${
                   (kpis?.activeTickets || 0) > 0 ? "text-red-600" : "text-[#1B1716]"
                 }`}>
-                  {kpis?.activeTickets.toLocaleString()}
+                  {kpis?.activeTickets?.toLocaleString() ?? 0}
                 </p>
               </div>
             </div>
