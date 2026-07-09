@@ -120,6 +120,7 @@ export default async function BillingPage() {
         "Up to 3 Direct Competitors Analyzed",
         "Text-Only UI Components (No raw code)",
         "Standard Unit Economics Breakdown",
+        "2 Verified Target B2B Leads",
         "Customer Personas (Locked)",
         "Investor Simulator (1 Persona, 5 QA Rounds)",
         "Standard processing time (24h)",
@@ -225,7 +226,13 @@ export default async function BillingPage() {
 
         {tier !== "FREE" && (
           <div className="flex gap-3 mt-4 pt-4 border-t border-[#1B1716]/8">
-            <ManageSubscriptionButton />
+            {countryCode === "IN" ? (
+              <Link href="/dashboard/support" className="btn-secondary text-sm px-4 py-2 flex items-center justify-center gap-2">
+                Contact Support for Billing
+              </Link>
+            ) : (
+              <ManageSubscriptionButton />
+            )}
           </div>
         )}
       </div>

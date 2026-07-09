@@ -15,18 +15,20 @@ import { extractCompetitorWebsites } from "./tavily";
  * @param limit Maximum number of competitors to return based on the user's plan
  * @returns A summarized string containing competitor info
  */
-export async function fetchRealCompetitors(idea: string, industry: string, location: string, limit: number = 3): Promise<string> {
+export async function fetchRealCompetitors(idea: string, industry: string, location: string, limit: number = 3, userTier: string = "FREE"): Promise<string> {
   try {
     const isGlobal = !location || location.toLowerCase() === "global";
     let localResults = "";
 
     // 1. If it's a local search, try Google Maps API first for 100% verified businesses
     if (!isGlobal) {
-      localResults = await fetchGoogleMapsCompetitors(industry, location, limit);
+      if (userTier === "PRO" || userTier === "TEAM" || userTier === "ENTERPRISE") {
+        localResults = await fetchGoogleMapsCompetitors(industry, location, limit);
       
-      // If Google Maps returned verified data, return immediately
-      if (localResults && !localResults.includes("No verified local competitors found")) {
-        return localResults;
+        // If Google Maps returned verified data, return immediately
+        if (localResults && !localResults.includes("No verified local competitors found")) {
+          return localResults;
+        }
       }
 
       // 2. Fallback to Overpass API if Google Maps failed or no API key

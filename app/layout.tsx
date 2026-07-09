@@ -374,6 +374,7 @@ export default function RootLayout({
           <PwaRegistry />
           <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />
           <Script src="https://app.lemonsqueezy.com/js/lemon.js" strategy="lazyOnload" />
+          <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
           {children}
           <Toaster
             theme="dark"

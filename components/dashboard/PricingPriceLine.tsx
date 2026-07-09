@@ -10,11 +10,15 @@ interface PricingPriceLineProps {
 
 export function PricingPriceLine({ basePrice, period, featured }: PricingPriceLineProps) {
   const [isValidPromo, setIsValidPromo] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(10);
 
   useEffect(() => {
     // Check initial state from local storage or wait for event
     const handlePromo = (e: any) => {
       setIsValidPromo(e.detail.isValid);
+      if (e.detail.discountPercentage !== undefined) {
+        setDiscountPercentage(e.detail.discountPercentage);
+      }
     };
     window.addEventListener("promo_code_update", handlePromo);
     
@@ -38,7 +42,7 @@ export function PricingPriceLine({ basePrice, period, featured }: PricingPriceLi
     const num = parseFloat(numStr);
     if (isNaN(num)) return priceStr;
 
-    const discount = num * 0.9;
+    const discount = num * (1 - (discountPercentage / 100));
     const rounded = Math.round(discount);
     return `${currencySymbol}${rounded.toLocaleString()}`;
   };

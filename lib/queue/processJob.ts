@@ -77,7 +77,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
         // 1. Fetch SerpApi data (Global or Local depending on what is provided)
         try {
           const { fetchRealCompetitors } = await import("../api/serpapi");
-          serpapiData = await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors);
+          serpapiData = await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors, tier as string);
         } catch (e) {
           console.warn(`[Job ${jobId}] SerpApi search failed:`, e);
         }

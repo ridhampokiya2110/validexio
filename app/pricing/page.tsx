@@ -48,6 +48,7 @@ const fullPlans = [
       "Up to 3 Direct Competitors Analyzed",
       "Text-Only UI Components (No raw code)",
       "Standard Unit Economics Breakdown",
+      "2 Verified Target B2B Leads",
       "Customer Personas (Locked)",
       "Investor Simulator (1 Persona, 5 QA Rounds)",
       "Standard processing time (24h)",

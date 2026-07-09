@@ -58,11 +58,26 @@ export async function POST(req: Request) {
         finalCreditsToAdd -= 1; // Consume 1 credit for the auto-upgrade
       }
 
+      const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+      if (!currentUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+      const TIER_WEIGHT = { FREE: 0, STARTER: 1, PRO: 2, TEAM: 3, ENTERPRISE: 4 };
+
+      // Tier Hierarchy Logic
+      let finalTier = tier;
+      if (currentUser.availableCredits > 0) {
+        const currentWeight = TIER_WEIGHT[currentUser.tier as keyof typeof TIER_WEIGHT] || 0;
+        const purchasedWeight = TIER_WEIGHT[tier as keyof typeof TIER_WEIGHT] || 0;
+        if (currentWeight > purchasedWeight) {
+          finalTier = currentUser.tier; // Keep higher tier if credits remain
+        }
+      }
+
       // Upgrade user in Database
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
-          tier: tier as any,
+          tier: finalTier as any,
           lemonSqueezyCustomerId: customerId,
           availableCredits: { increment: finalCreditsToAdd }
         }

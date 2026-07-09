@@ -24,6 +24,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
   const currency = currencyOverride || hookCurrency;
   const [affiliateCode, setAffiliateCode] = useState<string>("");
   const [isValidCode, setIsValidCode] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(10);
   const [isVerifying, setIsVerifying] = useState(false);
 
   // Compute discounted price if basePrice is passed
@@ -41,8 +42,8 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
     }
   }
 
-  const discountedValue = isFree ? 0 : originalValue * 0.9;
-  const showDiscount = isValidCode && originalValue > 0;
+  const discountedValue = isFree ? 0 : originalValue * (1 - (discountPercentage / 100));
+  const showDiscount = isValidCode && originalValue > 0 && discountPercentage > 0;
 
   useEffect(() => {
     // Initial check from local storage in case the event fired before we mounted
@@ -57,6 +58,9 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
     const handlePromo = (e: any) => {
       setAffiliateCode(e.detail.code);
       setIsValidCode(e.detail.isValid);
+      if (e.detail.discountPercentage !== undefined) {
+        setDiscountPercentage(e.detail.discountPercentage);
+      }
     };
 
     window.addEventListener("promo_code_update", handlePromo);
@@ -185,7 +189,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
             <span>Upgrade to {tierName}</span>
             {showDiscount && (
               <span className={`whitespace-nowrap font-bold ${isFeatured ? "text-emerald-300" : "text-emerald-600"}`}>
-                (-10%)
+                (-{discountPercentage}%)
               </span>
             )}
           </span>

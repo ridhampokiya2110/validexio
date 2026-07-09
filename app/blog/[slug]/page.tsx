@@ -1,177 +1,154 @@
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { Calendar, BookOpen, ArrowLeft } from "lucide-react";
+import { Calendar, BookOpen, ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DOMPurify from 'isomorphic-dompurify';
+import { blogs } from "@/lib/blog-data";
+import { Metadata } from "next";
 
-// Mock data matching the blog index
-const posts = [
-  {
-    title: "Why 90% of Startups Fail (And How to Be in the 10%)",
-    category: "Startup Strategy",
-    date: "Jun 12, 2026",
-    author: "Validexio Team",
-    readTime: "5 min read",
-    slug: "why-90-percent-fail",
-    content: `
-      <h2>The Cult of the "Builder"</h2>
-      <p>In the startup world, there is a dangerous cult of the "Builder." We glorify the late-night coding sessions, the thousands of commits, and the pursuit of the perfect architecture. But we completely ignore the most important metric: <strong>Does anybody actually care?</strong></p>
-      <p>Most startups fail because founders spend 6 months building a product in isolation, launch it, and are met with complete silence. They built something nobody wanted.</p>
-      
-      <h2>Validation Over Features</h2>
-      <p>Your MVP (Minimum Viable Product) is probably too big. In fact, your MVP shouldn't even be a product. It should be a test to see if people have the problem you think they have, and if they are willing to pay for your solution.</p>
-      <ul>
-        <li>Create a landing page describing the product.</li>
-        <li>Put a "Buy Now" button on it.</li>
-        <li>Drive traffic to it.</li>
-        <li>If nobody clicks the button, you don't have a business. You just saved yourself 6 months of coding.</li>
-      </ul>
-
-      <h2>The Anti-Roadmap</h2>
-      <p>Stop thinking about what you need to build, and start thinking about what you need to validate. If your core assumption is that people want a data engine tool to write their emails, don't build the Data Engine tool. Build a concierge service where you manually write the emails for them. If they won't pay for that, they won't pay for the Data Engine tool either.</p>
-    `
-  },
-  {
-    title: "Stop Building Features, Start Validating Markets",
-    category: "Product Management",
-    date: "May 28, 2026",
-    author: "Validexio Team",
-    readTime: "7 min read",
-    slug: "stop-building-features",
-    content: `
-      <h2>The Feature Trap</h2>
-      <p>We've all been there. The launch is coming up, but you think, "If we just add this one more feature, people will definitely buy it." This is the feature trap.</p>
-      <p>Features don't sell products. Solving painful problems sells products.</p>
-      
-      <h2>How to Validate Without Writing Code</h2>
-      <p>You can validate almost any idea without writing a single line of code. Use tools like Figma to create realistic mockups. Use no-code tools like Webflow and Lemon Squeezy to take pre-orders. Do whatever it takes to prove that someone will hand over their credit card for the value you're promising.</p>
-    `
-  },
-  {
-    title: "The Danger of 'Yes Men' in Startup Validation",
-    category: "Founder Psychology",
-    date: "May 15, 2026",
-    author: "Validexio Team",
-    readTime: "4 min read",
-    slug: "danger-of-yes-men",
-    content: `
-      <h2>Friends Lie</h2>
-      <p>When you ask your friends and family if your startup idea is good, they will almost always say yes. They don't want to hurt your feelings. But this fake validation is incredibly dangerous.</p>
-      
-      <h2>Seeking Brutal Honesty</h2>
-      <p>You need brutal, unbiased feedback. You need to talk to strangers who have the problem you're trying to solve. Better yet, ask them to pay for it right now. If they say no, ask them why. That "why" is the most valuable data you will ever get.</p>
-    `
-  },
-  {
-    title: "How to Calculate Unit Economics Before You Launch",
-    category: "Economics",
-    date: "Apr 30, 2026",
-    author: "Validexio Team",
-    readTime: "8 min read",
-    slug: "calculate-unit-economics",
-    content: `
-      <h2>Math > Optimism</h2>
-      <p>Optimism is a requirement for founders, but it's toxic when applied to unit economics. If your Customer Acquisition Cost (CAC) is higher than your Lifetime Value (LTV), your startup is doomed, no matter how good the product is.</p>
-      
-      <h2>The Basic Equation</h2>
-      <p>Before you build, estimate your CAC. How will you get customers? Ads? SEO? Cold email? Figure out the cost. Then estimate your LTV. If LTV is not at least 3x your CAC, you need to rethink your pricing or your acquisition strategy.</p>
-    `
-  },
-  {
-    title: "B2B vs B2C: Which is easier to validate?",
-    category: "Market Research",
-    date: "Apr 18, 2026",
-    author: "Validexio Team",
-    readTime: "6 min read",
-    slug: "b2b-vs-b2c",
-    content: `
-      <h2>The B2B Advantage</h2>
-      <p>B2B (Business to Business) is generally much easier to validate than B2C (Business to Consumer). Businesses have clear budgets and are actively looking for tools that save them time or make them money.</p>
-      
-      <h2>The B2C Trap</h2>
-      <p>Consumers are fickle. They say they want a new social network, but they won't actually switch from Instagram. Validating B2C requires massive scale and deep behavioral understanding.</p>
-    `
-  },
-  {
-    title: "The 'Anti-Roadmap': What NOT to Build",
-    category: "Product Strategy",
-    date: "Apr 02, 2026",
-    author: "Validexio Team",
-    readTime: "5 min read",
-    slug: "anti-roadmap",
-    content: `
-      <h2>Addition by Subtraction</h2>
-      <p>The best products are defined by what they omit. When you are validating an idea, create an "Anti-Roadmap." Write down explicitly what your product will NOT do.</p>
-      
-      <h2>Focus is a Weapon</h2>
-      <p>By defining what you won't build, you force yourself to focus entirely on the core value proposition. This makes your messaging clearer and your validation much faster.</p>
-    `
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const post = blogs.find(p => p.slug === resolvedParams.slug);
+  
+  if (!post) {
+    return {
+      title: 'Post Not Found - Validexio',
+    };
   }
-];
+
+  // Extract a short description from content (strip HTML tags)
+  const plainTextContent = post.content.replace(/<[^>]+>/g, '');
+  const description = plainTextContent.substring(0, 160).trim() + '...';
+
+  return {
+    title: `${post.title} | Validexio Startup Strategies`,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      type: 'article',
+      publishedTime: post.date, // In a real app, use ISO date string
+      authors: ['Validexio Team'],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description,
+    }
+  };
+}
 
 export default async function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
-  const post = posts.find(p => p.slug === resolvedParams.slug);
+  const post = blogs.find(p => p.slug === resolvedParams.slug);
 
   if (!post) {
     notFound();
   }
 
+  // Generate JSON-LD Schema
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.content.replace(/<[^>]+>/g, '').substring(0, 160).trim() + '...',
+    author: {
+      '@type': 'Organization',
+      name: 'Validexio',
+    },
+    datePublished: post.date, // Convert to ISO in production ideally
+    articleSection: post.category,
+    wordCount: post.content.split(' ').length,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Validexio',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://validexio.com/logo.png', // Fallback URL
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#FDFCF8] text-[#1B1716] font-sans selection:bg-cherry/40 selection:text-[#1B1716] flex flex-col">
+    <div className="min-h-screen bg-[#FDFCF8] dark:bg-[#0A0A0A] text-[#1B1716] dark:text-[#E5E7EB] font-sans selection:bg-cherry/40 selection:text-[#1B1716] dark:selection:text-[#FDFCF8] flex flex-col transition-colors duration-300">
+      {/* Inject JSON-LD Schema for SEO / AEO / GEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       
       <main className="flex-1 pt-32 pb-24">
-        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Hero Section */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-maroon/5 dark:bg-cherry/5 rounded-full blur-[120px] pointer-events-none transition-colors duration-500" />
           
-          <Link aria-label="Navigation link" href="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-[#1B1716]/50 hover:text-cherry transition-colors mb-12">
+          <Link aria-label="Navigation link" href="/blog" className="inline-flex items-center gap-2 text-sm font-bold text-[#1B1716]/50 dark:text-[#9CA3AF] hover:text-cherry dark:hover:text-red-400 transition-colors mb-12 relative z-10">
             <ArrowLeft className="w-4 h-4" />
             Back to Insights
           </Link>
 
-          <header className="mb-16">
-            <div className="flex flex-wrap items-center gap-4 mb-8">
-              <span className="badge badge-butter">{post.category}</span>
-              <span className="text-sm text-[#1B1716]/50 font-mono flex items-center gap-1.5">
-                <Calendar className="w-3.5 h-3.5" />
+          <header className="relative z-10">
+            <div className="flex flex-wrap items-center gap-3 md:gap-5 mb-10 text-[13px] md:text-sm font-medium tracking-wide">
+              <span className="text-cherry dark:text-red-400 font-bold uppercase tracking-widest border-b border-cherry/30 dark:border-red-400/30 pb-0.5">
+                {post.category}
+              </span>
+              <span className="text-[#1B1716]/20 dark:text-white/20 hidden sm:block">•</span>
+              <span className="text-[#1B1716]/60 dark:text-white/60 flex items-center gap-2">
+                <Calendar className="w-4 h-4 opacity-60" />
                 {post.date}
               </span>
-              <span className="text-sm text-[#1B1716]/50 font-mono flex items-center gap-1.5 border-l border-[#1B1716]/10 pl-4">
-                <BookOpen className="w-3.5 h-3.5" />
+              <span className="text-[#1B1716]/20 dark:text-white/20 hidden sm:block">•</span>
+              <span className="text-[#1B1716]/60 dark:text-white/60 flex items-center gap-2">
+                <BookOpen className="w-4 h-4 opacity-60" />
                 {post.readTime}
               </span>
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[#1B1716] leading-tight mb-8">
+            <h1 className="text-5xl md:text-7xl font-black tracking-tight text-[#1B1716] dark:text-white leading-[1.1] mb-12">
               {post.title}
             </h1>
             
-            <div className="flex items-center gap-3 py-6 border-y border-[#1B1716]/10">
-              <div className="w-10 h-10 rounded-full bg-cherry/10 flex items-center justify-center">
-                <span className="text-cherry font-bold">V</span>
+            <div className="flex items-center gap-4 py-8 border-y border-[#1B1716]/10 dark:border-white/10">
+              <div className="w-12 h-12 rounded-full bg-cherry/10 dark:bg-cherry/20 border border-cherry/20 dark:border-cherry/30 flex items-center justify-center shadow-inner">
+                <span className="text-cherry dark:text-red-400 font-black text-lg">V</span>
               </div>
               <div>
-                <p className="font-bold text-[#1B1716]">{post.author}</p>
-                <p className="text-sm text-[#1B1716]/50">Editorial Team</p>
+                <p className="font-bold text-[#1B1716] dark:text-white text-lg">{post.author}</p>
+                <p className="text-sm text-[#1B1716]/60 dark:text-[#9CA3AF] font-mono tracking-wide">Validexio Editorial</p>
               </div>
             </div>
           </header>
+        </div>
 
+        {/* Content Section */}
+        <article className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div 
-            className="prose prose-lg max-w-none prose-headings:font-black prose-headings:text-[#1B1716] prose-p:text-[#1B1716]/80 prose-p:leading-relaxed prose-a:text-cherry hover:prose-a:text-[#910505] prose-strong:text-[#1B1716] prose-li:text-[#1B1716]/80"
+            className="prose prose-lg md:prose-xl max-w-none 
+              prose-headings:font-black prose-headings:text-[#1B1716] dark:prose-headings:text-white prose-headings:tracking-tight 
+              prose-p:text-[#1B1716]/80 dark:prose-p:text-[#D1D5DB] prose-p:leading-[1.8] prose-p:font-medium
+              prose-a:text-cherry dark:prose-a:text-red-400 prose-a:font-bold hover:prose-a:text-[#910505] dark:hover:prose-a:text-red-300 prose-a:no-underline hover:prose-a:underline
+              prose-strong:text-[#1B1716] dark:prose-strong:text-white prose-strong:font-bold
+              prose-li:text-[#1B1716]/80 dark:prose-li:text-[#D1D5DB] prose-li:font-medium prose-ul:list-disc prose-ol:list-decimal
+              prose-blockquote:border-l-4 prose-blockquote:border-cherry dark:prose-blockquote:border-red-500 prose-blockquote:bg-cherry/5 dark:prose-blockquote:bg-cherry/10 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-lg prose-blockquote:text-[#1B1716]/70 dark:prose-blockquote:text-[#9CA3AF] prose-blockquote:font-serif prose-blockquote:italic
+              first-letter:text-7xl first-letter:font-black first-letter:text-cherry dark:first-letter:text-red-500 first-letter:mr-3 first-letter:float-left first-letter:leading-none
+              transition-colors duration-300"
             dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(post.content) }}
           />
 
-          <div className="mt-20 pt-10 border-t border-[#1B1716]/10">
-            <div className="bg-[#1B1716] rounded-2xl p-8 md:p-12 text-center text-white relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-cherry/20 rounded-full blur-[80px]" />
-              <h3 className="text-2xl font-black mb-4 relative z-10">Stop Reading. Start Validating.</h3>
-              <p className="text-[#EDEBDE]/80 mb-8 max-w-lg mx-auto relative z-10">
-                Don't become another statistic. Get a comprehensive breakdown of your startup idea's viability in 60 seconds.
+          <div className="mt-32 pt-16 border-t border-[#1B1716]/10 dark:border-white/10">
+            <div className="bg-[#1B1716] dark:bg-gradient-to-br dark:from-[#1A1A1A] dark:to-[#0A0A0A] border border-transparent dark:border-white/10 rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-cherry/20 dark:bg-red-500/10 rounded-full blur-[100px] pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-butter/10 dark:bg-amber-500/10 rounded-full blur-[80px] pointer-events-none" />
+              
+              <h3 className="text-3xl md:text-4xl font-black mb-6 relative z-10 tracking-tight">Stop Reading. Start Validating.</h3>
+              <p className="text-[#EDEBDE]/80 dark:text-[#9CA3AF] mb-10 max-w-xl mx-auto relative z-10 text-lg md:text-xl font-medium leading-relaxed">
+                Don't become another statistic. Get a comprehensive breakdown of your startup idea's viability in 60 seconds with Validexio.
               </p>
-              <Link aria-label="Navigation link" href="/dashboard" className="inline-block bg-cherry hover:bg-[#910505] text-white font-bold py-3 px-8 rounded-lg transition-colors relative z-10">
-                Validate Your Idea
+              <Link aria-label="Navigation link" href="/dashboard" className="inline-flex items-center gap-3 bg-cherry hover:bg-[#910505] dark:bg-red-600 dark:hover:bg-red-700 text-white font-bold py-4 px-10 rounded-xl transition-all hover:scale-105 hover:shadow-[0_10px_30px_rgba(117,7,12,0.3)] dark:hover:shadow-[0_10px_30px_rgba(220,38,38,0.3)] relative z-10 text-lg">
+                Validate Your Idea Now
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
           </div>

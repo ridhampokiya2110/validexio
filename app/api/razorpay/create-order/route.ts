@@ -23,15 +23,29 @@ export async function POST(req: NextRequest) {
 
     let finalPrice = basePriceINR;
     let appliedAffiliateId: string | null = null;
+    let discountPercentage = 0;
 
     if (affiliateCode) {
-      const affiliateProfile = await prisma.affiliateProfile.findUnique({
-        where: { couponCode: affiliateCode.trim() }
+      const normalizedCode = affiliateCode.trim();
+      
+      const promoCode = await prisma.promoCode.findUnique({
+        where: { code: normalizedCode }
       });
-      if (affiliateProfile && affiliateProfile.userId !== session.user.id) {
-        // User gets 10% discount
-        finalPrice = Math.round(basePriceINR * 0.9);
-        appliedAffiliateId = affiliateProfile.userId;
+      
+      if (promoCode && promoCode.isActive) {
+        discountPercentage = promoCode.discountPercentage;
+      } else {
+        const affiliateProfile = await prisma.affiliateProfile.findUnique({
+          where: { couponCode: normalizedCode }
+        });
+        if (affiliateProfile && affiliateProfile.userId !== session.user.id) {
+          discountPercentage = 10;
+          appliedAffiliateId = affiliateProfile.userId;
+        }
+      }
+      
+      if (discountPercentage > 0) {
+        finalPrice = Math.round(basePriceINR * (1 - (discountPercentage / 100)));
       }
     }
 

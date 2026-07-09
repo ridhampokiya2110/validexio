@@ -30,11 +30,61 @@ export async function POST(req: NextRequest) {
       const { userId, tier, affiliateId, affiliateCode } = entity.notes || {};
 
       if (userId && tier) {
+        const currentUser = await prisma.user.findUnique({ where: { id: userId } });
+        if (!currentUser) return NextResponse.json({ error: "User not found" }, { status: 404 });
+
+        const TIER_WEIGHT = { FREE: 0, STARTER: 1, PRO: 2, TEAM: 3, ENTERPRISE: 4 };
+        const CREDITS_PER_TIER = { FREE: 0, STARTER: 1, PRO: 1, TEAM: 3, ENTERPRISE: 15 };
+        const creditsToAdd = CREDITS_PER_TIER[tier as keyof typeof CREDITS_PER_TIER] || 0;
+
+        const latestLiteIdea = await prisma.idea.findFirst({
+          where: { userId, isLite: true },
+          orderBy: { createdAt: "desc" },
+        });
+
+        let finalCreditsToAdd = creditsToAdd;
+        if (latestLiteIdea && creditsToAdd > 0) {
+          finalCreditsToAdd -= 1; // Consume 1 credit for the auto-upgrade
+        }
+
+        // Tier Hierarchy Logic
+        let finalTier = tier;
+        if (currentUser.availableCredits > 0) {
+          const currentWeight = TIER_WEIGHT[currentUser.tier as keyof typeof TIER_WEIGHT] || 0;
+          const purchasedWeight = TIER_WEIGHT[tier as keyof typeof TIER_WEIGHT] || 0;
+          if (currentWeight > purchasedWeight) {
+            finalTier = currentUser.tier; // Keep higher tier if credits remain
+          }
+        }
+
         // Upgrade the user
         const updatedUser = await prisma.user.update({
           where: { id: userId },
-          data: { tier: tier as any }
+          data: {
+            tier: finalTier as any,
+            availableCredits: { increment: finalCreditsToAdd }
+          }
         });
+
+        if (latestLiteIdea) {
+          await prisma.idea.update({
+            where: { id: latestLiteIdea.id },
+            data: { isLite: false, status: "PROCESSING" }
+          });
+
+          await prisma.validationReport.deleteMany({
+            where: { ideaId: latestLiteIdea.id }
+          });
+
+          const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
+          await dispatchValidationJob({
+            industry: latestLiteIdea.industry,
+            businessIdea: latestLiteIdea.title,
+            pricingModel: latestLiteIdea.pricingModel || "",
+            ideaId: latestLiteIdea.id,
+            userId: userId
+          } as any);
+        }
 
         if (resend && updatedUser.email) {
           try {

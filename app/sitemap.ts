@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { blogs } from "@/lib/blog-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://validexio.com';
@@ -27,20 +28,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  // Blog posts (high-value SEO content pages)
-  const blogSlugs = [
-    'how-to-validate-startup-idea',
-    'startup-idea-validation-guide-2025',
-    'why-80-percent-startups-fail',
-    'preuve-ai-vs-validexio',
-    'dimeadozen-vs-validexio',
-    'ideaproof-vs-validexio',
-    'best-startup-validators-india',
-    'ai-startup-tools-comparison-2025',
-  ];
-
-  const blogPages: MetadataRoute.Sitemap = blogSlugs.map((slug) => ({
-    url: `${baseUrl}/blog/${slug}`,
+  // Dynamic Blog posts directly from data source
+  const blogPages: MetadataRoute.Sitemap = blogs.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
     lastModified: now,
     changeFrequency: 'monthly' as const,
     priority: 0.75,

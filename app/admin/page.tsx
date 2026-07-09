@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { Zap, Users, BarChart3, ShieldAlert, CheckCircle, Loader2, MessageSquare, LayoutDashboard, Trash2 } from "lucide-react";
+import { Zap, Users, BarChart3, ShieldAlert, CheckCircle, Loader2, MessageSquare, LayoutDashboard, Trash2, Ticket } from "lucide-react";
 import { toast } from "sonner";
 
 interface KPI {
@@ -34,6 +34,40 @@ interface Ticket {
   };
 }
 
+interface PromoCode {
+  id: string;
+  code: string;
+  discountPercentage: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+interface AffiliateProfile {
+  id: string;
+  userId: string;
+  couponCode: string;
+  totalEarned: number;
+  pendingBalance: number;
+  upiId: string | null;
+  user: {
+    name: string | null;
+    email: string;
+    tier: string;
+  };
+}
+
+interface PayoutRequest {
+  id: string;
+  amount: number;
+  upiId: string;
+  status: string;
+  createdAt: string;
+  user: {
+    name: string | null;
+    email: string;
+  };
+}
+
 export default function AdminConsole() {
   const [kpis, setKpis] = useState<KPI | null>(null);
   const [users, setUsers] = useState<User[]>([]);
@@ -42,18 +76,25 @@ export default function AdminConsole() {
   const [activeModalTicket, setActiveModalTicket] = useState<Ticket | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [editingCredits, setEditingCredits] = useState<Record<string, number>>({});
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "support" | "settings">("overview");
+  const [promoCodes, setPromoCodes] = useState<PromoCode[]>([]);
+  const [affiliates, setAffiliates] = useState<AffiliateProfile[]>([]);
+  const [payoutRequests, setPayoutRequests] = useState<PayoutRequest[]>([]);
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "support" | "promos" | "settings" | "affiliates">("overview");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [loadingMaintenance, setLoadingMaintenance] = useState(false);
+  const [newPromoCode, setNewPromoCode] = useState("");
+  const [newPromoDiscount, setNewPromoDiscount] = useState("");
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [kpiRes, userRes, ticketRes, maintenanceRes] = await Promise.all([
+      const [kpiRes, userRes, ticketRes, maintenanceRes, promoRes, affiliateRes] = await Promise.all([
         fetch("/api/v1/admin/kpis", { cache: "no-store" }),
         fetch("/api/v1/admin/users?limit=100", { cache: "no-store" }),
         fetch("/api/v1/admin/tickets?status=OPEN", { cache: "no-store" }),
         fetch("/api/admin/maintenance", { cache: "no-store" }),
+        fetch("/api/admin/promo-codes", { cache: "no-store" }),
+        fetch("/api/v1/admin/affiliates", { cache: "no-store" }),
       ]);
 
       if (kpiRes.status === 404) {
@@ -66,6 +107,8 @@ export default function AdminConsole() {
       const userData = await userRes.json();
       const ticketData = await ticketRes.json();
       const maintenanceData = await maintenanceRes.json();
+      const promoData = await promoRes.json();
+      const affiliateData = await affiliateRes.json();
 
       setKpis(kpiData);
       setUsers(userData.users || []);
@@ -76,6 +119,9 @@ export default function AdminConsole() {
       setEditingCredits(initialCredits);
       setTickets(ticketData.tickets || []);
       setMaintenanceMode(maintenanceData.enabled || false);
+      setPromoCodes(promoData.promoCodes || []);
+      setAffiliates(affiliateData.affiliates || []);
+      setPayoutRequests(affiliateData.payoutRequests || []);
     } catch (error) {
       console.error("Fetch error", error);
       toast.error("Failed to load admin data");
@@ -161,6 +207,67 @@ export default function AdminConsole() {
     }
   };
 
+  const handleCreatePromo = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setProcessingId("create-promo");
+      const res = await fetch("/api/admin/promo-codes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: newPromoCode, discountPercentage: newPromoDiscount }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Failed to create promo code");
+      }
+      const data = await res.json();
+      setPromoCodes([data.promoCode, ...promoCodes]);
+      setNewPromoCode("");
+      setNewPromoDiscount("");
+      toast.success("Promo code created successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleDeletePromo = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this promo code?")) return;
+    try {
+      setProcessingId(`delete-promo-${id}`);
+      const res = await fetch(`/api/admin/promo-codes/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete promo code");
+      
+      setPromoCodes(promoCodes.filter(p => p.id !== id));
+      toast.success("Promo code deleted");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleMarkPaid = async (id: string) => {
+    if (!window.confirm("Confirm you have paid this user via their UPI ID?")) return;
+    try {
+      setProcessingId(`pay-${id}`);
+      const res = await fetch(`/api/v1/admin/payouts/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "PAID" })
+      });
+      if (!res.ok) throw new Error("Failed to update payout");
+      
+      setPayoutRequests(payoutRequests.map(p => p.id === id ? { ...p, status: "PAID" } : p));
+      toast.success("Payout marked as PAID");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -209,6 +316,24 @@ export default function AdminConsole() {
           >
             <MessageSquare className="w-4 h-4" />
             Support Queue
+          </button>
+          <button aria-label="Button action" type="button" 
+            onClick={() => setActiveTab("promos")}
+            className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
+              activeTab === "promos" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
+            }`}
+          >
+            <Ticket className="w-4 h-4" />
+            Promo Codes
+          </button>
+          <button aria-label="Button action" type="button" 
+            onClick={() => setActiveTab("affiliates")}
+            className={`w-full flex items-center gap-3 px-4 py-3 font-semibold text-sm rounded-lg transition-colors ${
+              activeTab === "affiliates" ? "bg-cherry/10 text-cherry" : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            Affiliates
           </button>
           <button aria-label="Button action" type="button" 
             onClick={() => setActiveTab("settings")}
@@ -441,6 +566,200 @@ export default function AdminConsole() {
           </section>
         )}
 
+        {/* SECTION E: PROMO CODES */}
+        {activeTab === "promos" && (
+          <section className="animate-fade-in-scale">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1B1716]">
+              <Ticket className="w-5 h-5 text-cherry" />
+              Promo Codes
+            </h2>
+            
+            <div className="bg-white border border-[#1B1716]/10 rounded-xl p-6 mb-8 shadow-sm">
+              <h3 className="text-lg font-bold text-[#1B1716] mb-4">Create New Promo Code</h3>
+              <form onSubmit={handleCreatePromo} className="flex flex-col sm:flex-row gap-4 items-end">
+                <div className="flex-1 w-full">
+                  <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-1.5">Code</label>
+                  <input 
+                    type="text" 
+                    required
+                    value={newPromoCode}
+                    onChange={(e) => setNewPromoCode(e.target.value)}
+                    placeholder="e.g. DIWALI10"
+                    className="w-full bg-[#1B1716]/5 border border-[#1B1716]/10 rounded-lg px-4 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-cherry/20 uppercase"
+                  />
+                </div>
+                <div className="w-full sm:w-32">
+                  <label className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-1.5">Discount %</label>
+                  <div className="relative">
+                    <input 
+                      type="number" 
+                      required
+                      min="1"
+                      max="100"
+                      value={newPromoDiscount}
+                      onChange={(e) => setNewPromoDiscount(e.target.value)}
+                      placeholder="10"
+                      className="w-full bg-[#1B1716]/5 border border-[#1B1716]/10 rounded-lg pl-4 pr-8 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-cherry/20 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [-moz-appearance:textfield]"
+                    />
+                    <span className="absolute inset-y-0 right-4 flex items-center text-[#1B1716]/50 pointer-events-none">%</span>
+                  </div>
+                </div>
+                <button aria-label="Button action" type="submit" disabled={processingId === "create-promo"} className="w-full sm:w-auto btn-primary py-2.5">
+                  {processingId === "create-promo" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create Code"}
+                </button>
+              </form>
+            </div>
+
+            <div className="glass-card overflow-x-auto p-0">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="border-b border-[#1B1716]/10 bg-[#1B1716]/5">
+                    <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Code</th>
+                    <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Discount</th>
+                    <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Created At</th>
+                    <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#1B1716]/10 text-sm">
+                  {promoCodes.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} className="p-8 text-center text-[#1B1716]/50">No promo codes found</td>
+                    </tr>
+                  ) : (
+                    promoCodes.map((promo) => (
+                      <tr key={promo.id} className="hover:bg-[#1B1716]/5 transition-colors">
+                        <td className="p-4 font-mono font-bold text-cherry">{promo.code}</td>
+                        <td className="p-4 font-bold text-[#1B1716]">{promo.discountPercentage}%</td>
+                        <td className="p-4 text-[#1B1716]/60">{new Date(promo.createdAt).toLocaleDateString()}</td>
+                        <td className="p-4 text-right">
+                          <button aria-label="Button action" type="button" 
+                            onClick={() => handleDeletePromo(promo.id)}
+                            disabled={processingId === `delete-promo-${promo.id}`}
+                            className="p-2 border border-red-200 text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 inline-flex"
+                          >
+                            {processingId === `delete-promo-${promo.id}` ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {/* SECTION F: AFFILIATES */}
+        {activeTab === "affiliates" && (
+          <section className="animate-fade-in-scale">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1B1716]">
+              <Zap className="w-5 h-5 text-cherry" />
+              Affiliates & Payouts
+            </h2>
+
+            <div className="space-y-8">
+              {/* PAYOUT REQUESTS */}
+              <div>
+                <h3 className="text-lg font-bold text-[#1B1716] mb-4">Payout Requests</h3>
+                <div className="glass-card overflow-x-auto p-0">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-[#1B1716]/10 bg-[#1B1716]/5">
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">User</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Amount</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">UPI ID</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Status</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60 text-right">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#1B1716]/10 text-sm">
+                      {payoutRequests.length === 0 ? (
+                        <tr>
+                          <td colSpan={5} className="p-8 text-center text-[#1B1716]/50">No payout requests yet</td>
+                        </tr>
+                      ) : (
+                        payoutRequests.map((req) => (
+                          <tr key={req.id} className="hover:bg-[#1B1716]/5 transition-colors">
+                            <td className="p-4 font-medium text-[#1B1716]">
+                              {req.user.name || "N/A"} <br/>
+                              <span className="text-xs text-[#1B1716]/60 font-normal">{req.user.email}</span>
+                            </td>
+                            <td className="p-4 font-bold text-[#1B1716]">₹{req.amount}</td>
+                            <td className="p-4 font-mono text-xs text-cherry">{req.upiId}</td>
+                            <td className="p-4">
+                              <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${
+                                req.status === 'PAID' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                              }`}>
+                                {req.status}
+                              </span>
+                            </td>
+                            <td className="p-4 text-right">
+                              {req.status === 'PENDING' && (
+                                <button aria-label="Button action" type="button" 
+                                  onClick={() => handleMarkPaid(req.id)}
+                                  disabled={processingId === `pay-${req.id}`}
+                                  className="px-3 py-1.5 bg-cherry text-white text-xs font-bold rounded-md hover:opacity-90 transition-opacity disabled:opacity-50"
+                                >
+                                  {processingId === `pay-${req.id}` ? <Loader2 className="w-3 h-3 animate-spin mx-auto" /> : "Mark Paid"}
+                                </button>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* ALL CREATORS */}
+              <div>
+                <h3 className="text-lg font-bold text-[#1B1716] mb-4">All Creators</h3>
+                <div className="glass-card overflow-x-auto p-0">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="border-b border-[#1B1716]/10 bg-[#1B1716]/5">
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Creator</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Tier</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60">Code</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60 text-right">Pending</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60 text-right">Earned</th>
+                        <th className="p-4 text-xs font-semibold uppercase tracking-wider text-[#1B1716]/60 text-right">UPI ID</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-[#1B1716]/10 text-sm">
+                      {affiliates.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center text-[#1B1716]/50">No affiliates joined yet</td>
+                        </tr>
+                      ) : (
+                        affiliates.map((aff) => (
+                          <tr key={aff.id} className="hover:bg-[#1B1716]/5 transition-colors">
+                            <td className="p-4 font-medium text-[#1B1716]">
+                              {aff.user.name || "N/A"} <br/>
+                              <span className="text-xs text-[#1B1716]/60 font-normal">{aff.user.email}</span>
+                            </td>
+                            <td className="p-4">
+                              <span className="px-2 py-0.5 bg-[#1B1716]/5 text-[#1B1716]/80 text-[10px] font-bold uppercase tracking-wider rounded-md border border-[#1B1716]/10">
+                                {aff.user.tier}
+                              </span>
+                            </td>
+                            <td className="p-4 font-mono text-xs font-bold text-cherry">{aff.couponCode}</td>
+                            <td className="p-4 text-right font-bold text-orange-500">₹{aff.pendingBalance}</td>
+                            <td className="p-4 text-right font-bold text-green-600">₹{aff.totalEarned}</td>
+                            <td className="p-4 text-right font-mono text-xs text-[#1B1716]/50 truncate max-w-[120px]">
+                              {aff.upiId || "Not provided"}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </main>
 
       {/* TICKET MODAL */}

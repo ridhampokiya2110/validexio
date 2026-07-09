@@ -21,7 +21,7 @@ export function GlobalPromoInput() {
   useEffect(() => {
     if (!affiliateCode) {
       setIsValidCode(false);
-      window.dispatchEvent(new CustomEvent("promo_code_update", { detail: { code: "", isValid: false } }));
+      window.dispatchEvent(new CustomEvent("promo_code_update", { detail: { code: "", isValid: false, discountPercentage: 0 } }));
       return;
     }
     const checkCode = async () => {
@@ -30,10 +30,10 @@ export function GlobalPromoInput() {
         const res = await fetch(`/api/v1/affiliate/verify?code=${encodeURIComponent(affiliateCode)}`);
         const data = await res.json();
         setIsValidCode(data.valid === true);
-        window.dispatchEvent(new CustomEvent("promo_code_update", { detail: { code: affiliateCode, isValid: data.valid === true } }));
+        window.dispatchEvent(new CustomEvent("promo_code_update", { detail: { code: affiliateCode, isValid: data.valid === true, discountPercentage: data.discountPercentage || 10 } }));
       } catch (e) {
         setIsValidCode(false);
-        window.dispatchEvent(new CustomEvent("promo_code_update", { detail: { code: affiliateCode, isValid: false } }));
+        window.dispatchEvent(new CustomEvent("promo_code_update", { detail: { code: affiliateCode, isValid: false, discountPercentage: 0 } }));
       } finally {
         setIsVerifying(false);
       }
@@ -63,8 +63,8 @@ export function GlobalPromoInput() {
           <Ticket className="w-5 h-5 text-rose-600" />
         </div>
         <div>
-          <h3 className="font-semibold text-gray-900">Have a Partner Code?</h3>
-          <p className="text-sm text-gray-500">Apply a promo code to get a 10% discount across all plans</p>
+          <h3 className="font-semibold text-gray-900">Have a Promo/Partner Code?</h3>
+          <p className="text-sm text-gray-500">Apply a promo code to get a discount across all plans</p>
         </div>
       </div>
       <div className="relative group">

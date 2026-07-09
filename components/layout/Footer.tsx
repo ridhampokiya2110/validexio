@@ -65,6 +65,7 @@ export function Footer() {
             <ul className="space-y-4">
               <li><Link aria-label="Navigation link" href="/hub" className="text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors">Founder Hub</Link></li>
               <li><Link aria-label="Navigation link" href="/blog" className="text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors">Validation Blog</Link></li>
+              <li><Link aria-label="Navigation link" href="/startup-validation-faq" className="text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors">Startup Validation FAQ</Link></li>
               <li><Link aria-label="Navigation link" href="/register" className="text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors">Startup Idea Generator</Link></li>
               <li><Link aria-label="Navigation link" href="/register" className="text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors">Buyer Persona Builder</Link></li>
               <li><Link aria-label="Navigation link" href="/register" className="text-[#1B1716]/60 text-sm font-medium hover:text-[#630102] transition-colors">Validation Checklist</Link></li>

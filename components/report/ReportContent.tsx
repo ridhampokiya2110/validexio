@@ -403,7 +403,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                 description="Upgrade to Premium to unlock SerpAPI-powered live competitor tracking, vulnerability analysis, and positioning strategies." 
               />
             ) : (
-              competitors.map((comp) => (
+              (userTier === "STARTER" ? competitors.slice(0, 3) : competitors).map((comp) => (
                 <div key={comp.name} className="relative bg-white rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_30px_rgb(0,0,0,0.04)] group hover:shadow-[0_8px_30px_rgba(99,1,2,0.08)] transition-all duration-500">
                   {/* Elegant Header Area */}
                   <div className="bg-[#1B1716] p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -505,7 +505,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Customer Personas</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {personas.length === 0 || report.isLite || userTier === "STARTER" ? (
+            {personas.length === 0 || report.isLite || userTier === "STARTER" || userTier === "FREE" ? (
               <div className="md:col-span-3">
                 <PremiumLock 
                   isLocked={true} 
@@ -568,12 +568,20 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Revenue Potential</h2>
           </div>
 
-          {revenue.year1 === "Locked" || revenue.year1 === "-" || report.isLite ? (
-            <PremiumLock 
-              isLocked={true} 
-              title="Financial Forecasting Locked" 
-              description="Upgrade to Premium to unlock a realistic 3-year revenue projection, unit economics breakdown, and key financial assumptions." 
-            />
+          {revenue.year1 === "Locked" || revenue.year1 === "-" || report.isLite || userTier === "FREE" || userTier === "STARTER" ? (
+            <>
+              <PremiumLock 
+                isLocked={true} 
+                title={userTier === "STARTER" ? "Revenue Projections Locked" : "Financial Forecasting Locked"}
+                description={userTier === "STARTER" ? "Upgrade to Pro to unlock 3-year revenue projections, charts, and key financial assumptions." : "Upgrade to Premium to unlock a realistic 3-year revenue projection, unit economics breakdown, and key financial assumptions."}
+              />
+              {userTier === "STARTER" && revenue.unitEconomics && (
+                <div className="mt-8 pt-8 border-t border-[#E5E7EB] relative z-10">
+                  <p className="text-xs text-[#630102]/70 font-bold uppercase tracking-wider mb-4">Unit Economics</p>
+                  <UnitEconomicsCard data={revenue.unitEconomics} />
+                </div>
+              )}
+            </>
           ) : (
             <>
               {actionPlan.premium_execution?.market_sizing_and_pricing && (
@@ -752,11 +760,11 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
 
         {/* First Customer Acquisition - Premium Redesign */}
         <section id="acquisition" className="relative p-8 sm:p-10 animate-fade-in-scale delay-[900ms] group bg-white border border-[#E5E7EB] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden">
-          {acquisition.primaryChannels.length === 0 || report.isLite ? (
+          {acquisition.primaryChannels.length === 0 || report.isLite || userTier === "STARTER" || userTier === "FREE" ? (
             <PremiumLock 
               isLocked={true} 
               title="Go-to-Market Blueprint Locked" 
-              description="Upgrade to Premium to unlock your acquisition strategy, content engine, and step-by-step first customer tactics." 
+              description="Upgrade to Pro to unlock your acquisition strategy, content engine, and step-by-step first customer tactics." 
             />
           ) : (
             <>
@@ -910,15 +918,15 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             </div>
             <h2 className="text-2xl font-bold text-[#111827] tracking-tight">B2B Leads</h2>
           </div>
-          {leads.length === 0 || report.isLite || userTier === "STARTER" || userTier === "FREE" ? (
+          {leads.length === 0 || report.isLite || userTier === "FREE" ? (
             <PremiumLock 
               isLocked={true} 
               title="B2B Lead Generation Locked" 
-              description="Upgrade to Pro or higher to instantly generate verified contact details for your startup ideas." 
+              description="Upgrade to Starter or higher to instantly generate verified contact details for your startup ideas." 
             />
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {leads.map((lead) => (
+              {(userTier === "STARTER" ? leads.slice(0, 2) : userTier === "PRO" ? leads.slice(0, 5) : leads).map((lead) => (
                 <div key={lead.id} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow duration-300">
                   <h3 className="font-bold text-[#111827] text-base truncate">{lead.name}</h3>
                   <p className="text-sm font-medium text-[#630102] truncate mb-2">{lead.title} @ {lead.company}</p>
@@ -1105,7 +1113,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
         )}
 
         {/* Community Signals to Sales Engine */}
-        {actionPlan.premium_execution?.signal_to_sales_mapping && (
+        {actionPlan.premium_execution?.signal_to_sales_mapping && userTier !== "STARTER" && userTier !== "FREE" && (
           <section id="sales-signals" className="glass-card p-6 sm:p-8 mt-10 animate-fade-in-scale delay-[1200ms] group hover:border-[#111827]/20 transition-all duration-500">
             <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
               <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
@@ -1133,7 +1141,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
         )}
 
         {/* Code Boilerplate */}
-        {codeBoilerplate && (
+        {codeBoilerplate && userTier !== "STARTER" && userTier !== "FREE" && (
           <section id="code-boilerplate" className="glass-card p-4 sm:p-6 overflow-hidden mt-10 animate-fade-in-scale delay-[1300ms] group hover:border-[#111827]/20 transition-all duration-500">
             <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
               <div className="w-10 h-10 rounded-xl bg-cherry/5 border border-cherry/10 flex items-center justify-center group-hover:bg-cherry/10 transition-colors">
@@ -1150,7 +1158,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
         )}
 
         {/* Adaptive Tech Stack */}
-        {actionPlan.premium_execution?.adaptive_tech_stack && (
+        {actionPlan.premium_execution?.adaptive_tech_stack && userTier !== "STARTER" && userTier !== "FREE" && (
           <section id="adaptive-tech-stack" className="bg-[#111827] border border-[#111827] rounded-2xl p-6 overflow-hidden mt-10 animate-fade-in-scale delay-[1400ms] shadow-2xl hover:shadow-3xl transition-shadow duration-500">
             <div className="flex items-center justify-between mb-6 border-b border-[#374151] pb-5">
               <div className="flex items-center gap-2">
