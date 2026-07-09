@@ -32,9 +32,9 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   // Mock user for UI testing if not logged in
   const user = session?.user ? {
-    name: session.user.name,
-    email: session.user.email,
-    image: session.user.image,
+    name: session.user.name ?? null,
+    email: session.user.email ?? null,
+    image: session.user.image ?? null,
     tier: dbUser?.tier || "FREE",
     availableCredits: dbUser?.availableCredits || 0,
   } : {
