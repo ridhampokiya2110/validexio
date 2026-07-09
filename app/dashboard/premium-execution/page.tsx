@@ -62,9 +62,9 @@ async function PremiumExecutionContent({ userId }: { userId: string }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="badge badge-cherry text-xs">{session.industry}</span>
-                    <span className="text-[#1B1716]/40 text-xs flex items-center gap-1 font-medium" suppressHydrationWarning>
+                    <span className="text-[#1B1716]/40 text-xs flex items-center gap-1 font-medium">
                       <Clock className="w-3.5 h-3.5" />
-                      {formatRelativeTime(session.createdAt)}
+                      <span suppressHydrationWarning>{formatRelativeTime(session.createdAt)}</span>
                     </span>
                   </div>
                   <h3 className="text-[#1B1716] font-bold text-lg mb-1 truncate">{session.businessIdea.substring(0, 50)}...</h3>
