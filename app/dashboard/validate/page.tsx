@@ -201,7 +201,15 @@ export default function ValidatePage() {
       const draft = localStorage.getItem(DRAFT_KEY);
       if (draft) {
         const parsed = JSON.parse(draft);
-        setForm(parsed);
+        setForm(prev => {
+          const sanitized = { ...prev };
+          for (const key in parsed) {
+            if (parsed[key] !== null && parsed[key] !== undefined) {
+              sanitized[key as keyof typeof sanitized] = String(parsed[key]);
+            }
+          }
+          return sanitized;
+        });
         if (parsed.industry && !INDUSTRIES.includes(parsed.industry)) {
           setIsOtherIndustry(true);
         }
@@ -630,7 +638,7 @@ export default function ValidatePage() {
                 {errors.title
                   ? <p className="text-red-600 text-xs">{errors.title}</p>
                   : <span />}
-                <span className="text-[#1B1716]/60 text-xs">{form.title.length}/100</span>
+                <span className="text-[#1B1716]/60 text-xs">{(form.title || "").length}/100</span>
               </div>
             </div>
 
@@ -766,7 +774,7 @@ export default function ValidatePage() {
               </label>
 
               {/* If file uploaded and description still empty — smart prompt */}
-              {documentDisplay && form.description.trim().length < 30 && (
+              {documentDisplay && (form.description || "").trim().length < 30 && (
                 <div className="mb-2 flex items-start gap-2 p-3 rounded-xl bg-amber-50 border border-amber-200">
                   <FileText className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-amber-800 leading-relaxed">
@@ -787,7 +795,7 @@ export default function ValidatePage() {
                 {errors.description
                   ? <p className="text-red-600 text-xs">{errors.description}</p>
                   : <p className="text-[#1B1716]/60 text-xs">Minimum 100 characters for best results</p>}
-                <span className="text-[#1B1716]/60 text-xs">{form.description.length}/4000</span>
+                <span className="text-[#1B1716]/60 text-xs">{(form.description || "").length}/4000</span>
               </div>
             </div>
 
