@@ -95,7 +95,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'weekly',
       priority: 0.7,
     },
-    // About / Contact / Legal
+    // About / Contact / Legal / FAQ
+    {
+      url: `${baseUrl}/startup-validation-faq`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
     {
       url: `${baseUrl}/about`,
       lastModified: now,
