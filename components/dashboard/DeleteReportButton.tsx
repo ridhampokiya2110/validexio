@@ -35,8 +35,7 @@ export function DeleteReportButton({ reportId }: { reportId: string }) {
       }
 
       toast.success("Report deleted successfully");
-      router.push("/dashboard/reports");
-      router.refresh();
+      window.location.href = "/dashboard/reports";
     } catch (error) {
       // Revert the optimistic update if it fails
       const card = (e.currentTarget as HTMLElement).closest('.glass-card') as HTMLElement;

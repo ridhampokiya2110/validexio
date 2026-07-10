@@ -108,8 +108,7 @@ function RegisterPageContent() {
 
       if (signInRes?.ok) {
         toast.success("Account created! Welcome to Validexio.");
-        router.push("/dashboard");
-        router.refresh();
+        window.location.href = "/dashboard";
         // Do not clear loading state here, let the redirect happen
       } else {
         setSuccess(true);

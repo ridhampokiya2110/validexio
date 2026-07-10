@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 import { RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function RealtimePlanListener({ userId }: { userId?: string }) {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -27,7 +29,7 @@ export function RealtimePlanListener({ userId }: { userId?: string }) {
           duration: Infinity, // Stay until dismissed or clicked
           action: {
             label: "Refresh Now",
-            onClick: () => window.location.reload(),
+            onClick: () => router.refresh(),
           },
           cancel: {
             label: "Dismiss",

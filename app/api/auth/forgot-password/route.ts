@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic';
 import { prisma } from "@/lib/db";
 import { randomBytes } from "crypto";
 import { Ratelimit } from "@upstash/ratelimit";

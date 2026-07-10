@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
@@ -195,6 +195,7 @@ export default function DashboardLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [needsRefresh, setNeedsRefresh] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (!user) return;
@@ -253,7 +254,10 @@ export default function DashboardLayout({
               <span>Your plan or credits have been updated by an admin.</span>
             </div>
             <button aria-label="Button action" type="button" 
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                setNeedsRefresh(false);
+                router.refresh();
+              }}
               className="bg-white text-[#1B1716] px-3 py-1.5 rounded-md text-xs font-bold hover:bg-gray-100 transition-colors whitespace-nowrap"
             >
               Refresh Now

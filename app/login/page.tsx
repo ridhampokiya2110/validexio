@@ -103,8 +103,7 @@ function AuthPageContent() {
           setLoading(false);
         } else {
           toast.success("Welcome back!");
-          router.push("/dashboard");
-          router.refresh();
+          window.location.href = "/dashboard";
           return; // Exit early to keep loading state true during navigation
         }
       } else {
@@ -142,8 +141,7 @@ function AuthPageContent() {
 
         if (signInRes?.ok) {
           toast.success("Account created successfully! Welcome to Validexio.");
-          router.push("/dashboard");
-          router.refresh();
+          window.location.href = "/dashboard";
           return; // Exit early to keep loading state true during navigation
         } else {
           toast.success("Account created! Please sign in.");
