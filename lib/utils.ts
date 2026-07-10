@@ -5,8 +5,21 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function safeDate(date: Date | string | number): Date {
+  if (!date) return new Date();
+  if (typeof date === 'string') {
+    const tFix = date.replace(/^(\d{4}-\d{2}-\d{2})\s(\d{2}:\d{2}:\d{2})$/, "$1T$2");
+    const parsed = new Date(tFix);
+    if (parsed.toString() !== 'Invalid Date') return parsed;
+  }
+  const parsed = new Date(date);
+  if (parsed.toString() === 'Invalid Date') return new Date();
+  return parsed;
+}
+
 export function formatDate(date: Date | string): string {
-  return new Date(date).toLocaleDateString("en-US", {
+  if (!date) return "";
+  return safeDate(date).toLocaleDateString("en-US", {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -15,7 +28,7 @@ export function formatDate(date: Date | string): string {
 
 export function formatRelativeTime(date: Date | string): string {
   const now = new Date();
-  const then = new Date(date);
+  const then = safeDate(date);
   const diff = now.getTime() - then.getTime();
 
   const seconds = Math.floor(diff / 1000);

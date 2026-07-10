@@ -174,7 +174,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
           </div>
           <button aria-label="Button action" type="button"
             onClick={() => signOut({ callbackUrl: "/" })}
-            className="opacity-0 group-hover:opacity-100 transition-opacity p-1 rounded hover:bg-red-50 text-[#6B7280] hover:text-red-600"
+            className="opacity-100 transition-opacity p-1.5 rounded hover:bg-red-50 text-[#6B7280] hover:text-red-600"
             title="Sign out"
           >
             <LogOut className="w-3.5 h-3.5" />

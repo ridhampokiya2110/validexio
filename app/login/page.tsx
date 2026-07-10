@@ -158,7 +158,7 @@ function AuthPageContent() {
   const handleSocialLogin = async (provider: string) => {
     setLoadingProvider(provider);
     try {
-      await signIn(provider, { callbackUrl: "/dashboard" });
+      await signIn(provider, { callbackUrl: "/dashboard" }, { prompt: "select_account" });
     } catch {
       toast.error("Failed to sign in. Please try again.");
       setLoadingProvider(null);

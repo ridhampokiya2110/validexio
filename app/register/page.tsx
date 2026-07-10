@@ -122,7 +122,7 @@ function RegisterPageContent() {
 
   const handleSocialLogin = async (provider: string) => {
     setLoadingProvider(provider);
-    await signIn(provider, { callbackUrl: "/dashboard" });
+    await signIn(provider, { callbackUrl: "/dashboard" }, { prompt: "select_account" });
   };
 
   if (loading) {
