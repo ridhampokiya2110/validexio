@@ -51,7 +51,15 @@ export default function ReportClient({ session }: ReportClientProps) {
   // Use DB data if exists, otherwise mock template data for the UI
   const isUnlocked = session.isUnlocked || false;
   const score = session.viabilityScore || 85;
-  const pivotTeaser = session.antiRoadmap ? JSON.parse(session.antiRoadmap as string)?.pivot || "We pivot this into a highly technical execution play." : "We pivot this into a highly technical execution play. By embedding directly into their existing infrastructure rather than offering a standalone dashboard, stickiness increases by 300%.";
+  let pivotTeaser = "We pivot this into a highly technical execution play. By embedding directly into their existing infrastructure rather than offering a standalone dashboard, stickiness increases by 300%.";
+  if (session.antiRoadmap) {
+    try {
+      const parsed = JSON.parse(session.antiRoadmap as string);
+      if (parsed?.pivot) pivotTeaser = parsed.pivot;
+    } catch (e) {
+      console.error("Failed to parse antiRoadmap:", e);
+    }
+  }
 
   const businessSections = session.businessSections ? session.businessSections as any[] : [
     { title: "Executive Summary", content: "This SaaS targets a deeply underserved niche with an initial market size exceeding $4.5B." },
