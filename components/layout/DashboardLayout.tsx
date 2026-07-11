@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -79,6 +79,19 @@ interface SidebarProps {
 
 function SidebarContent({ user, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (navRef.current) {
+        const activeItem = navRef.current.querySelector('.active');
+        if (activeItem) {
+          activeItem.scrollIntoView({ behavior: 'auto', block: 'center' });
+        }
+      }
+    }, 10);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="flex flex-col h-full">
@@ -107,7 +120,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-4 pb-6">
+      <nav ref={navRef} className="flex-1 overflow-y-auto px-3 py-2 space-y-4 pb-6">
         {navItems.map((group) => (
           <div key={group.group}>
             <p className="text-xs font-semibold text-[#1B1716]/25 uppercase tracking-widest px-3 mb-2">
@@ -303,14 +316,16 @@ export default function DashboardLayout({
               >
                 Sign out
               </button>
-              <div className="w-7 h-7 rounded-full bg-cherry border border-cherry/30 flex items-center justify-center">
-                <span className="text-xs font-bold text-white">
-                  {user?.name ? getInitials(user.name) : "U"}
+              <Link aria-label="Settings" href="/dashboard/settings" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="w-7 h-7 rounded-full bg-cherry border border-cherry/30 flex items-center justify-center">
+                  <span className="text-xs font-bold text-white">
+                    {user?.name ? getInitials(user.name) : "U"}
+                  </span>
+                </div>
+                <span className="hidden sm:block text-[#1B1716] font-bold text-sm">
+                  {user?.name?.split(" ")[0] || "Account"}
                 </span>
-              </div>
-              <span className="hidden sm:block text-[#1B1716] font-bold text-sm">
-                {user?.name?.split(" ")[0] || "Account"}
-              </span>
+              </Link>
               <button aria-label="Sign out (Mobile)" type="button"
                 onClick={() => signOut({ callbackUrl: "/" })}
                 className="sm:hidden p-1.5 rounded-md hover:bg-red-50 text-[#1B1716]/40 hover:text-red-600 transition-colors"
