@@ -83,6 +83,25 @@ export default function GlobalError({
             )}
           </p>
 
+          <div style={{ 
+            background: "#f3f4f6", 
+            padding: "1rem", 
+            borderRadius: "0.5rem", 
+            textAlign: "left", 
+            marginBottom: "1.5rem",
+            overflowX: "auto",
+            fontSize: "0.75rem",
+            color: "#EF4444"
+          }}>
+            <strong>Message:</strong> {error?.message || "No error message"}<br/>
+            {error?.stack && (
+              <div style={{ marginTop: "0.5rem", whiteSpace: "pre-wrap", color: "#6B7280" }}>
+                <strong>Stack:</strong><br/>
+                {error.stack}
+              </div>
+            )}
+          </div>
+
           <button
             onClick={reset}
             style={{
