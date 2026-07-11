@@ -291,12 +291,18 @@ export default function DashboardLayout({
                 {user?.availableCredits || 0} Credits
               </span>
             </Link>
-
-            {/* Notifications */}
+        {/* Notifications */}
             <NotificationsDropdown />
 
             {/* User Menu */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg hover:bg-[#1B1716]/10 cursor-pointer transition-colors">
+            <div className="flex items-center gap-3">
+              <button aria-label="Sign out" type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="hidden sm:flex text-xs font-bold text-[#1B1716]/40 hover:text-red-600 transition-colors mr-2"
+                title="Sign out"
+              >
+                Sign out
+              </button>
               <div className="w-7 h-7 rounded-full bg-cherry border border-cherry/30 flex items-center justify-center">
                 <span className="text-xs font-bold text-white">
                   {user?.name ? getInitials(user.name) : "U"}
@@ -305,6 +311,13 @@ export default function DashboardLayout({
               <span className="hidden sm:block text-[#1B1716] font-bold text-sm">
                 {user?.name?.split(" ")[0] || "Account"}
               </span>
+              <button aria-label="Sign out (Mobile)" type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="sm:hidden p-1.5 rounded-md hover:bg-red-50 text-[#1B1716]/40 hover:text-red-600 transition-colors"
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
             </div>
           </div>
         </header>

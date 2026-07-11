@@ -88,7 +88,7 @@ export default async function AnalyticsPage() {
                 {[...reports].reverse().map((report, i) => (
                   <div key={`item-${i}`} className="flex items-center gap-2 sm:gap-4 group">
                     <span className="text-[#1B1716]/40 text-xs w-14 sm:w-20 font-medium flex-shrink-0">
-                      {new Date(report.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      {new Date(report.createdAt).toISOString().split('T')[0]}
                     </span>
                     
                     <div className="flex-1">

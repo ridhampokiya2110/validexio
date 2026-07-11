@@ -1,4 +1,4 @@
-const CACHE_NAME = 'validexio-cache-v1';
+const CACHE_NAME = 'validexio-cache-v2';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

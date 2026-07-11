@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Loader2, Copy, CheckCircle2, Wallet, ArrowRight, TrendingUp, Users, MousePointerClick, Activity, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { safeDate } from "@/lib/utils";
 
 export function AffiliateDashboard({ 
   initialProfile, 
@@ -263,7 +264,7 @@ export function AffiliateDashboard({
                       {activity.type === 'referral' ? 'New Referral' : 'Payout Requested'}
                     </p>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      {new Date(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      {safeDate(activity.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
                 </div>
