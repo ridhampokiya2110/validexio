@@ -176,7 +176,8 @@ export default function GlobalCompetitorsGlobe() {
     const resize = () => {
       if (containerRef.current) {
         const w = containerRef.current.offsetWidth;
-        setCssSize(Math.min(w, 560));
+        // Guard: never set size to 0 (happens when hidden via CSS)
+        if (w > 10) setCssSize(Math.min(w, 560));
       }
     };
     resize();
@@ -203,6 +204,9 @@ export default function GlobalCompetitorsGlobe() {
     const cy = cssSize / 2;
     const rad = cssSize * 0.43;
 
+    // Guard: if somehow size is invalid, abort
+    if (rad < 1) return;
+
     // Dot radius sized to fill 2° steps solidly at this globe size
     const dotR = Math.max(3, rad * 0.022);
 
@@ -222,7 +226,8 @@ export default function GlobalCompetitorsGlobe() {
       // ── Clip land + atmosphere to sphere ─────────────────────────────────
       ctx.save();
       ctx.beginPath();
-      ctx.arc(cx, cy, rad - 0.5, 0, Math.PI * 2);
+      // Math.max prevents negative radius when rad is tiny
+      ctx.arc(cx, cy, Math.max(0.1, rad - 0.5), 0, Math.PI * 2);
       ctx.clip();
 
       // ── Solid continent dots ─────────────────────────────────────────────
