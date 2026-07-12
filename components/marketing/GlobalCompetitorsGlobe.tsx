@@ -170,23 +170,29 @@ export default function GlobalCompetitorsGlobe() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [cssSize, setCssSize] = useState(520);
   const [isClient, setIsClient] = useState(false);
+  // JS-level mobile guard: prevents canvas from running at all on small screens
+  const [isMobile, setIsMobile] = useState(true);
 
   useEffect(() => {
     setIsClient(true);
-    const resize = () => {
+    const update = () => {
+      const vw = window.innerWidth;
+      // Completely skip globe on mobile (<768px) — no canvas, no arc, no errors
+      setIsMobile(vw < 768);
       if (containerRef.current) {
         const w = containerRef.current.offsetWidth;
-        // Guard: never set size to 0 (happens when hidden via CSS)
+        // Guard: never set size to 0 (hidden element has offsetWidth=0)
         if (w > 10) setCssSize(Math.min(w, 560));
       }
     };
-    resize();
-    window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   useEffect(() => {
-    if (!isClient) return;
+    // Don't run any canvas code on mobile — prevents negative-radius crashes
+    if (!isClient || isMobile) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
@@ -214,20 +220,20 @@ export default function GlobalCompetitorsGlobe() {
       ctx.clearRect(0, 0, cssSize, cssSize);
 
       // ── Ocean: black like the reference ──────────────────────────────────
-      const ocean = ctx.createRadialGradient(cx - rad * 0.2, cy - rad * 0.25, rad * 0.05, cx, cy, rad);
+      const safeRad = Math.max(0.01, rad); // clamp — always positive
+      const ocean = ctx.createRadialGradient(cx - safeRad * 0.2, cy - safeRad * 0.25, safeRad * 0.05, cx, cy, safeRad);
       ocean.addColorStop(0, "#1a1a2e");
       ocean.addColorStop(0.65, "#0d0f18");
       ocean.addColorStop(1, "#060809");
       ctx.beginPath();
-      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.arc(cx, cy, safeRad, 0, Math.PI * 2);
       ctx.fillStyle = ocean;
       ctx.fill();
 
       // ── Clip land + atmosphere to sphere ─────────────────────────────────
       ctx.save();
       ctx.beginPath();
-      // Math.max prevents negative radius when rad is tiny
-      ctx.arc(cx, cy, Math.max(0.1, rad - 0.5), 0, Math.PI * 2);
+      ctx.arc(cx, cy, Math.max(0.01, safeRad - 0.5), 0, Math.PI * 2);
       ctx.clip();
 
       // ── Solid continent dots ─────────────────────────────────────────────
@@ -245,38 +251,38 @@ export default function GlobalCompetitorsGlobe() {
       ctx.restore();
 
       // ── Atmosphere rim ────────────────────────────────────────────────────
-      const atm = ctx.createRadialGradient(cx, cy, rad * 0.9, cx, cy, rad * 1.12);
+      const atm = ctx.createRadialGradient(cx, cy, Math.max(0.01, safeRad * 0.9), cx, cy, safeRad * 1.12);
       atm.addColorStop(0, "rgba(56,189,248,0.0)");
       atm.addColorStop(0.5, "rgba(134,239,172,0.06)");
       atm.addColorStop(1, "rgba(56,189,248,0.0)");
       ctx.beginPath();
-      ctx.arc(cx, cy, rad * 1.12, 0, Math.PI * 2);
+      ctx.arc(cx, cy, safeRad * 1.12, 0, Math.PI * 2);
       ctx.fillStyle = atm;
       ctx.fill();
 
       // ── Specular highlight ────────────────────────────────────────────────
-      const shine = ctx.createRadialGradient(cx - rad * 0.38, cy - rad * 0.42, 0, cx, cy, rad);
+      const shine = ctx.createRadialGradient(cx - safeRad * 0.38, cy - safeRad * 0.42, 0, cx, cy, safeRad);
       shine.addColorStop(0, "rgba(255,255,255,0.1)");
       shine.addColorStop(0.4, "rgba(255,255,255,0.0)");
       shine.addColorStop(1, "rgba(0,0,0,0.0)");
       ctx.beginPath();
-      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.arc(cx, cy, safeRad, 0, Math.PI * 2);
       ctx.fillStyle = shine;
       ctx.fill();
 
       // Globe border
       ctx.beginPath();
-      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.arc(cx, cy, safeRad, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(134,239,172,0.15)";
       ctx.lineWidth = 1;
       ctx.stroke();
 
       // ── Competitor markers ────────────────────────────────────────────────
       COMPETITORS.forEach((c) => {
-        const p = project(c.lat, c.lng, cx, cy, rad, rotRef.current);
+        const p = project(c.lat, c.lng, cx, cy, safeRad, rotRef.current);
         if (p.z < 0) return;
-        const ef = Math.max(0, Math.min(1, p.z / (rad * 0.4)));
-        const mR = rad * 0.03;
+        const ef = Math.max(0, Math.min(1, p.z / (safeRad * 0.4)));
+        const mR = Math.max(0.01, safeRad * 0.03);
 
         // Outer glow
         ctx.beginPath();
@@ -308,7 +314,8 @@ export default function GlobalCompetitorsGlobe() {
     return () => cancelAnimationFrame(rafRef.current);
   }, [isClient, cssSize]);
 
-  if (!isClient) return null;
+  // Return null on mobile — no canvas rendered at all
+  if (!isClient || isMobile) return null;
 
   return (
     <section className="relative w-full pt-32 pb-12 bg-transparent overflow-hidden">
