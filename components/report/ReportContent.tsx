@@ -1187,6 +1187,131 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
             </div>
           </section>
         )}
+
+        {/* Launch Resources */}
+        {userTier !== "STARTER" && userTier !== "FREE" && (
+          <section id="launch-resources" className="glass-card p-6 sm:p-8 animate-fade-in-scale delay-[1500ms] group hover:border-[#111827]/20 transition-all duration-500 mt-10">
+            <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
+              <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
+                <Rocket className="w-5 h-5 text-[#630102]" />
+              </div>
+              <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Launch Your Idea</h2>
+            </div>
+            <p className="text-[#6B7280] text-sm leading-relaxed mb-8 max-w-3xl">
+              Your idea is validated. Now it&apos;s time to launch. We&apos;ve taken your validation data and pre-generated the exact copy you need to submit your startup to the top discovery platforms for free. Just copy, paste, and launch.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Product Hunt */}
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-[#DA552F] text-white flex items-center justify-center font-bold text-lg shrink-0">P</span>
+                    <h3 className="font-bold text-[#111827] text-lg">Product Hunt</h3>
+                  </div>
+                  <a aria-label="Link action" href="https://www.producthunt.com/posts/new" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#DA552F] text-white rounded-md hover:bg-[#bf4825] transition-colors text-center whitespace-nowrap">
+                    Submit
+                  </a>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Tagline</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                      {landingPage?.headline || `AI-powered ${report.idea?.industry} solution.`}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Description</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium whitespace-pre-wrap">
+                      {landingPage?.valueProp || market.summary || "A revolutionary approach to solving critical pain points in this space."}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* BetaList */}
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-[#F14B5A] text-white flex items-center justify-center font-bold text-lg shrink-0">B</span>
+                    <h3 className="font-bold text-[#111827] text-lg">BetaList</h3>
+                  </div>
+                  <a aria-label="Link action" href="https://betalist.com/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#F14B5A] text-white rounded-md hover:bg-[#d6414f] transition-colors text-center whitespace-nowrap">
+                    Submit
+                  </a>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Elevator Pitch</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                      {landingPage?.subheadline || `The new way to build for ${report.idea?.industry}`}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Target Audience</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                      {personas[0]?.title || "Professionals"} & {personas[1]?.title || "Businesses"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* SaaSHub */}
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-[#515969] text-white flex items-center justify-center font-bold text-lg shrink-0">S</span>
+                    <h3 className="font-bold text-[#111827] text-lg">SaaSHub</h3>
+                  </div>
+                  <a aria-label="Link action" href="https://www.saashub.com/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#515969] text-white rounded-md hover:bg-[#3d434f] transition-colors text-center whitespace-nowrap">
+                    Submit
+                  </a>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Alternatives to</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium flex flex-wrap gap-2">
+                      {competitors.slice(0, 3).map(c => c.name).join(", ") || "Industry leaders"}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Pricing Model</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                      {pricing.strategy || "Subscription Based"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* dang.ai */}
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+                <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
+                  <div className="flex items-center gap-3">
+                    <span className="w-8 h-8 rounded-full bg-[#000000] text-white flex items-center justify-center font-bold text-lg shrink-0">d</span>
+                    <h3 className="font-bold text-[#111827] text-lg">dang.ai</h3>
+                  </div>
+                  <a aria-label="Link action" href="https://dang.ai/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#000000] text-white rounded-md hover:bg-[#333333] transition-colors text-center whitespace-nowrap">
+                    Submit
+                  </a>
+                </div>
+                <div className="space-y-4">
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">AI Category</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                      {report.idea?.industry || "Generative AI Solutions"}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Core AI Feature</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium line-clamp-3">
+                      {landingPage?.features?.[0]?.description || market.summary || "AI powered automation and analysis"}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -4,7 +4,6 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { z } from "zod";
-import { zodToJsonSchema } from "zod-to-json-schema";
 
 const apiKey = process.env.GEMINI_API_KEY as string;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : (null as unknown as GoogleGenerativeAI);
@@ -288,25 +287,29 @@ Keep the landing page words very catchy, simple, and clear. Focus on user benefi
 For the \`codeBoilerplate\`, write a complete, beautiful React component using Tailwind CSS and lucide-react. Keep the code under 150 lines to prevent truncation. Do not include large SVG strings.`;
 
 // Helper for Gemini calls with retry
+// Uses gemini-2.0-flash — cheapest available model. Schema is passed natively
+// (NOT embedded in prompt text) saving ~5000 tokens per call.
 async function callGemini(prompt: string, systemInstruction: string, schema: any): Promise<any> {
-  const schemaString = JSON.stringify(zodToJsonSchema(schema), null, 2);
-  const fullPrompt = `${prompt}\n\nREQUIRED JSON SCHEMA:\nYou MUST return your answer as a raw JSON object that perfectly matches the following JSON Schema:\n${schemaString}\n\nDo not wrap it in any top-level key that is not in the schema. Do not return an array if the schema is an object. DO NOT include markdown \`\`\`json wrappers.`;
+  // DO NOT embed schema in prompt — use native responseSchema instead (free, no tokens used)
+  const fullPrompt = prompt;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-flash-latest",
+    model: "gemini-2.0-flash", // Cheapest model. Pinned to avoid auto-upgrades to expensive versions.
     systemInstruction,
     safetySettings,
     generationConfig: {
       temperature: 0.7,
       topP: 0.8,
       topK: 40,
-      maxOutputTokens: 8192,
+      maxOutputTokens: 4096, // Reduced from 8192 — our reports fit in 4096 tokens
       responseMimeType: "application/json",
+      responseSchema: schema, // Native schema enforcement — zero extra tokens
     },
   });
 
   let text = "";
-  let retries = 2; // Reduced from 3 to 2 because smaller JSON calls are more reliable
+  let retries = 4; // Increased for high-concurrency 
+  let delayMs = 1500;
 
   while (retries > 0) {
     try {
@@ -318,12 +321,15 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
       console.error(`Gemini API error (Retries left: ${retries - 1}):`, error.message || error);
       retries--;
       if (retries === 0) {
-        if (error.status === 503 || (error.message && error.message.includes("503"))) {
-          throw new Error("Google's Gemini Data Engine is currently overloaded. Please wait a minute and try again.");
+        if (error.status === 503 || error.status === 429 || (error.message && (error.message.includes("503") || error.message.includes("429")))) {
+          throw new Error("Google's Gemini Data Engine is currently under heavy load. Please wait a minute and try again.");
         }
         throw error;
       }
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      // Exponential backoff with jitter
+      const jitter = Math.random() * 500;
+      await new Promise((resolve) => setTimeout(resolve, delayMs + jitter));
+      delayMs *= 2; // 1.5s -> 3s -> 6s
     }
   }
 
@@ -430,56 +436,123 @@ Return the exact JSON structure required, including the React landing page code 
   return callGemini(prompt, PRODUCT_PROMPT, ProductStrategySchema);
 }
 
-// FREE TIER: Generates a very lightweight report to save on token costs.
+// ============================================================
+// FREE TIER: Uses Pollinations AI (100% FREE, no API key needed)
+// Cost to you: $0.00 per Lite validation, forever.
+// Gemini is used as a fallback if Pollinations is unavailable.
+// ============================================================
 export async function generateFreeStartupMarket(idea: IdeaInput): Promise<MarketAnalysisReport> {
-  const FREE_PROMPT = `${COMMON_SYSTEM_PROMPT}
-You are analyzing the market for a startup idea for a FREE user. 
-Provide a Validation Score (0-100), a short 2-sentence market opportunity, a risk score (0-100), product-market fit score (0-100), and a brief SWOT analysis. Do not hallucinate.`;
+  const systemPrompt = `You are a startup market analyst. Respond ONLY with a raw JSON object — no markdown, no code fences.
+Your JSON must EXACTLY match this structure:
+{
+  "validationScore": <number 0-100>,
+  "marketOpportunity": <number 0-100>,
+  "productMarketFit": <number 0-100>,
+  "riskScore": <number 0-100>,
+  "swotAnalysis": {
+    "strengths": [<string>, <string>],
+    "weaknesses": [<string>, <string>],
+    "opportunities": [<string>, <string>],
+    "threats": [<string>, <string>]
+  }
+}
+Be honest, concise, and do not hallucinate. Use an 8th-grade reading level.`;
 
-  const FreeSchema = z.object({
-    validationScore: z.number(),
-    marketOpportunity: z.number(),
-    productMarketFit: z.number(),
-    riskScore: z.number(),
-    swotAnalysis: z.object({
-      strengths: z.array(z.string()),
-      weaknesses: z.array(z.string()),
-      opportunities: z.array(z.string()),
-      threats: z.array(z.string()),
-    })
-  });
-
-  const prompt = `Analyze this startup idea briefly:
+  const userPrompt = `Analyze this startup idea:
 - Title: ${idea.title}
 - Description: ${idea.description}
 - Industry: ${idea.industry}`;
 
-  const model = genAI.getGenerativeModel({
-    model: "gemini-flash-latest",
-    generationConfig: {
-      temperature: 0.5,
-      responseMimeType: "application/json",
-      responseSchema: FreeSchema as any,
-    },
-    safetySettings,
-  });
+  let parsed: any = null;
 
-  const result = await model.generateContent({
-    contents: [{ role: "user", parts: [{ text: prompt }] }],
-    systemInstruction: FREE_PROMPT,
-  });
+  // ── ATTEMPT 1: Pollinations AI (completely free, no API key) ──
+  try {
+    console.log("[Free Tier] Calling Pollinations AI (free)...");
+    const pollinationsRes = await fetch("https://text.pollinations.ai/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "openai-large", // GPT-4o level, free
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt },
+        ],
+        jsonMode: true,
+        seed: 42,
+      }),
+      signal: AbortSignal.timeout(25000), // 25 second timeout
+    });
 
-  const text = result.response.text();
-  const parsed = JSON.parse(text);
+    if (!pollinationsRes.ok) {
+      throw new Error(`Pollinations responded with status: ${pollinationsRes.status}`);
+    }
 
-  // Pad the rest of the MarketAnalysisReport with "Locked" states
+    const rawText = await pollinationsRes.text();
+    const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+    parsed = JSON.parse(cleaned);
+    console.log("[Free Tier] ✅ Pollinations AI succeeded.");
+  } catch (pollinationsError: any) {
+    console.warn("[Free Tier] ⚠️ Pollinations AI failed, falling back to Gemini Flash:", pollinationsError.message);
+
+    // ── FALLBACK: Gemini Flash (cheap but costs a tiny bit) ──
+    try {
+      const FreeSchema = z.object({
+        validationScore: z.number(),
+        marketOpportunity: z.number(),
+        productMarketFit: z.number(),
+        riskScore: z.number(),
+        swotAnalysis: z.object({
+          strengths: z.array(z.string()),
+          weaknesses: z.array(z.string()),
+          opportunities: z.array(z.string()),
+          threats: z.array(z.string()),
+        }),
+      });
+
+      const model = genAI.getGenerativeModel({
+        model: "gemini-flash-latest",
+        generationConfig: {
+          temperature: 0.5,
+          responseMimeType: "application/json",
+          responseSchema: FreeSchema as any,
+        },
+        safetySettings,
+      });
+
+      const result = await model.generateContent({
+        contents: [{ role: "user", parts: [{ text: userPrompt }] }],
+        systemInstruction: systemPrompt,
+      });
+
+      const text = result.response.text();
+      parsed = JSON.parse(text);
+      console.log("[Free Tier] ✅ Gemini fallback succeeded.");
+    } catch (geminiError: any) {
+      console.error("[Free Tier] ❌ Both Pollinations and Gemini failed:", geminiError.message);
+      // Return a safe, minimal static response so the report page doesn't crash
+      parsed = {
+        validationScore: 50,
+        marketOpportunity: 50,
+        productMarketFit: 50,
+        riskScore: 50,
+        swotAnalysis: {
+          strengths: ["Idea shows potential — upgrade for full analysis"],
+          weaknesses: ["Limited data available on free tier"],
+          opportunities: ["Upgrade to Pro for real market data"],
+          threats: ["Market research required to assess risk"],
+        },
+      };
+    }
+  }
+
+  // Pad the rest of the full MarketAnalysisReport with locked states
   return {
     ...parsed,
     marketSaturation: {
       score: 0,
-      reasoning: "Locked - Upgrade to Premium",
-      summary: "Locked - Upgrade to Premium",
-      tam: "Locked", sam: "Locked", som: "Locked", growth: "Locked", trends: [], sourceUrl: ""
+      reasoning: "Upgrade to unlock real-time market saturation data.",
+      summary: "Upgrade to Premium to see full market analysis.",
+      tam: "Locked", sam: "Locked", som: "Locked", growth: "Locked", trends: [], sourceUrl: "",
     },
     competitorIntelligence: [],
     customerPersonas: [],
@@ -488,19 +561,21 @@ Provide a Validation Score (0-100), a short 2-sentence market opportunity, a ris
       unitEconomics: {
         competitorPricingTiers: [],
         suggestedPricingStrategy: { recommendedPrice: "Locked", justification: "Upgrade to unlock" },
-        projectedMargins: "Locked"
-      }
+        projectedMargins: "Locked",
+      },
     },
     riskAnalysis: [],
     pricingRecommendation: {
-      strategy: "Locked - Upgrade to Premium", tiers: [], rationale: "Upgrade to unlock pricing intelligence."
+      strategy: "Locked - Upgrade to Premium", tiers: [], rationale: "Upgrade to unlock pricing intelligence.",
     },
     growthOpportunities: [],
-    acquisitionStrategy: { primaryChannels: [], firstCustomerTactics: [], communityBuilding: "", contentStrategy: "", partnershipOpportunities: [] },
+    acquisitionStrategy: {
+      primaryChannels: [], firstCustomerTactics: [], communityBuilding: "", contentStrategy: "", partnershipOpportunities: [],
+    },
     actionPlan: { day30: [], day60: [], day90: [] },
     launchPlatforms: [],
     mvpPrioritization: { mustHave: [], shouldHave: [], couldHave: [], wontHave: [] },
-    complianceCheck: []
+    complianceCheck: [],
   };
 }
 

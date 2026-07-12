@@ -4,7 +4,13 @@ import { prisma } from "@/lib/db";
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import Cerebras from "@cerebras/cerebras_cloud_sdk";
 
+// --- Cerebras: Ultra-fast question generation (1000+ tokens/sec) ---
+const cerebrasApiKey = process.env.CEREBRAS_API_KEY;
+const cerebrasClient = cerebrasApiKey ? new Cerebras({ apiKey: cerebrasApiKey }) : null;
+
+// --- Gemini: Structured JSON evaluation (fallback for questions too) ---
 const apiKey = process.env.GEMINI_API_KEY as string;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : (null as unknown as GoogleGenerativeAI);
 
@@ -167,25 +173,47 @@ EXAMPLE OF A GOOD QUESTION:
 "Given your target audience of enterprise healthcare providers, how exactly are you planning to manage HIPAA-compliant data residency when relying on multi-tenant cloud architecture?"
 `;
 
-      if (process.env.GEMINI_API_KEY) {
-         let question;
-         try {
-           const result = await textModel.generateContent(prompt);
-           question = result.response.text().trim();
-           // Strip out any conversational prefixes or quotes
-           question = question.replace(/^["']|["']$/g, "").replace(/^(Here is the next question:|Next question:|Question:|\* \w+:)/i, "").trim();
-         } catch (apiError) {
-           console.error("Gemini Generate Question Error (429/etc):", apiError);
-           question = track === "TECHNICAL_ARCHITECT" 
-            ? "Your system is under heavy load. How exactly are you preventing cascading failures across your microservices?" 
-            : "If customer acquisition costs double tomorrow, how does your financial model survive the next 12 months?";
-         }
-         return NextResponse.json({ question });
-      } else {
-         // Mock if no API key
-         await new Promise(resolve => setTimeout(resolve, 1000));
-         return NextResponse.json({ question: track === "TECHNICAL_ARCHITECT" ? "How exactly does your database schema handle 10k concurrent writes during a failover event?" : "Your CAC is assumed to be zero initially, how do you mathematically prove you won't bleed cash scaling beyond your immediate network?" });
+      let question: string | undefined;
+
+      // PRIORITY 1: Cerebras — 1000+ tokens/sec, feels instant
+      if (cerebrasClient) {
+        try {
+          const cerebrasResponse = await cerebrasClient.chat.completions.create({
+            model: "gpt-oss-120b",
+            messages: [
+              { role: "system", content: prompt },
+              { role: "user", content: "Generate the next investor question now." }
+            ],
+            max_completion_tokens: 120,
+            temperature: 0.75,
+            stream: false,
+          });
+          question = ((cerebrasResponse as any).choices?.[0]?.message?.content ?? "").trim();
+          question = (question as string).replace(/^["']|["']$/g, "").replace(/^(Here is the next question:|Next question:|Question:|\* \w+:)/i, "").trim();
+        } catch (cerebrasErr) {
+          console.error("Cerebras question generation failed, falling back to Gemini:", cerebrasErr);
+        }
       }
+
+      // PRIORITY 2: Gemini fallback
+      if (!question && process.env.GEMINI_API_KEY) {
+        try {
+          const result = await textModel.generateContent(prompt);
+          question = result.response.text().trim();
+          question = question.replace(/^["']|["']$/g, "").replace(/^(Here is the next question:|Next question:|Question:|\* \w+:)/i, "").trim();
+        } catch (apiError) {
+          console.error("Gemini Generate Question Error (429/etc):", apiError);
+        }
+      }
+
+      // PRIORITY 3: Static hardcoded fallback
+      if (!question) {
+        question = track === "TECHNICAL_ARCHITECT"
+          ? "Your system is under heavy load. How exactly are you preventing cascading failures across your microservices?"
+          : "If customer acquisition costs double tomorrow, how does your financial model survive the next 12 months?";
+      }
+
+      return NextResponse.json({ question });
     } 
     else if (action === "EVALUATE_ANSWER") {
       if (!currentAnswer || !currentQuestion) {

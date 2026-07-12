@@ -16,8 +16,7 @@ console.log('👷 Starting ValidationAIProcessing Worker...');
 console.log(`🔌 Connecting to Redis at ${connection.host}:${connection.port}`);
 
 // Process jobs with a concurrency limit
-// Concurrency: 5 ensures we don't spam Gemini/Google APIs and hit rate limits, 
-// while processing efficiently.
+// Concurrency: 25 ensures massive parallel processing now that Gemini Pay-as-you-go tier is active
 const worker = new Worker(
   'ValidationAIProcessing',
   async (job) => {
@@ -37,7 +36,7 @@ const worker = new Worker(
   },
   {
     connection,
-    concurrency: 5, // Limit simultaneous LLM processing to prevent crashes
+    concurrency: 25, // Safely handles 25 users validating simultaneously
   }
 );
 
