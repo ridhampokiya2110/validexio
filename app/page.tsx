@@ -1413,9 +1413,7 @@ export default function LandingPage() {
       <FeaturesSection />
       <HowItWorksSection />
       <PremiumExecutionShowcase />
-      <div className="hidden md:block">
-        <GlobalCompetitorsGlobe />
-      </div>
+      <GlobalCompetitorsGlobe />
       <CompetitorComparison />
       <PricingSection />
       <ValueAnchoringSection />

@@ -26,11 +26,13 @@ export default function GlobalCompetitorsGlobe() {
   const globeRef = useRef<any>(null);
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [isClient, setIsClient] = useState(false);
+  const [isAndroid, setIsAndroid] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [countries, setCountries] = useState<any>({ features: [] });
 
   useEffect(() => {
     setIsClient(true);
+    setIsAndroid(/Android/i.test(navigator.userAgent));
     
     let lastWidth = window.innerWidth;
     
@@ -96,6 +98,9 @@ export default function GlobalCompetitorsGlobe() {
       </div>
     );
   }
+
+  // Hide the globe completely on Android devices as requested
+  if (isAndroid) return null;
 
   return (
     <section className="relative w-full pt-32 pb-12 bg-transparent overflow-hidden">
