@@ -15,10 +15,12 @@ const apiKey = process.env.GEMINI_API_KEY as string;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : (null as unknown as GoogleGenerativeAI);
 
 let ratelimit: Ratelimit | null = null;
+let redisClient: Redis | null = null;
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  redisClient = Redis.fromEnv();
   ratelimit = new Ratelimit({
-    redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(20, "1 m"),
+    redis: redisClient,
+    limiter: Ratelimit.slidingWindow(500, "5 m"), // Increased heavily for bulk testing
     analytics: true,
   });
 }
@@ -75,8 +77,19 @@ export async function POST(req: Request) {
     else if ((user.tier as string) === "ENTERPRISE") maxQuestions = 999;
     else return NextResponse.json({ error: "Investor Simulator requires STARTER tier or above." }, { status: 403 });
 
-    if (previousQuestions.length >= maxQuestions) {
-      return NextResponse.json({ error: `Question limit (${maxQuestions}) reached for your tier.` }, { status: 403 });
+    // Enforce tier limits SECURELY via Redis (not client side array)
+    const redisKey = `crucible_count_${session.user.id}`;
+    let questionsAsked = 0;
+    
+    if (redisClient) {
+      questionsAsked = await redisClient.get<number>(redisKey) || 0;
+    } else {
+      // Fallback if Redis is down (insecure, but keeps app running)
+      questionsAsked = previousQuestions.length;
+    }
+
+    if (questionsAsked >= maxQuestions) {
+      return NextResponse.json({ error: `Question limit (${maxQuestions}) reached for your tier. Wait 24 hours or upgrade.` }, { status: 403 });
     }
 
     // Build context string from the latest validation report
@@ -211,6 +224,19 @@ EXAMPLE OF A GOOD QUESTION:
         question = track === "TECHNICAL_ARCHITECT"
           ? "Your system is under heavy load. How exactly are you preventing cascading failures across your microservices?"
           : "If customer acquisition costs double tomorrow, how does your financial model survive the next 12 months?";
+      }
+
+      // Securely track that a question was generated
+      if (redisClient && question) {
+        // If it's the first question, set a 24-hour expiry. Otherwise just increment.
+        if (questionsAsked === 0) {
+          const p = redisClient.pipeline();
+          p.incr(redisKey);
+          p.expire(redisKey, 86400); // Reset every 24h
+          await p.exec();
+        } else {
+          await redisClient.incr(redisKey);
+        }
       }
 
       return NextResponse.json({ question });

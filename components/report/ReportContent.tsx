@@ -147,9 +147,9 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
     day30: [], day60: [], day90: [], premium_execution: undefined,
     ...(typeof report.actionPlan === 'object' && report.actionPlan ? report.actionPlan : {})
   } as {
-    day30: string[];
-    day60: string[];
-    day90: string[];
+    day30: Array<string | { title: string; details: string; metric: string }>;
+    day60: Array<string | { title: string; details: string; metric: string }>;
+    day90: Array<string | { title: string; details: string; metric: string }>;
     premium_execution?: {
       market_sizing_and_pricing?: { tam_sam_som_values: string; calculated_entry_price_strategy: string };
       adaptive_tech_stack?: { database_schema: string; cloud_blueprint: string };
@@ -1046,14 +1046,27 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               ].map((phase, idx) => (
                 <div key={phase.label} className={`bg-[#FDFDFD] p-6 ${idx !== 2 ? 'border-b md:border-b-0 md:border-r border-[#E5E7EB]' : ''}`}>
                   <p className="text-xs font-bold uppercase tracking-widest text-[#6B7280] mb-4 pb-2 border-b border-[#E5E7EB]">{phase.label}</p>
-                  <ol className="space-y-4">
+                  <div className="space-y-6">
                     {phase.items.map((item, i) => (
-                      <li key={`item-${i}`} className="flex items-start gap-3 text-sm text-[#111827]">
-                        <span className="font-bold text-[#630102] text-xs mt-0.5 flex-shrink-0">{i + 1}.</span>
-                        <span className="leading-relaxed flex-1 min-w-0 break-words">{item}</span>
-                      </li>
+                      <div key={`item-${i}`} className="flex items-start gap-3 text-sm text-[#111827]">
+                        <span className="font-bold text-[#630102] text-xs mt-1 flex-shrink-0 bg-[#630102]/10 w-5 h-5 flex items-center justify-center rounded-full">{i + 1}</span>
+                        <div className="flex-1 min-w-0 break-words space-y-1.5">
+                          {typeof item === 'string' ? (
+                            <p className="leading-relaxed font-medium mt-0.5">{item}</p>
+                          ) : (
+                            <>
+                              <p className="leading-relaxed font-bold text-gray-900">{item.title}</p>
+                              <p className="leading-relaxed text-gray-600 text-[13px]">{item.details}</p>
+                              <div className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide border border-emerald-200 mt-1">
+                                <Target className="w-3 h-3" />
+                                {item.metric}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
                     ))}
-                  </ol>
+                  </div>
                 </div>
               ))
             )}

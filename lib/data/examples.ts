@@ -87,9 +87,18 @@ export const DUMMY_REPORTS: Record<string, any> = {
       partnershipOpportunities: ["Secure transit companies", "Insurance firms"]
     },
     actionPlan: {
-      day30: ["Build MVP tracker", "Sign 2 pilot customers"],
-      day60: ["Refine reconciliation engine", "Onboard 5 more customers"],
-      day90: ["Launch pricing model", "Hire first SDR"]
+      day30: [
+        { title: "Build MVP tracker", details: "Develop core barcode scanning functionality and secure database.", metric: "Launch v1 to staging" },
+        { title: "Sign 2 pilot customers", details: "Onboard two trusted brokers to test the system in real-world scenarios.", metric: "2 active accounts" }
+      ],
+      day60: [
+        { title: "Refine reconciliation engine", details: "Optimize matching algorithms based on pilot feedback.", metric: "Reduce sync time to <5s" },
+        { title: "Onboard 5 more customers", details: "Expand pilot to medium-sized brokers.", metric: "7 total active accounts" }
+      ],
+      day90: [
+        { title: "Launch pricing model", details: "Transition pilot users to paid tiers and implement billing system.", metric: "First $1k revenue" },
+        { title: "Hire first SDR", details: "Recruit sales rep for direct outreach in Surat.", metric: "1 SDR hired" }
+      ]
     },
     landingPageCopy: {
       headline: "Stop Losing Diamonds in Transit.",
@@ -209,9 +218,18 @@ export default function ShipmentDashboard() {
       partnershipOpportunities: ["Vector Databases", "Model Providers"]
     },
     actionPlan: {
-      day30: ["Release OSS core", "Get 100 GitHub stars"],
-      day60: ["Launch managed cloud offering", "Get first paying customer"],
-      day90: ["Implement automated evals", "Reach $1k MRR"]
+      day30: [
+        { title: "Release OSS core", details: "Publish the open-source trace ingestion API to GitHub.", metric: "OSS Launch" },
+        { title: "Get 100 GitHub stars", details: "Promote repository on HackerNews and Dev.to.", metric: "100 Stars" }
+      ],
+      day60: [
+        { title: "Launch managed cloud offering", details: "Release hosted version with Stripe billing integration.", metric: "Cloud GA" },
+        { title: "Get first paying customer", details: "Convert a high-usage OSS user to the managed cloud.", metric: "1 Paid Customer" }
+      ],
+      day90: [
+        { title: "Implement automated evals", details: "Ship LLM-as-a-judge features for quality testing.", metric: "Feature Launch" },
+        { title: "Reach $1k MRR", details: "Focus on organic growth and community support to drive revenue.", metric: "$1k MRR" }
+      ]
     },
     landingPageCopy: {
       headline: "See What Your LLM is Actually Doing.",

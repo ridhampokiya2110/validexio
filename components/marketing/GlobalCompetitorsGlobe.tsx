@@ -42,7 +42,9 @@ export default function GlobalCompetitorsGlobe() {
       if (Math.abs(currentWidth - lastWidth) > 10 || lastWidth === currentWidth) {
         lastWidth = currentWidth;
         setDimensions({
-          width: Math.min(currentWidth - 32, 1000),
+          // Math.max(200, ...) prevents the negative canvas radius crash on very
+          // narrow screens or browsers with thick system chrome
+          width: Math.max(200, Math.min(currentWidth - 32, 1000)),
           height: currentWidth < 768 ? 400 : 600,
         });
       }

@@ -93,13 +93,7 @@ export default function GlobalError({
             fontSize: "0.75rem",
             color: "#EF4444"
           }}>
-            <strong>Message:</strong> {error?.message || "No error message"}<br/>
-            {error?.stack && (
-              <div style={{ marginTop: "0.5rem", whiteSpace: "pre-wrap", color: "#6B7280" }}>
-                <strong>Stack:</strong><br/>
-                {error.stack}
-              </div>
-            )}
+            <strong>Message:</strong> {error?.message || "An unexpected error occurred."}<br/>
           </div>
 
           <button

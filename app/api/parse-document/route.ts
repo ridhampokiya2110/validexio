@@ -3,8 +3,19 @@ export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 import PDFParser from "pdf2json";
+
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(20, "1 h"),
+    analytics: true,
+  });
+}
 
 export interface ParsedDocumentResult {
   documentTypeLabel: string;
@@ -102,6 +113,13 @@ async function extractPptxTextFast(buffer: Buffer): Promise<{ text: string; page
 // ─────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    if (ratelimit) {
+      const { success } = await ratelimit.limit(`parse_${ip}`);
+      if (!success) {
+        return NextResponse.json({ error: "Too many document uploads. Please try again later." }, { status: 429 });
+      }
+    }
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

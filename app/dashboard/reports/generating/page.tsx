@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2, Rocket, Brain, CheckCircle } from "lucide-react";
+import { Loader2, Brain, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 function GeneratingContent() {
@@ -10,7 +10,6 @@ function GeneratingContent() {
   const searchParams = useSearchParams();
   const ideaId = searchParams.get("ideaId");
   const [status, setStatus] = useState("Gathering Market Intelligence...");
-  const [isCached, setIsCached] = useState(false);
   const hasStartedRef = useRef(false);
   const isPolling = useRef(false);
 
@@ -50,17 +49,8 @@ function GeneratingContent() {
           throw new Error(data.error || "Failed to generate report");
         }
 
-        if (data.cached) {
-          // Instant response via cache!
-          timers.forEach(clearTimeout);
-          setIsCached(true);
-          setStatus("Match found! Loading cached report...");
-          toast.success("Validation complete! Loaded instantly from cache.");
-          setTimeout(() => {
-            router.push(`/dashboard`);
-          }, 1000);
-          return;
-        }
+        // Note: Caching is disabled — all reports are uniquely generated
+        // The QUEUED path handles all cases
 
         if (data.status === "QUEUED") {
           // Start Polling
@@ -94,7 +84,9 @@ function GeneratingContent() {
             setStatus("Report ready! Redirecting...");
             toast.success("Validation complete! Your report is ready.");
             setTimeout(() => {
-              router.push(`/dashboard`);
+              // Redirect directly to the new report, not the generic dashboard
+              const reportId = data.reportId;
+              router.push(reportId ? `/dashboard/reports/${reportId}` : `/dashboard/reports`);
             }, 1000);
           } else if (data.status === "FAILED") {
             isPolling.current = false;
@@ -131,16 +123,12 @@ function GeneratingContent() {
           <div className="relative mb-8">
             <div className="absolute inset-0 bg-cherry/20 rounded-full animate-ping opacity-50" />
             <div className="w-20 h-20 rounded-full bg-cherry/10 border-2 border-cherry/30 flex items-center justify-center relative z-10">
-              {isCached ? (
-                <Rocket className="w-10 h-10 text-emerald-500 animate-bounce" />
-              ) : (
-                <Brain className="w-10 h-10 text-cherry animate-pulse" />
-              )}
+              <Brain className="w-10 h-10 text-cherry animate-pulse" />
             </div>
           </div>
           
           <h1 className="text-2xl sm:text-3xl font-bold text-[#1B1716] mb-3">
-            {isCached ? "Report Retrieved" : "Generating Report"}
+            Generating Report
           </h1>
           
           <p className="text-[#1B1716]/60 text-sm sm:text-base mb-8 max-w-md mx-auto h-6 transition-all duration-300">
@@ -150,9 +138,9 @@ function GeneratingContent() {
           <div className="w-full max-w-sm mx-auto space-y-4 text-left">
             {[
               { text: "Industry context", done: true },
-              { text: "Competitor analysis", done: status.includes("Evaluating") || status.includes("Identifying") || status.includes("Synthesizing") || status.includes("Drafting") || status.includes("ready") || isCached },
-              { text: "Financial projections", done: status.includes("Synthesizing") || status.includes("Drafting") || status.includes("ready") || isCached },
-              { text: "Action plan", done: status.includes("ready") || isCached }
+              { text: "Competitor analysis", done: status.includes("Evaluating") || status.includes("Identifying") || status.includes("Synthesizing") || status.includes("Drafting") || status.includes("ready") },
+              { text: "Financial projections", done: status.includes("Synthesizing") || status.includes("Drafting") || status.includes("ready") },
+              { text: "Action plan", done: status.includes("ready") }
             ].map((step, i) => (
               <div key={`item-${i}`} className="flex items-center gap-3">
                 <div className={`w-5 h-5 rounded-full flex items-center justify-center transition-colors duration-500 ${step.done ? "bg-emerald-500/20" : "bg-[#1B1716]/5"}`}>

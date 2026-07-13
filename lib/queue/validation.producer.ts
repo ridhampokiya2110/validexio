@@ -12,7 +12,7 @@ const connection = {
 export const validationQueue = new Queue("ValidationAIProcessing", {
   connection,
   defaultJobOptions: {
-    attempts: 3,
+    attempts: 1,
     backoff: {
       type: "exponential",
       delay: 5000,
@@ -31,6 +31,7 @@ export interface ValidationJobPayload {
   targetState?: string;
   targetCity?: string;
   pricingModel: string;
+  isPriority?: boolean;
 }
 
 /**
@@ -38,7 +39,9 @@ export interface ValidationJobPayload {
  */
 export async function dispatchValidationJob(payload: ValidationJobPayload) {
   try {
-    const job = await validationQueue.add("processIntake", payload);
+    // Priority 1 = Paid (skip the line), Priority 10 = Free (wait in line)
+    const priority = payload.isPriority ? 1 : 10;
+    const job = await validationQueue.add("processIntake", payload, { priority });
     return job.id;
   } catch (error) {
     console.error("Failed to enqueue validation job:", error);

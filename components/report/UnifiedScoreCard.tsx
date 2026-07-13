@@ -26,7 +26,10 @@ export function UnifiedScoreCard({ score, report }: UnifiedScoreCardProps) {
   // Extract points from SWOT and Action Plan
   const moat = report?.swotAnalysis?.strengths?.[0] || "Proprietary algorithm or unique distribution channel.";
   const blindSpot = report?.swotAnalysis?.weaknesses?.[0] || "High customer acquisition cost in a crowded market.";
-  const action = report?.actionPlan?.day30?.[0] || "Launch a waitlist and validate willingness to pay.";
+  const firstAction = report?.actionPlan?.day30?.[0];
+  const action = typeof firstAction === 'string' 
+    ? firstAction 
+    : firstAction?.title || "Launch a waitlist and validate willingness to pay.";
 
   return (
     <div className="bg-gradient-to-br from-[#FDFCF8] to-[#FFFFFF] glass-card p-6 sm:p-8 flex flex-col md:flex-row items-center gap-8 mb-10 mt-4 shadow-xl hover:shadow-2xl border border-[#E5E7EB] hover:border-[#630102]/20 transition-all duration-500 hover:-translate-y-1 relative overflow-hidden animate-fade-in-scale group" id="overview">

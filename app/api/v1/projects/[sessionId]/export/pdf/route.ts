@@ -87,11 +87,18 @@ export async function GET(
           doc.font('Helvetica').fontSize(size).fillColor(color).text(text, { align });
         };
 
-        const addBullets = (items: string[], indent = 15) => {
+        const addBullets = (items: any[], indent = 15) => {
           if (!items || !Array.isArray(items)) return;
           items.forEach(item => {
-            doc.font('Helvetica').fontSize(10).fillColor(COLOR_SECONDARY).text(`•  ${item}`, { indent });
-            doc.moveDown(0.2);
+            if (typeof item === 'string') {
+              doc.font('Helvetica').fontSize(10).fillColor(COLOR_SECONDARY).text(`•  ${item}`, { indent });
+              doc.moveDown(0.2);
+            } else if (item && item.title) {
+              doc.font('Helvetica-Bold').fontSize(10).fillColor(COLOR_PRIMARY).text(`•  ${item.title}`, { indent });
+              doc.font('Helvetica').fontSize(9).fillColor(COLOR_SECONDARY).text(`${item.details}`, { indent: indent + 15 });
+              doc.font('Helvetica-Oblique').fontSize(8).fillColor('#10B981').text(`Metric: ${item.metric}`, { indent: indent + 15 });
+              doc.moveDown(0.3);
+            }
           });
         };
 

@@ -22,9 +22,7 @@ async function getCachedReports(userId: string) {
 async function ReportsContent({ userId }: { userId: string }) {
   const reports = await getCachedReports(userId);
 
-  if (reports.length === 1) {
-    redirect(`/dashboard/reports/${reports[0].id}`);
-  }
+
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">

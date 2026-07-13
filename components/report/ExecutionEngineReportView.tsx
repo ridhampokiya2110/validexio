@@ -167,24 +167,42 @@ export function ExecutionEngineReportView({ report, isReadOnly = false }: { repo
                       {actionPlan && actionPlan.day30 && (
                         <div>
                           <h4 className="text-[#FFEDAB] font-bold uppercase tracking-widest mb-3 border-b border-[#75070C]/30 pb-2">Phase 1: Zero to One (Days 0-30)</h4>
-                          <ul className="space-y-2 text-[#EDEBDE]/80">
-                            {actionPlan.day30.map((item: string, i: number) => <li key={`item-${i}`}>[{i+1}] {item}</li>)}
+                          <ul className="space-y-3 text-[#EDEBDE]/80">
+                            {actionPlan.day30.map((item: any, i: number) => (
+                              <li key={`item-${i}`} className="flex flex-col gap-1">
+                                <div className="font-bold text-[#FFEDAB]">[{i+1}] {typeof item === 'string' ? item : item.title}</div>
+                                {typeof item !== 'string' && <div className="text-xs text-[#EDEBDE]/60">{item.details}</div>}
+                                {typeof item !== 'string' && <div className="text-[10px] text-emerald-400 font-bold uppercase mt-1">Metric: {item.metric}</div>}
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       )}
                       {actionPlan && actionPlan.day60 && (
                         <div>
                           <h4 className="text-[#FFEDAB] font-bold uppercase tracking-widest mb-3 border-b border-[#75070C]/30 pb-2">Phase 2: Growth Engine (Days 31-60)</h4>
-                          <ul className="space-y-2 text-[#EDEBDE]/80">
-                            {actionPlan.day60.map((item: string, i: number) => <li key={`item-${i}`}>[{i+1}] {item}</li>)}
+                          <ul className="space-y-3 text-[#EDEBDE]/80">
+                            {actionPlan.day60.map((item: any, i: number) => (
+                              <li key={`item-${i}`} className="flex flex-col gap-1">
+                                <div className="font-bold text-[#FFEDAB]">[{i+1}] {typeof item === 'string' ? item : item.title}</div>
+                                {typeof item !== 'string' && <div className="text-xs text-[#EDEBDE]/60">{item.details}</div>}
+                                {typeof item !== 'string' && <div className="text-[10px] text-emerald-400 font-bold uppercase mt-1">Metric: {item.metric}</div>}
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       )}
                       {actionPlan && actionPlan.day90 && (
                         <div>
                           <h4 className="text-[#FFEDAB] font-bold uppercase tracking-widest mb-3 border-b border-[#75070C]/30 pb-2">Phase 3: Scale (Days 61-90)</h4>
-                          <ul className="space-y-2 text-[#EDEBDE]/80">
-                            {actionPlan.day90.map((item: string, i: number) => <li key={`item-${i}`}>[{i+1}] {item}</li>)}
+                          <ul className="space-y-3 text-[#EDEBDE]/80">
+                            {actionPlan.day90.map((item: any, i: number) => (
+                              <li key={`item-${i}`} className="flex flex-col gap-1">
+                                <div className="font-bold text-[#FFEDAB]">[{i+1}] {typeof item === 'string' ? item : item.title}</div>
+                                {typeof item !== 'string' && <div className="text-xs text-[#EDEBDE]/60">{item.details}</div>}
+                                {typeof item !== 'string' && <div className="text-[10px] text-emerald-400 font-bold uppercase mt-1">Metric: {item.metric}</div>}
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       )}

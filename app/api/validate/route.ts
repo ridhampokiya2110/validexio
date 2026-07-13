@@ -6,6 +6,17 @@ import { prisma } from "@/lib/db";
 
 import { z } from "zod";
 import { sanitizeString } from "@/lib/utils";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(500, "1 h"), // Massively increased
+    analytics: true,
+  });
+}
 
 const validateSchema = z.object({
   title: z.string().min(5).max(100),
@@ -27,6 +38,13 @@ const validateSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+    if (ratelimit) {
+      const { success } = await ratelimit.limit(`validate_${ip}`);
+      if (!success) {
+        return NextResponse.json({ error: "Too many ideas submitted. Please try again later." }, { status: 429 });
+      }
+    }
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -107,30 +125,36 @@ export async function POST(req: NextRequest) {
       pricingDetails += ` (${sanitizedData.billingFrequency})`;
     }
 
-    // Create the idea record
-    const idea = await prisma.idea.create({
-      data: {
-        userId,
-        title: sanitizedData.title,
-        description: sanitizedData.description,
-        industry: sanitizedData.industry,
-        targetMarket: sanitizedData.targetMarket,
-        location: locationString,
-        pricingModel: pricingDetails,
-        status: "PENDING",
-        isLite: isLiteRequest,
-        // Store document context if provided
-        ...(documentContext ? { documentContext: documentContext as any } : {}),
-      },
-    });
-
-    // Deduct credit only if not a Lite request
-    if (!isLiteRequest) {
-      await prisma.user.update({
-        where: { id: userId },
-        data: { availableCredits: { decrement: 1 } },
+    // Create idea + deduct credit atomically in a single transaction
+    // This prevents race conditions where a crash between the two DB calls
+    // could cause free ideas or lost credits
+    const idea = await prisma.$transaction(async (tx) => {
+      const createdIdea = await tx.idea.create({
+        data: {
+          userId,
+          title: sanitizedData.title,
+          description: sanitizedData.description,
+          industry: sanitizedData.industry,
+          targetMarket: sanitizedData.targetMarket,
+          location: locationString,
+          pricingModel: pricingDetails,
+          status: "PENDING",
+          isLite: isLiteRequest,
+          // Store document context if provided
+          ...(documentContext ? { documentContext: documentContext as any } : {}),
+        },
       });
-    }
+
+      // Deduct credit only if not a Lite request
+      if (!isLiteRequest) {
+        await tx.user.update({
+          where: { id: userId },
+          data: { availableCredits: { decrement: 1 } },
+        });
+      }
+
+      return createdIdea;
+    });
 
     // Instead of synchronously analyzing the idea here (which takes 15s and breaks the flow),
     // we return the idea ID instantly. The frontend will redirect to the Generating page,

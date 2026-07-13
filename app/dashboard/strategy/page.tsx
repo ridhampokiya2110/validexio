@@ -103,19 +103,19 @@ export default async function StrategyPage() {
                     <div className="p-4 rounded-xl border border-[#1B1716]/5 bg-[#1B1716]/5 shadow-sm">
                       <p className="text-xs font-bold text-cherry uppercase mb-2">First 30 Days</p>
                       <ul className="space-y-1">
-                        {actionPlan.day30?.map((a: string) => <li key={a} className="text-xs text-[#1B1716]/70">• {a}</li>)}
+                        {actionPlan.day30?.map((a: any, i: number) => <li key={i} className="text-xs text-[#1B1716]/70">• {typeof a === 'string' ? a : a.title}</li>)}
                       </ul>
                     </div>
                     <div className="p-4 rounded-xl border border-[#1B1716]/5 bg-[#1B1716]/5 shadow-sm">
                       <p className="text-xs font-bold text-cherry uppercase mb-2">Days 31-60</p>
                       <ul className="space-y-1">
-                        {actionPlan.day60?.map((a: string) => <li key={a} className="text-xs text-[#1B1716]/70">• {a}</li>)}
+                        {actionPlan.day60?.map((a: any, i: number) => <li key={i} className="text-xs text-[#1B1716]/70">• {typeof a === 'string' ? a : a.title}</li>)}
                       </ul>
                     </div>
                     <div className="p-4 rounded-xl border border-[#1B1716]/5 bg-[#1B1716]/5 shadow-sm">
                       <p className="text-xs font-bold text-cherry uppercase mb-2">Days 61-90</p>
                       <ul className="space-y-1">
-                        {actionPlan.day90?.map((a: string) => <li key={a} className="text-xs text-[#1B1716]/70">• {a}</li>)}
+                        {actionPlan.day90?.map((a: any, i: number) => <li key={i} className="text-xs text-[#1B1716]/70">• {typeof a === 'string' ? a : a.title}</li>)}
                       </ul>
                     </div>
                   </div>

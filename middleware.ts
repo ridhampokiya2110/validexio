@@ -75,7 +75,8 @@ export default auth(async (req) => {
     return NextResponse.redirect(new URL("/login", nextUrl));
   }
 
-  const isAdmin = (session?.user as any)?.role === "ADMIN" || session?.user?.email === "ridhampokiya10@gmail.com";
+  const adminEmail = process.env.ADMIN_EMAIL || "ridhampokiya10@gmail.com";
+  const isAdmin = (session?.user as any)?.role === "ADMIN" || session?.user?.email === adminEmail;
 
   // Redirect authenticated users away from auth routes
   if (isAuthRoute && isLoggedIn) {

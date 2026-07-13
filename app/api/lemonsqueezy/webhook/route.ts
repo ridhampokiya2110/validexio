@@ -22,6 +22,11 @@ export async function POST(req: Request) {
     const digest = Buffer.from(hmac.update(rawBody).digest("hex"), "utf8");
     const signatureBuffer = Buffer.from(signature, "utf8");
 
+    if (digest.length !== signatureBuffer.length) {
+      console.error("[Lemon Squeezy] Signature length mismatch");
+      return NextResponse.json({ error: "Invalid signature length" }, { status: 400 });
+    }
+
     if (!crypto.timingSafeEqual(digest, signatureBuffer)) {
       console.error("[Lemon Squeezy] Invalid signature");
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });

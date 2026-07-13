@@ -14,7 +14,7 @@ let ratelimit: Ratelimit | null = null;
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
   ratelimit = new Ratelimit({
     redis: Redis.fromEnv(),
-    limiter: Ratelimit.slidingWindow(5, "1 h"),
+    limiter: Ratelimit.slidingWindow(500, "1 h"), // Massively increased to support >100 validations rapidly
     analytics: true,
   });
 }
@@ -64,81 +64,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // === 1. CACHING LAYER ===
-    // Check if an identical idea was already generated successfully
-    const cachedIdea = await prisma.idea.findFirst({
-      where: {
-        title: { equals: idea.title, mode: "insensitive" },
-        industry: { equals: idea.industry, mode: "insensitive" },
-        status: "COMPLETED",
-      },
-      orderBy: { createdAt: "desc" },
-      include: { reports: true },
-    });
-
-    if (cachedIdea && cachedIdea.reports.length > 0) {
-      const existingReport = cachedIdea.reports[0];
-
-      // Clone the report for this user
-      const clonedReport = await prisma.validationReport.create({
-        data: {
-          ideaId: idea.id,
-          userId,
-          validationScore: existingReport.validationScore,
-          marketOpportunity: existingReport.marketOpportunity,
-          productMarketFit: existingReport.productMarketFit,
-          riskScore: existingReport.riskScore,
-          marketAnalysis: existingReport.marketAnalysis as any,
-          swotAnalysis: existingReport.swotAnalysis as any,
-          competitors: existingReport.competitors as any,
-          customerPersonas: existingReport.customerPersonas as any,
-          revenuePotential: existingReport.revenuePotential as any,
-          riskAnalysis: existingReport.riskAnalysis as any,
-          pricingRecommendation: existingReport.pricingRecommendation as any,
-          growthOpportunities: existingReport.growthOpportunities as any,
-          acquisitionStrategy: existingReport.acquisitionStrategy as any,
-          actionPlan: existingReport.actionPlan as any,
-          uiMockupDescriptions: existingReport.uiMockupDescriptions as any,
-          uiMockupImages: existingReport.uiMockupImages as any,
-          landingPageCopy: existingReport.landingPageCopy as any,
-          salesFunnel: existingReport.salesFunnel as any,
-          codeBoilerplate: existingReport.codeBoilerplate as any,
-          processingTime: 0, // 0 indicates it was cached
-          geminiModel: existingReport.geminiModel,
-        },
-      });
-
-      // Update idea status to COMPLETED
-      await prisma.idea.update({
-        where: { id: idea.id },
-        data: { status: "COMPLETED" },
-      });
-
-      // Audit Log
-      await prisma.auditLog.create({
-        data: {
-          userId,
-          action: "IDEA_VALIDATED",
-          resource: "idea",
-          resourceId: idea.id,
-          details: {
-            score: existingReport.validationScore,
-            industry: idea.industry,
-            processingTime: 0,
-            cached: true,
-          },
-        },
-      }).catch(() => {});
-
-      // Return INSTANTLY!
-      return NextResponse.json({
-        success: true,
-        reportId: clonedReport.id,
-        ideaId: idea.id,
-        score: clonedReport.validationScore,
-        cached: true,
-      });
-    }
+    // (Caching layer intentionally removed: users want fresh, unique reports based on their exact geography/deck context)
 
     // === 2. QUEUE LAYER (OR LOCAL FALLBACK) ===
     // If no cache, dispatch to BullMQ background worker (or local background execution)
@@ -157,7 +83,8 @@ export async function POST(req: NextRequest) {
         userId: userId,
         industry: idea.industry,
         businessIdea: idea.title,
-        pricingModel: idea.pricingModel || ""
+        pricingModel: idea.pricingModel || "",
+        isPriority: !idea.isLite
       } as any).catch(err => console.error("Background validation error:", err));
     } else {
       console.log("Dispatching validation job to BullMQ queue...");
@@ -169,7 +96,8 @@ export async function POST(req: NextRequest) {
         businessIdea: idea.title,
         pricingModel: idea.pricingModel || "",
         ideaId: idea.id,
-        userId: userId
+        userId: userId,
+        isPriority: !idea.isLite
       } as any);
     }
 

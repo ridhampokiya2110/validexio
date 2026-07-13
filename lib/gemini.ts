@@ -4,6 +4,10 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { z } from "zod";
+import Cerebras from "@cerebras/cerebras_cloud_sdk";
+
+const cerebrasApiKey = process.env.CEREBRAS_API_KEY;
+const cerebrasClient = cerebrasApiKey ? new Cerebras({ apiKey: cerebrasApiKey }) : null;
 
 const apiKey = process.env.GEMINI_API_KEY as string;
 const genAI = apiKey ? new GoogleGenerativeAI(apiKey) : (null as unknown as GoogleGenerativeAI);
@@ -144,9 +148,9 @@ export const MarketAnalysisSchema = z.object({
   }),
 
   actionPlan: z.object({
-    day30: z.array(z.string()),
-    day60: z.array(z.string()),
-    day90: z.array(z.string()),
+    day30: z.array(z.object({ title: z.string(), details: z.string(), metric: z.string() })),
+    day60: z.array(z.object({ title: z.string(), details: z.string(), metric: z.string() })),
+    day90: z.array(z.object({ title: z.string(), details: z.string(), metric: z.string() })),
   }),
 
   launchPlatforms: z.array(
@@ -271,13 +275,13 @@ NO emojis. Respond ONLY with valid JSON.`;
 
 const MARKET_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are analyzing the market for a startup idea.
-TOKEN LIMIT RULE: You are generating a massive report. You MUST keep all text descriptions, summaries, and bullet points concise (1-2 sentences max) to ensure you do not hit the 8192 output token limit.
+TOKEN LIMIT RULE: You are generating a massive report. You MUST keep descriptions concise (1-2 sentences max), EXCEPT for the 90-DAY ACTION PLAN, which must be highly detailed and comprehensive to ensure founders know exactly how to execute.
 RUTHLESS SCORING: Most ideas need a pivot. Give a score from 10 to 100. Provide a simple, profitable pivot if the score is low.
 COMPETITORS (CRITICAL RULE): Read the provided real-world competitor data carefully. You MUST ONLY use the exact competitors provided in the JSON/text. DO NOT invent, guess, or hallucinate competitors. If the provided competitor list is empty or says 'No competitors found', you MUST state 'No verified competitors exist in this area yet' and treat it as a massive market opportunity. Do not make up fake businesses under any circumstances.
 FINANCIALS & METRICS (CRITICAL RULE): Do not invent fake statistics, market sizes, or numbers. If you do not have exact data from the provided context, you MUST use a logical, bottom-up estimation based on the provided Pricing, Target Market, and Competitors, and explain the math briefly (e.g., "Assuming 100 local businesses paying 50/mo = 5k/mo"). Do not output generic TAMs. Everything must be grounded in reality and explicitly marked as an estimation if calculated. IMPORTANT: You MUST format ALL financial figures, pricing, market sizes, and revenue in the native currency appropriate for the Location/Geography provided by the user (e.g., Indian Rupees (₹) for India, Euros (€) for Europe, British Pounds (£) for UK). DO NOT default to US Dollars ($) unless the location is USA or global.
 SOCIAL PROOF (CRITICAL RULE): You have been provided with real Reddit and HackerNews data in the context. YOU MUST use actual quotes, upvotes, and frustrations from this data to build the customer personas, market saturation reasoning, and signal-to-sales mapping. DO NOT invent generic pain points if real social proof is provided. Quote the real frustrations exactly.
 LAUNCH PLATFORMS (CRITICAL RULE): Provide highly specific, niche platforms (e.g., specific subreddits, specialized Slack communities, local physical hubs). DO NOT say generic things like "Google Ads", "Facebook Ads", "Product Hunt", or "Twitter". Be creative and laser-focused on where these exact personas hang out.
-90-DAY ACTION PLAN (CRITICAL RULE): Provide a highly actionable, technical, and marketing week-by-week breakdown tailored EXACTLY to this specific idea. Do NOT output generic business advice like "Build MVP" or "Talk to customers". Be hyper-specific.
+90-DAY ACTION PLAN (CRITICAL RULE): Provide a massive, highly detailed, technical, and marketing week-by-week breakdown tailored EXACTLY to this idea. Do NOT output generic business advice like "Build MVP". For each task, provide a clear 'title', an extensive 'details' paragraph outlining exactly how to execute it, and a specific 'metric' to track success.
 MVP PRIORITIZATION: Provide a MoSCoW matrix (Must, Should, Could, Won't) to prevent founders from overbuilding.
 COMPLIANCE: Briefly check for obvious regulatory/legal requirements (e.g., GDPR, FDA, Local Permits).`;
 
@@ -492,9 +496,34 @@ Be honest, concise, and do not hallucinate. Use an 8th-grade reading level.`;
     parsed = JSON.parse(cleaned);
     console.log("[Free Tier] ✅ Pollinations AI succeeded.");
   } catch (pollinationsError: any) {
-    console.warn("[Free Tier] ⚠️ Pollinations AI failed, falling back to Gemini Flash:", pollinationsError.message);
+    console.warn("[Free Tier] ⚠️ Pollinations AI failed, attempting Cerebras fallback:", pollinationsError.message);
 
-    // ── FALLBACK: Gemini Flash (cheap but costs a tiny bit) ──
+    // ── FALLBACK 1: Cerebras (Ultra-fast, Free tier API) ──
+    if (cerebrasClient) {
+      try {
+        console.log("[Free Tier] Calling Cerebras AI...");
+        const cerebrasResponse = await cerebrasClient.chat.completions.create({
+          model: "llama3.1-70b",
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: userPrompt },
+          ],
+          max_completion_tokens: 1500,
+          temperature: 0.7,
+          stream: false,
+        });
+
+        const rawText = ((cerebrasResponse as any).choices?.[0]?.message?.content ?? "").trim();
+        const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+        parsed = JSON.parse(cleaned);
+        console.log("[Free Tier] ✅ Cerebras AI succeeded.");
+        return parsed;
+      } catch (cerebrasError: any) {
+        console.warn("[Free Tier] ⚠️ Cerebras AI failed, falling back to Gemini:", cerebrasError.message);
+      }
+    }
+
+    // ── FALLBACK 2: Gemini Flash (cheap but costs a tiny bit) ──
     try {
       const FreeSchema = z.object({
         validationScore: z.number(),

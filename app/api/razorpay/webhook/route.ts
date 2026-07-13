@@ -18,7 +18,15 @@ export async function POST(req: NextRequest) {
       .update(bodyText)
       .digest("hex");
 
-    if (expectedSignature !== signature) {
+    const expectedSigBuffer = Buffer.from(expectedSignature, "utf8");
+    const receivedSigBuffer = Buffer.from(signature, "utf8");
+
+    // Use timingSafeEqual to prevent timing side-channel attacks
+    if (
+      expectedSigBuffer.length !== receivedSigBuffer.length ||
+      !crypto.timingSafeEqual(expectedSigBuffer, receivedSigBuffer)
+    ) {
+      console.error("[Razorpay] Invalid or mismatched signature");
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 

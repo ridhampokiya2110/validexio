@@ -16,7 +16,7 @@ console.log('👷 Starting ValidationAIProcessing Worker...');
 console.log(`🔌 Connecting to Redis at ${connection.host}:${connection.port}`);
 
 // Process jobs with a concurrency limit
-// Concurrency: 25 ensures massive parallel processing now that Gemini Pay-as-you-go tier is active
+// Concurrency: 200 ensures massive parallel processing now that Gemini Pay-as-you-go tier is active
 const worker = new Worker(
   'ValidationAIProcessing',
   async (job) => {
@@ -36,7 +36,7 @@ const worker = new Worker(
   },
   {
     connection,
-    concurrency: 25, // Safely handles 25 users validating simultaneously
+    concurrency: 200, // Safely handles 200 users validating simultaneously
   }
 );
 
