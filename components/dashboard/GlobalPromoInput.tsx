@@ -12,13 +12,13 @@ export function GlobalPromoInput() {
     try {
       const urlParams = new URLSearchParams(window.location.search);
       const hasRef = urlParams.get("ref") || urlParams.get("via") || urlParams.get("partner") || urlParams.get("aff");
-      const initialCode = hasRef || localStorage.getItem("affiliate_code") || "";
+      const initialCode = hasRef || sessionStorage.getItem("affiliate_code") || "";
       if (initialCode) {
         setAffiliateCode(initialCode);
-        if (hasRef) localStorage.setItem("affiliate_code", hasRef);
+        if (hasRef) sessionStorage.setItem("affiliate_code", hasRef);
       }
     } catch (err) {
-      console.warn("localStorage is not available", err);
+      console.warn("sessionStorage is not available", err);
     }
   }, []);
 
@@ -53,15 +53,15 @@ export function GlobalPromoInput() {
     try {
       if (typeof window !== "undefined") {
         if (upperVal) {
-          localStorage.setItem("affiliate_code", upperVal);
+          sessionStorage.setItem("affiliate_code", upperVal);
         } else {
-          localStorage.removeItem("affiliate_code");
+          sessionStorage.removeItem("affiliate_code");
         }
         // Dispatch custom event to notify checkout buttons
         window.dispatchEvent(new Event("affiliateCodeChanged"));
       }
     } catch (err) {
-      console.warn("localStorage is not available", err);
+      console.warn("sessionStorage is not available", err);
     }
   };
 
