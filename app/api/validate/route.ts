@@ -63,8 +63,9 @@ export async function POST(req: NextRequest) {
 
     // Check usage limits and credits
     let isLiteRequest = false;
+    const isUnlimited = user.tier === "TEAM" || user.tier === "ENTERPRISE";
 
-    if (user.availableCredits <= 0) {
+    if (!isUnlimited && user.availableCredits <= 0) {
       if (user.tier === "FREE") {
         isLiteRequest = true;
       } else {
@@ -145,8 +146,8 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Deduct credit only if not a Lite request
-      if (!isLiteRequest) {
+      // Deduct credit only if not a Lite request and not an Unlimited user
+      if (!isLiteRequest && !isUnlimited) {
         await tx.user.update({
           where: { id: userId },
           data: { availableCredits: { decrement: 1 } },

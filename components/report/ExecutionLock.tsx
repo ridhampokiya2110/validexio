@@ -20,9 +20,8 @@ export function ExecutionLock({ children, isReadOnly }: ExecutionLockProps) {
       <div className="max-h-[250px] overflow-hidden relative">
         {children}
         
-        {/* Gradient fade to blur out the bottom text */}
-        <div className="absolute bottom-0 left-0 w-full h-[150px] bg-gradient-to-t from-[#FDFCF8] via-[#FDFCF8]/80 to-transparent z-10 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-full h-full backdrop-blur-[2px] z-10 pointer-events-none" style={{ maskImage: 'linear-gradient(to top, black 40%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to top, black 40%, transparent 100%)' }} />
+        {/* Gradient fade to blur out the bottom text safely */}
+        <div className="absolute bottom-0 left-0 w-full h-[180px] bg-gradient-to-t from-[#FFFFFF] via-[#FFFFFF]/95 to-transparent z-10 pointer-events-none" />
       </div>
 
       {/* Overlay CTA */}

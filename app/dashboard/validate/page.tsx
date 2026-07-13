@@ -185,7 +185,7 @@ export default function ValidatePage() {
   }, [form.targetScope]);
 
   useEffect(() => {
-    fetch("/api/user/credits")
+    fetch("/api/user/credits", { cache: "no-store" })
       .then(res => res.json())
       .then(data => {
         if (!data.error) {
@@ -400,9 +400,10 @@ export default function ValidatePage() {
   const handleSubmit = async () => {
     if (!validateStep(3)) return;
 
+    const isUnlimited = userTier === "TEAM" || userTier === "ENTERPRISE";
     const isFreeTier = userTier === "FREE";
 
-    if (!isFreeTier && userCredits !== null && userCredits <= 0) {
+    if (!isUnlimited && !isFreeTier && userCredits !== null && userCredits <= 0) {
       toast.error("You don't have enough credits to validate this idea.", {
         action: {
           label: "Buy Credits",
