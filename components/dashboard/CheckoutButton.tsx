@@ -47,8 +47,8 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
 
   useEffect(() => {
     try {
-      // Initial check from local storage in case the event fired before we mounted
-      const savedCode = localStorage.getItem("affiliate_code");
+      // Initial check from session storage in case the event fired before we mounted
+      const savedCode = sessionStorage.getItem("affiliate_code");
       if (savedCode) {
         setAffiliateCode(savedCode);
         // We assume it's valid if they got to checkout, but we'll re-verify if needed, 
@@ -56,7 +56,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
         // or better: let the GlobalPromoInput handle the verification and broadcast the event.
       }
     } catch (err) {
-      console.warn("localStorage is not available", err);
+      console.warn("sessionStorage is not available", err);
     }
 
     const handlePromo = (e: any) => {
@@ -140,7 +140,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
       // Lemon Squeezy Flow for non-INR
       let finalDiscountCode: string | undefined = undefined;
       
-      const lsPromo = localStorage.getItem("ls_promo");
+      const lsPromo = sessionStorage.getItem("ls_promo");
       if (lsPromo) {
         finalDiscountCode = lsPromo;
       } else if (isValidCode && affiliateCode) {
