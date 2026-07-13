@@ -82,7 +82,7 @@ export function GlobalPromoInput() {
           placeholder="Enter Partner Code" 
           value={affiliateCode}
           onChange={(e) => handleCodeChange(e.target.value)}
-          className={`w-full bg-gray-50 border ${isValidCode ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-gray-200 focus:border-[#630102]'} text-gray-900 text-sm rounded-xl focus:ring-[#630102] block p-3.5 pr-24 uppercase font-bold tracking-widest transition-all`}
+          className={`w-full bg-gray-50 border ${isValidCode ? 'border-emerald-500/50 focus:border-emerald-500' : 'border-gray-200 focus:border-[#630102]'} text-gray-900 text-[16px] md:text-sm rounded-xl focus:ring-[#630102] block p-3.5 pr-24 uppercase font-bold tracking-widest transition-all`}
         />
         <div className="absolute inset-y-0 right-2 flex items-center">
           {isVerifying ? (
