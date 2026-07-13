@@ -124,14 +124,27 @@ export async function POST(req: Request) {
           where: { ideaId: latestLiteIdea.id }
         });
 
-        const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
-        await dispatchValidationJob({
-          industry: latestLiteIdea.industry,
-          businessIdea: latestLiteIdea.title,
-          pricingModel: latestLiteIdea.pricingModel || "",
-          ideaId: latestLiteIdea.id,
-          userId: userId
-        } as any);
+        if (!process.env.REDIS_HOST) {
+          console.log("No REDIS_HOST found. Bypassing BullMQ and processing directly in background...");
+          const { processValidationJob } = await import("@/lib/queue/processJob");
+          processValidationJob({
+            ideaId: latestLiteIdea.id,
+            userId: userId,
+            industry: latestLiteIdea.industry,
+            businessIdea: latestLiteIdea.title,
+            pricingModel: latestLiteIdea.pricingModel || "",
+            isPriority: true
+          } as any).catch(err => console.error("Background validation error:", err));
+        } else {
+          const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");
+          await dispatchValidationJob({
+            industry: latestLiteIdea.industry,
+            businessIdea: latestLiteIdea.title,
+            pricingModel: latestLiteIdea.pricingModel || "",
+            ideaId: latestLiteIdea.id,
+            userId: userId
+          } as any);
+        }
 
         console.log(`[Lemon Squeezy] Auto-upgraded Lite idea ${latestLiteIdea.id} for user ${userId}`);
       }
