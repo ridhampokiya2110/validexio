@@ -12,17 +12,23 @@ export const metadata = { title: "Validation Reports" };
 
 
 async function getCachedReports(userId: string) {
-    return await prisma.validationReport.findMany({
+  const [reports, processingIdeas] = await Promise.all([
+    prisma.validationReport.findMany({
       where: { userId },
       orderBy: { createdAt: "desc" },
       select: { id: true, validationScore: true, createdAt: true, marketOpportunity: true, productMarketFit: true, idea: { select: { title: true, industry: true, description: true } } },
-    });
-  }
+    }),
+    prisma.idea.findMany({
+      where: { userId, status: 'PROCESSING' },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, industry: true, createdAt: true }
+    })
+  ]);
+  return { reports, processingIdeas };
+}
 
 async function ReportsContent({ userId }: { userId: string }) {
-  const reports = await getCachedReports(userId);
-
-
+  const { reports, processingIdeas } = await getCachedReports(userId);
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto">
@@ -37,7 +43,7 @@ async function ReportsContent({ userId }: { userId: string }) {
         </Link>
       </div>
 
-      {reports.length === 0 ? (
+      {reports.length === 0 && processingIdeas.length === 0 ? (
         <div className="glass-card p-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-cherry/10 border border-cherry/20 flex items-center justify-center mx-auto mb-4">
             <FileText className="w-8 h-8 text-cherry" />
@@ -50,6 +56,26 @@ async function ReportsContent({ userId }: { userId: string }) {
         </div>
       ) : (
         <div className="space-y-3">
+          {processingIdeas.map((idea) => (
+            <div key={idea.id} className="glass-card p-5 flex items-center gap-4 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_1.5s_infinite] -translate-x-full" />
+              
+              <div className="w-16 h-16 rounded-full border-4 border-[#1B1716]/5 border-t-cherry animate-spin flex-shrink-0" />
+              
+              <div className="flex-1 min-w-0">
+                <p className="text-[#1B1716] font-semibold truncate">
+                  {idea.title}
+                </p>
+                <div className="flex items-center gap-3 mt-2">
+                  <span className="badge badge-cherry text-xs">{idea.industry}</span>
+                  <span className="text-cherry text-xs font-semibold animate-pulse">
+                    Analyzing Market Data...
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+
           {reports.map((report) => (
             <Link aria-label="Navigation link"
               key={report.id}

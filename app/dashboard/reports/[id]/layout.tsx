@@ -1,20 +1,74 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { ChevronLeft, Target, BarChart3, Users, DollarSign, AlertTriangle, Lightbulb, Rocket, CheckCircle, AlignLeft, Shield, FileText, TrendingUp } from "lucide-react";
+import { ChevronLeft, Target, BarChart3, Users, DollarSign, AlertTriangle, Lightbulb, Rocket, CheckCircle, AlignLeft, Shield, FileText, TrendingUp, Send } from "lucide-react";
 import { usePathname } from "next/navigation";
+
+const TOC_ITEMS = [
+  { id: "overview", icon: Target, label: "Overview & Verdict" },
+  { id: "market-analysis", icon: BarChart3, label: "Market Analysis" },
+  { id: "swot-analysis", icon: Shield, label: "SWOT Analysis" },
+  { id: "competitors", icon: AlignLeft, label: "Competitors" },
+  { id: "personas", icon: Users, label: "Customer Personas" },
+  { id: "revenue", icon: DollarSign, label: "Revenue Potential" },
+  { id: "risks", icon: AlertTriangle, label: "Risk Analysis" },
+  { id: "growth", icon: Lightbulb, label: "Growth Opportunities" },
+  { id: "acquisition", icon: Rocket, label: "Acquisition Tactics" },
+  { id: "launch-platforms", icon: Rocket, label: "Launch Platforms" },
+  { id: "b2b-leads", icon: Users, label: "B2B Leads" },
+  { id: "action-plan", icon: CheckCircle, label: "90-Day Action Plan" },
+  { id: "mvp-prioritization", icon: Target, label: "MVP Prioritization" },
+  { id: "sales-funnel", icon: TrendingUp, label: "Sales Funnel" },
+  { id: "compliance-check", icon: Shield, label: "Compliance Check" },
+  { id: "code-boilerplate", icon: FileText, label: "Code Boilerplate" },
+  { id: "launch-resources", icon: Send, label: "Launch Your Idea" },
+];
 
 export default function ReportLayout({ children }: { children: ReactNode }) {
   const [activeSection, setActiveSection] = useState("overview");
+  const mobileNavRef = useRef<HTMLElement>(null);
 
-  // A basic intersection observer to highlight the active TOC item could be added here
-  // For now, we rely on click-to-scroll and manual setting if needed
+  useEffect(() => {
+    // Auto-scroll mobile navbar when active section changes
+    if (mobileNavRef.current) {
+      const activeItem = mobileNavRef.current.querySelector('.active-toc');
+      if (activeItem) {
+        activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [activeSection]);
 
   return (
-    <div className="flex h-[100dvh] bg-[#FDFCF8] overflow-hidden">
-      {/* Table of Contents Sidebar */}
-      <aside className="w-64 bg-[#FFFFFF] border-r border-[#1B1716]/10 flex flex-col hidden md:flex">
+    <div className="flex flex-col md:flex-row h-[100dvh] bg-[#FDFCF8] overflow-hidden">
+      {/* Mobile Top Navigation */}
+      <div className="flex md:hidden flex-col flex-shrink-0 bg-white border-b border-[#1B1716]/10">
+        <div className="p-3 border-b border-[#1B1716]/10 flex items-center justify-between">
+          <Link aria-label="Navigation link"
+            href="/dashboard/reports"
+            className="inline-flex items-center gap-1.5 text-[#1B1716]/60 hover:text-[#1B1716] text-sm font-medium transition-colors"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back
+          </Link>
+          <span className="font-bold text-sm tracking-tight text-[#1B1716]">Validexio</span>
+        </div>
+        <nav ref={mobileNavRef} className="flex overflow-x-auto p-2 gap-2 hide-scrollbar">
+          {TOC_ITEMS.map((item) => (
+            <TOCLink
+              key={item.id}
+              href={`#${item.id}`}
+              active={activeSection === item.id}
+              icon={<item.icon className="w-4 h-4" />}
+              label={item.label}
+              onClick={() => setActiveSection(item.id)}
+            />
+          ))}
+        </nav>
+      </div>
+
+      {/* Desktop Table of Contents Sidebar */}
+      <aside className="w-64 bg-[#FFFFFF] border-r border-[#1B1716]/10 flex-col hidden md:flex flex-shrink-0">
         <div className="p-4 sm:p-6 border-b border-[#1B1716]/10">
           <Link aria-label="Navigation link"
             href="/dashboard/reports"
@@ -33,23 +87,16 @@ export default function ReportLayout({ children }: { children: ReactNode }) {
 
         <div className="flex-1 overflow-y-auto p-4 space-y-1">
           <div className="text-xs font-bold text-[#1B1716]/40 uppercase tracking-wider mb-3 px-2">Table of Contents</div>
-          
-          <TOCLink href="#overview" active={activeSection === "overview"} icon={<Target className="w-4 h-4" />} label="Overview & Verdict" onClick={() => setActiveSection("overview")} />
-          <TOCLink href="#market-analysis" active={activeSection === "market-analysis"} icon={<BarChart3 className="w-4 h-4" />} label="Market Analysis" onClick={() => setActiveSection("market-analysis")} />
-          <TOCLink href="#swot-analysis" active={activeSection === "swot-analysis"} icon={<Shield className="w-4 h-4" />} label="SWOT Analysis" onClick={() => setActiveSection("swot-analysis")} />
-          <TOCLink href="#competitors" active={activeSection === "competitors"} icon={<AlignLeft className="w-4 h-4" />} label="Competitors" onClick={() => setActiveSection("competitors")} />
-          <TOCLink href="#personas" active={activeSection === "personas"} icon={<Users className="w-4 h-4" />} label="Customer Personas" onClick={() => setActiveSection("personas")} />
-          <TOCLink href="#revenue" active={activeSection === "revenue"} icon={<DollarSign className="w-4 h-4" />} label="Revenue Potential" onClick={() => setActiveSection("revenue")} />
-          <TOCLink href="#risks" active={activeSection === "risks"} icon={<AlertTriangle className="w-4 h-4" />} label="Risk Analysis" onClick={() => setActiveSection("risks")} />
-          <TOCLink href="#growth" active={activeSection === "growth"} icon={<Lightbulb className="w-4 h-4" />} label="Growth Opportunities" onClick={() => setActiveSection("growth")} />
-          <TOCLink href="#acquisition" active={activeSection === "acquisition"} icon={<Rocket className="w-4 h-4" />} label="Acquisition Tactics" onClick={() => setActiveSection("acquisition")} />
-          <TOCLink href="#launch-platforms" active={activeSection === "launch-platforms"} icon={<Rocket className="w-4 h-4" />} label="Launch Platforms" onClick={() => setActiveSection("launch-platforms")} />
-          <TOCLink href="#b2b-leads" active={activeSection === "b2b-leads"} icon={<Users className="w-4 h-4" />} label="B2B Leads" onClick={() => setActiveSection("b2b-leads")} />
-          <TOCLink href="#action-plan" active={activeSection === "action-plan"} icon={<CheckCircle className="w-4 h-4" />} label="90-Day Action Plan" onClick={() => setActiveSection("action-plan")} />
-          <TOCLink href="#mvp-prioritization" active={activeSection === "mvp-prioritization"} icon={<Target className="w-4 h-4" />} label="MVP Prioritization" onClick={() => setActiveSection("mvp-prioritization")} />
-          <TOCLink href="#sales-funnel" active={activeSection === "sales-funnel"} icon={<TrendingUp className="w-4 h-4" />} label="Sales Funnel" onClick={() => setActiveSection("sales-funnel")} />
-          <TOCLink href="#compliance-check" active={activeSection === "compliance-check"} icon={<Shield className="w-4 h-4" />} label="Compliance Check" onClick={() => setActiveSection("compliance-check")} />
-          <TOCLink href="#code-boilerplate" active={activeSection === "code-boilerplate"} icon={<FileText className="w-4 h-4" />} label="Code Boilerplate" onClick={() => setActiveSection("code-boilerplate")} />
+          {TOC_ITEMS.map((item) => (
+            <TOCLink
+              key={item.id}
+              href={`#${item.id}`}
+              active={activeSection === item.id}
+              icon={<item.icon className="w-4 h-4" />}
+              label={item.label}
+              onClick={() => setActiveSection(item.id)}
+            />
+          ))}
         </div>
       </aside>
 
@@ -66,9 +113,9 @@ function TOCLink({ href, active, icon, label, onClick }: { href: string, active:
     <a aria-label="Link action"
       href={href}
       onClick={onClick}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap flex-shrink-0 ${
         active 
-          ? "bg-cherry/5 text-[#1B1716] border-l-2 border-cherry rounded-l-none" 
+          ? "active-toc bg-cherry/5 text-[#1B1716] border-l-2 border-cherry rounded-l-none" 
           : "text-[#1B1716]/60 hover:text-[#1B1716] hover:bg-[#1B1716]/5"
       }`}
     >

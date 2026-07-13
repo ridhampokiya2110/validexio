@@ -24,13 +24,13 @@ export function PricingPriceLine({ basePrice, period, featured }: PricingPriceLi
     
     try {
       // Fire a quick check in case component mounted after the event was fired
-      const initialCode = localStorage.getItem("affiliate_code");
+      const initialCode = sessionStorage.getItem("affiliate_code");
       if (initialCode) {
         // It's safer to just rely on the event from GlobalPromoInput 
         // which fires immediately on mount if there's a saved code.
       }
     } catch (err) {
-      console.warn("localStorage is not available", err);
+      console.warn("sessionStorage is not available", err);
     }
 
     return () => window.removeEventListener("promo_code_update", handlePromo);

@@ -60,7 +60,7 @@ async function getDashboardData(userId: string) {
 }
 
 async function DashboardContent({ userId, userName }: { userId: string, userName: string }) {
-  const { recentReports, totalLeads, totalIdeas, completedReports, avgScore } =
+  const { ideas, recentReports, totalLeads, totalIdeas, completedReports, avgScore } =
     await getDashboardData(userId);
 
   const stats = [
@@ -160,7 +160,47 @@ async function DashboardContent({ userId, userName }: { userId: string, userName
             </Link>
           </div>
 
-          {recentReports.length === 0 ? (
+          {ideas.filter(idea => idea.status === 'PROCESSING').length > 0 && (
+            <div className="grid gap-4 mb-4">
+              {ideas.filter(idea => idea.status === 'PROCESSING').map((idea) => (
+                <Link aria-label="Navigation link" href={`/dashboard/reports/generating?ideaId=${idea.id}`} key={idea.id} className="glass-card p-6 flex items-center gap-6 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 hover:border-amber-500/50 relative overflow-hidden transition-all group cursor-pointer">
+                  <div className="absolute inset-y-0 left-0 w-1 bg-amber-500 animate-pulse"></div>
+                  
+                  {/* Spinning loader */}
+                  <div className="relative flex-shrink-0 w-16 h-16 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <svg className="animate-spin w-10 h-10 text-amber-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+
+                  {/* Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[#1B1716] font-bold text-lg truncate mb-1 tracking-tight">
+                      {idea.title}
+                    </p>
+                    <p className="text-[#1B1716]/60 text-xs font-medium truncate mb-3">{idea.industry}</p>
+                    
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs font-bold px-2 py-1 rounded-md bg-amber-500/10 text-amber-700">
+                        Processing...
+                      </span>
+                      <span className="text-[#1B1716]/40 text-xs flex items-center gap-1.5 font-medium">
+                        <Clock className="w-3.5 h-3.5" />
+                        <span suppressHydrationWarning>{formatRelativeTime(idea.createdAt)}</span>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center group-hover:bg-amber-500/20 transition-colors flex-shrink-0">
+                    <ChevronRight className="w-5 h-5 text-amber-600 transition-colors" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+
+          {recentReports.length === 0 && ideas.filter(idea => idea.status === 'PROCESSING').length === 0 ? (
             <div className="glass-card p-16 text-center border-[#1B1716]/10">
               <div className="w-16 h-16 rounded-2xl bg-cherry/10 border border-cherry/20 flex items-center justify-center mx-auto mb-6">
                 <Zap className="w-8 h-8 text-cherry" />

@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     const checkout = await createCheckout(storeId, variantId, {
       checkoutData: checkoutData,
       productOptions: {
-        redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard?upgrade=success`
+        redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/reports?payment=success`
       }
     });
 

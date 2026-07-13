@@ -26,7 +26,8 @@ import {
   LifeBuoy,
   ChevronLeft,
   FileDown,
-  RefreshCw
+  RefreshCw,
+  Loader2
 } from "lucide-react";
 import { cn, getInitials } from "@/lib/utils";
 import { NotificationsDropdown } from "./NotificationsDropdown";
@@ -190,7 +191,7 @@ function SidebarContent({ user, onClose }: SidebarProps) {
             className="opacity-100 transition-opacity p-1.5 rounded hover:bg-red-50 text-[#6B7280] hover:text-red-600"
             title="Sign out"
           >
-            <LogOut className="w-3.5 h-3.5" />
+            <LogOut className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -308,24 +309,21 @@ export default function DashboardLayout({
             <NotificationsDropdown />
 
             {/* User Menu */}
-            <div className="flex items-center gap-3">
-              <button aria-label="Sign out" type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                className="hidden sm:flex text-xs font-bold text-[#1B1716]/40 hover:text-red-600 transition-colors mr-2"
-                title="Sign out"
-              >
-                Sign out
-              </button>
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link aria-label="Settings" href="/dashboard/settings" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-                <div className="w-7 h-7 rounded-full bg-cherry border border-cherry/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-cherry border border-cherry/30 flex items-center justify-center">
                   <span className="text-xs font-bold text-white">
                     {user?.name ? getInitials(user.name) : "U"}
                   </span>
                 </div>
-                <span className="hidden sm:block text-[#1B1716] font-bold text-sm">
-                  {user?.name?.split(" ")[0] || "Account"}
-                </span>
               </Link>
+              <button aria-label="Button action" type="button"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="hidden sm:flex p-1.5 rounded hover:bg-red-50 text-[#1B1716]/40 hover:text-red-600 transition-colors"
+                title="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
               <button aria-label="Sign out (Mobile)" type="button"
                 onClick={() => signOut({ callbackUrl: "/" })}
                 className="sm:hidden p-1.5 rounded-md hover:bg-red-50 text-[#1B1716]/40 hover:text-red-600 transition-colors"

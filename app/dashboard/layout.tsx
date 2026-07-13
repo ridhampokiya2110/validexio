@@ -5,10 +5,17 @@ import { prisma } from "@/lib/db";
 import { RealtimePlanListener } from "@/components/dashboard/RealtimePlanListener";
 async function getCachedUser(userId: string) {
   try {
-    return await prisma.user.findUnique({
-      where: { id: userId },
-      select: { availableCredits: true, tier: true, profession: true }
-    });
+    const [user, processingIdea] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: userId },
+        select: { availableCredits: true, tier: true, profession: true }
+      }),
+      prisma.idea.findFirst({
+        where: { userId, status: 'PROCESSING' },
+        select: { id: true }
+      })
+    ]);
+    return { ...user, processingIdeaId: processingIdea?.id || null };
   } catch (error) {
     console.error("Database connection failed in layout:", error);
     return null;
@@ -37,12 +44,14 @@ export default async function Layout({ children }: { children: React.ReactNode }
     image: session.user.image ?? null,
     tier: dbUser?.tier || "FREE",
     availableCredits: dbUser?.availableCredits || 0,
+    processingIdeaId: dbUser?.processingIdeaId || null,
   } : {
     name: "Demo Founder",
     email: "founder@startup.com",
     image: null,
     tier: "pro",
     availableCredits: 10,
+    processingIdeaId: null,
   };
 
   return (

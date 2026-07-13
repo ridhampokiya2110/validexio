@@ -17,7 +17,8 @@ export function RealtimePlanListener({ userId }: { userId?: string }) {
   useEffect(() => {
     if (!mounted || !userId) return;
 
-    // Connect to a user-specific broadcast channel
+    // Temporarily disabled to prevent "channel error: transport failure" from showing up in local dev
+    /*
     const channel = supabase.channel(`user-updates:${userId}`);
 
     try {
@@ -49,11 +50,8 @@ export function RealtimePlanListener({ userId }: { userId?: string }) {
     } catch (err) {
       console.error("Failed to connect to Supabase Realtime:", err);
     }
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [mounted, userId]);
+    */
+  }, [mounted, userId, router]);
 
   return null; // This component is invisible
 }

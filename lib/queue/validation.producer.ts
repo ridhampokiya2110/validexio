@@ -8,8 +8,8 @@ const connection = {
   password: process.env.REDIS_PASSWORD || "",
 };
 
-// Create a new queue instance for validation jobs
-export const validationQueue = new Queue("ValidationAIProcessing", {
+// Create a new queue instance for validation jobs only if Redis is configured
+export const validationQueue = process.env.REDIS_HOST ? new Queue("ValidationAIProcessing", {
   connection,
   defaultJobOptions: {
     attempts: 1,
@@ -20,7 +20,7 @@ export const validationQueue = new Queue("ValidationAIProcessing", {
     removeOnComplete: true,
     removeOnFail: false,
   },
-});
+}) : null;
 
 export interface ValidationJobPayload {
   sessionId: string;
@@ -39,6 +39,10 @@ export interface ValidationJobPayload {
  */
 export async function dispatchValidationJob(payload: ValidationJobPayload) {
   try {
+    if (!validationQueue) {
+      console.warn("Bypassing BullMQ: REDIS_HOST not configured.");
+      return "bypassed";
+    }
     // Priority 1 = Paid (skip the line), Priority 10 = Free (wait in line)
     const priority = payload.isPriority ? 1 : 10;
     const job = await validationQueue.add("processIntake", payload, { priority });

@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { useCurrency } from "@/hooks/useCurrency";
+import { useRouter } from "next/navigation";
 
 interface CheckoutButtonProps {
   isCurrentPlan: boolean;
@@ -19,6 +20,7 @@ declare global {
 }
 
 export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOverride, basePrice }: CheckoutButtonProps) {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const { currency: hookCurrency } = useCurrency();
   const currency = currencyOverride || hookCurrency;
@@ -26,6 +28,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
   const [isValidCode, setIsValidCode] = useState(false);
   const [discountPercentage, setDiscountPercentage] = useState(10);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   // Compute discounted price if basePrice is passed
   let originalValue = 0;
@@ -47,13 +50,9 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
 
   useEffect(() => {
     try {
-      // Initial check from session storage in case the event fired before we mounted
       const savedCode = sessionStorage.getItem("affiliate_code");
       if (savedCode) {
         setAffiliateCode(savedCode);
-        // We assume it's valid if they got to checkout, but we'll re-verify if needed, 
-        // or we can wait for the event. Actually, we can just fire the verification again
-        // or better: let the GlobalPromoInput handle the verification and broadcast the event.
       }
     } catch (err) {
       console.warn("sessionStorage is not available", err);
@@ -89,14 +88,16 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
     try {
       setLoading(true);
       
-      // Razorpay Flow for INR
+      const currentCode = sessionStorage.getItem("affiliate_code");
+      const activeCode = isValidCode ? affiliateCode : (currentCode || undefined);
+      
       if (currency === "INR") {
         const res = await fetch("/api/razorpay/create-order", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
             tier: tierName.toUpperCase(),
-            affiliateCode: isValidCode ? affiliateCode : undefined
+            affiliateCode: activeCode
           }),
         });
         const data = await res.json();
@@ -106,6 +107,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
         const isLoaded = await loadRazorpay();
         if (!isLoaded) {
           alert("Payment gateway failed to load. Please check your connection.");
+          setLoading(false);
           return;
         }
 
@@ -116,35 +118,54 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
           name: "Validexio",
           description: `Upgrade to ${tierName}`,
           order_id: data.orderId,
-          handler: function (response: any) {
-             window.location.href = `/dashboard/billing?success=true`;
+          handler: async function (response: any) {
+             try {
+               await fetch("/api/razorpay/verify", {
+                 method: "POST",
+                 headers: { "Content-Type": "application/json" },
+                 body: JSON.stringify({
+                   razorpay_payment_id: response.razorpay_payment_id,
+                   razorpay_order_id: response.razorpay_order_id,
+                   razorpay_signature: response.razorpay_signature,
+                   tier: tierName.toUpperCase(),
+                   affiliateCode: activeCode
+                 })
+               });
+             } catch (err) {
+               console.error("Verification failed:", err);
+             }
+             setIsSuccess(true);
+             setTimeout(() => {
+               router.push("/dashboard/reports");
+             }, 1500);
           },
           prefill: {
             name: "",
             email: "",
             contact: ""
           },
-          theme: {
-            color: "#FF5C35"
+          theme: { color: "#630102" },
+          modal: {
+            ondismiss: function () {
+              setLoading(false);
+            }
           }
         };
 
         const rzp = new window.Razorpay(options);
         rzp.on('payment.failed', function (response: any) {
-           alert("Payment failed: " + response.error.description);
+           setLoading(false);
+           alert(`Payment failed: ${response.error.description}`);
         });
         rzp.open();
         return;
       }
 
-      // Lemon Squeezy Flow for non-INR
       let finalDiscountCode: string | undefined = undefined;
-      
       const lsPromo = sessionStorage.getItem("ls_promo");
       if (lsPromo) {
         finalDiscountCode = lsPromo;
       } else if (isValidCode && affiliateCode) {
-        // Fallback just in case, though this is mostly for Indian UI
         finalDiscountCode = affiliateCode;
       }
 
@@ -166,9 +187,8 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
         throw new Error("No checkout URL returned");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Checkout Error:", error);
       alert("Something went wrong");
-    } finally {
       setLoading(false);
     }
   };
@@ -182,13 +202,30 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
   }
 
   return (
-    <div className="space-y-4 mt-auto">
-      <button aria-label="Button action" type="button"
+    <div className="w-full space-y-4">
+      <button 
+        aria-label="Button action" 
+        type="button"
         onClick={handleCheckout}
-        disabled={loading}
-        className={`w-full flex items-center justify-center text-sm py-3 font-semibold shadow-sm hover:shadow-md transition-all active:scale-[0.98] rounded-xl ${isFeatured ? "bg-gradient-to-r from-[#630102] to-[#8C0203] hover:from-[#7f0103] hover:to-[#a10203] text-white border border-[#910505]" : "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 hover:border-gray-300"}`}
+        disabled={loading || isSuccess}
+        className={`w-full flex items-center justify-center text-sm py-3 font-semibold shadow-sm hover:shadow-md transition-all active:scale-[0.98] rounded-xl ${
+          isSuccess 
+            ? "bg-emerald-500 text-white border-transparent" 
+            : isFeatured 
+              ? "bg-gradient-to-r from-[#630102] to-[#8C0203] hover:from-[#7f0103] hover:to-[#a10203] text-white border border-[#910505]" 
+              : "bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 hover:border-gray-300"
+        }`}
       >
-        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+        {isSuccess ? (
+          <>
+            <svg className="w-5 h-5 mr-2 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            Payment Successful!
+          </>
+        ) : loading ? (
+          <Loader2 className="w-5 h-5 animate-spin" />
+        ) : (
           <span className="flex flex-wrap items-center justify-center gap-1.5 text-center px-2">
             <span>Upgrade to {tierName}</span>
             {showDiscount && (
