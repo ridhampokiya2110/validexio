@@ -400,8 +400,9 @@ export default function ValidatePage() {
   const handleSubmit = async () => {
     if (!validateStep(3)) return;
 
-    const isUnlimited = userTier === "PRO" || userTier === "TEAM";
-    if (!isUnlimited && userCredits !== null && userCredits <= 0) {
+    const isFreeTier = userTier === "FREE";
+
+    if (!isFreeTier && userCredits !== null && userCredits <= 0) {
       toast.error("You don't have enough credits to validate this idea.", {
         action: {
           label: "Buy Credits",
