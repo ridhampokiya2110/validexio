@@ -446,21 +446,24 @@ Return the exact JSON structure required, including the React landing page code 
 // Gemini is used as a fallback if Pollinations is unavailable.
 // ============================================================
 export async function generateFreeStartupMarket(idea: IdeaInput): Promise<MarketAnalysisReport> {
-  const systemPrompt = `You are a startup market analyst. Respond ONLY with a raw JSON object — no markdown, no code fences.
+  const systemPrompt = `You are an elite startup market analyst. Respond ONLY with a raw JSON object — no markdown, no code fences.
 Your JSON must EXACTLY match this structure:
 {
   "validationScore": <number 0-100>,
   "marketOpportunity": <number 0-100>,
   "productMarketFit": <number 0-100>,
   "riskScore": <number 0-100>,
+  "executiveSummary": "<A compelling, detailed 2-paragraph analysis of the startup idea, its potential, and why it matters>",
+  "targetAudience": "<A detailed paragraph describing the ideal early adopters and their pain points>",
+  "competitorLandscape": "<A paragraph describing the general competitive landscape and market saturation>",
   "swotAnalysis": {
-    "strengths": [<string>, <string>],
-    "weaknesses": [<string>, <string>],
-    "opportunities": [<string>, <string>],
-    "threats": [<string>, <string>]
+    "strengths": ["<string>", "<string>", "<string>"],
+    "weaknesses": ["<string>", "<string>", "<string>"],
+    "opportunities": ["<string>", "<string>", "<string>"],
+    "threats": ["<string>", "<string>", "<string>"]
   }
 }
-Be honest, concise, and do not hallucinate. Use an 8th-grade reading level.`;
+Provide highly valuable, actionable, and specific insights to impress the user and convince them the AI is highly intelligent. Do not hallucinate real-time data.`;
 
   const userPrompt = `Analyze this startup idea:
 - Title: ${idea.title}

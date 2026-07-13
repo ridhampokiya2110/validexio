@@ -19,7 +19,7 @@ export function PremiumLock({ isLocked, title, description }: PremiumLockProps) 
   const targetHref = session?.user ? "/dashboard/billing" : "/pricing";
 
   return (
-    <div className="relative group w-full bg-white rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_30px_rgb(0,0,0,0.04)] h-[300px]">
+    <div className="relative group w-full overflow-hidden h-[300px] rounded-xl flex flex-col items-center justify-center mt-2">
       {/* Fake blurred content background */}
       <div className="absolute inset-0 bg-[#FDFCF8] flex flex-col gap-4 p-8 opacity-40 blur-sm pointer-events-none">
         <div className="h-6 bg-gray-200 rounded w-1/3 mb-4"></div>
