@@ -45,7 +45,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
     }
   }
 
-  const discountedValue = isFree ? 0 : originalValue * (1 - (discountPercentage / 100));
+  const discountedValue = isFree ? 0 : Math.round(originalValue * (1 - (discountPercentage / 100)));
   const showDiscount = isValidCode && originalValue > 0 && discountPercentage > 0;
 
   useEffect(() => {
