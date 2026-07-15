@@ -73,18 +73,18 @@ export default function CompareHubPage() {
       </section>
 
       {/* Global CTA */}
-      <section className="py-20 px-6 max-w-4xl mx-auto text-center mb-20">
-        <div className="glass-card p-12 bg-gradient-to-b from-white to-[#1B1716]/[0.02]">
-          <h2 className="text-3xl font-bold text-[#1B1716] mb-4">Ready to stop planning and start shipping?</h2>
-          <p className="text-[#1B1716]/60 mb-8 max-w-2xl mx-auto">
+      <section className="py-16 sm:py-20 px-4 sm:px-6 max-w-4xl mx-auto text-center mb-16 sm:mb-20">
+        <div className="glass-card p-6 sm:p-12 bg-gradient-to-b from-white to-[#1B1716]/[0.02]">
+          <h2 className="text-2xl sm:text-3xl font-bold text-[#1B1716] mb-4">Ready to stop planning and start shipping?</h2>
+          <p className="text-[#1B1716]/60 mb-8 max-w-2xl mx-auto text-sm sm:text-base">
             Get the code, the leads, and the architecture you need to launch your SaaS this weekend.
           </p>
           <Link aria-label="Navigation link" 
             href="https://your-store.lemonsqueezy.com/checkout/buy/placeholder"
-            className="btn-primary inline-flex items-center justify-center px-8 py-4 text-lg"
+            className="btn-primary inline-flex items-center justify-center px-4 sm:px-8 py-3 sm:py-4 text-sm sm:text-lg w-full sm:w-auto"
           >
-            Deploy Validexio for INR 1499
-            <Zap className="w-5 h-5 ml-2" />
+            <span className="truncate sm:whitespace-nowrap">Deploy Validexio for INR 1499</span>
+            <Zap className="w-5 h-5 ml-2 shrink-0" />
           </Link>
         </div>
       </section>

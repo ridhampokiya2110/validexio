@@ -1133,10 +1133,10 @@ function ValueAnchoringSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 relative items-stretch">
           
           {/* Left Column: The Traditional Way */}
-          <div className="flex flex-col bg-white/80 backdrop-blur-sm rounded-[2rem] p-8 md:p-10 border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)]">
+          <div className="flex flex-col bg-white/80 backdrop-blur-sm rounded-[2rem] p-5 sm:p-8 md:p-10 border border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative transition-all duration-500 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] w-full">
             <div className="flex items-center gap-3 mb-8">
               <div>
-                <h3 className="text-2xl font-black text-gray-900 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">
                   Agencies & Upwork
                 </h3>
                 <p className="text-gray-500 text-sm font-medium">The Traditional Route</p>
@@ -1164,8 +1164,8 @@ function ValueAnchoringSection() {
             
             <div className="pt-6 border-t border-gray-200">
               <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-2 sm:gap-0">
-                <span className="text-gray-900 font-bold text-xl sm:text-lg">Total Estimated Cost</span>
-                <span className="font-mono text-gray-900 font-black text-[28px] sm:text-4xl tracking-tight leading-none text-center sm:text-right">{anchorCosts.totalAgencies[currency]}</span>
+                <span className="text-gray-900 font-bold text-lg">Total Estimated Cost</span>
+                <span className="font-mono text-gray-900 font-black text-[26px] sm:text-4xl tracking-tight leading-none text-center sm:text-right">{anchorCosts.totalAgencies[currency]}</span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-4 bg-orange-50/50 px-4 py-3 rounded-lg border border-orange-100 gap-1 sm:gap-0">
                 <span className="text-orange-800 text-sm uppercase tracking-wider font-bold">Time to deliver</span>
@@ -1175,21 +1175,21 @@ function ValueAnchoringSection() {
           </div>
 
           {/* Right Column: The Validexio Way (Bright & Premium) */}
-          <div className="group flex flex-col bg-white rounded-[2rem] p-8 md:p-10 border-2 border-cherry shadow-2xl shadow-cherry/10 relative overflow-hidden transform md:-translate-y-2 hover:-translate-y-4 transition-all duration-500">
+          <div className="group flex flex-col bg-white rounded-[2rem] p-5 sm:p-8 md:p-10 border-2 border-cherry shadow-2xl shadow-cherry/10 relative overflow-hidden transform md:-translate-y-2 hover:-translate-y-4 transition-all duration-500 w-full">
             {/* Premium Glow Effects */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-cherry/10 to-transparent rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none transition-transform duration-700 group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cherry/[0.02] pointer-events-none" />
             
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-cherry text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-md z-20">
+            <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-cherry text-white text-[10px] font-black uppercase tracking-[0.2em] px-4 py-1.5 rounded-full shadow-md z-20 whitespace-nowrap">
               The Smart Choice
             </div>
 
             <div className="flex items-center gap-3 mb-8 relative z-10 mt-2">
               <div>
-                <h3 className="text-2xl font-black text-[#1B1716] tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-black text-[#1B1716] tracking-tight">
                   The Validexio Engine
                 </h3>
-                <p className="text-cherry font-semibold text-sm">Instant Data Engine Execution</p>
+                <p className="text-cherry font-semibold text-xs sm:text-sm">Instant Data Engine Execution</p>
               </div>
             </div>
             
@@ -1212,8 +1212,8 @@ function ValueAnchoringSection() {
             
             <div className="pt-6 border-t border-cherry/10 relative z-10">
               <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-2 gap-2 sm:gap-0">
-                <span className="text-[#1B1716] font-bold text-xl sm:text-lg">Total Cost</span>
-                <span className="font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-cherry to-red-600 text-[28px] sm:text-4xl tracking-tight leading-none text-center sm:text-right">{anchorCosts.validexioEngine[currency]}</span>
+                <span className="text-[#1B1716] font-bold text-lg">Total Cost</span>
+                <span className="font-heading font-black text-transparent bg-clip-text bg-gradient-to-r from-cherry to-red-600 text-[26px] sm:text-4xl tracking-tight leading-none text-center sm:text-right">{anchorCosts.validexioEngine[currency]}</span>
               </div>
               <div className="flex flex-col sm:flex-row justify-between sm:items-center mt-4 bg-green-50 px-4 py-3 rounded-lg border border-green-100 gap-1 sm:gap-0">
                 <span className="text-green-800 text-sm uppercase tracking-wider font-bold">Time to deliver</span>
