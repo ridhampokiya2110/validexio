@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export function ManageSubscriptionButton() {
   const [loading, setLoading] = useState(false);
@@ -17,11 +18,15 @@ export function ManageSubscriptionButton() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert("Failed to open portal: " + (data.error || "Unknown error"));
+        if (data.error?.includes("No active Lemon Squeezy customer")) {
+          toast.info("You don't have an active billing subscription yet.");
+        } else {
+          toast.error("Failed to open portal: " + (data.error || "Unknown error"));
+        }
       }
     } catch (error) {
       console.error(error);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }

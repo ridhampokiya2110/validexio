@@ -18,7 +18,8 @@ import {
   FileText,
   ExternalLink,
   ShieldCheck,
-  AlertCircle
+  AlertCircle,
+  Copy
 } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import { UnitEconomicsCard } from "@/components/UnitEconomicsCard";
@@ -29,10 +30,47 @@ import { PremiumLock } from "@/components/report/PremiumLock";
 import { DeleteReportButton } from "@/components/dashboard/DeleteReportButton";
 import { PremiumRevenueChart } from "@/components/PremiumRevenueChart";
 
+interface ReportContentProps {
+  report: any;
+  isReadOnly?: boolean;
+  userTier?: string;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function ReportContent({ report, isReadOnly = false, userTier = "STARTER" }: { report: any, isReadOnly?: boolean, userTier?: string }) {
+export function ReportContent({ report, isReadOnly = false, userTier = "STARTER" }: ReportContentProps) {
   const [isPdfLoading, setIsPdfLoading] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
   if (!report) return null;
+
+  const handleCopyCode = () => {
+    if (codeBoilerplate) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(codeBoilerplate)
+          .then(() => {
+            setCopiedCode(true);
+            setTimeout(() => setCopiedCode(false), 2000);
+          })
+          .catch(err => console.error('Failed to copy text: ', err));
+      } else {
+        // Fallback for non-secure contexts (like mobile dev over local IP)
+        const textArea = document.createElement("textarea");
+        textArea.value = codeBoilerplate;
+        textArea.style.position = "absolute";
+        textArea.style.left = "-999999px";
+        document.body.prepend(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          setCopiedCode(true);
+          setTimeout(() => setCopiedCode(false), 2000);
+        } catch (error) {
+          console.error('Fallback copy failed', error);
+        } finally {
+          textArea.remove();
+        }
+      }
+    }
+  };
 
   const market = {
     summary: "Analysis pending...",
@@ -267,7 +305,9 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
       </div>
 
       {/* Score Overview */}
-      <UnifiedScoreCard score={report.validationScore ?? 0} report={report} />
+      <div id="overview" className="scroll-mt-10">
+        <UnifiedScoreCard score={report.validationScore ?? 0} report={report} />
+      </div>
 
       {/* Main Grid */}
       <div className="space-y-10">
@@ -410,14 +450,14 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                     <div>
                       <h3 className="text-2xl font-black text-[#FDFCF8] tracking-tight">{comp.name}</h3>
                       {comp.website && (
-                        <a aria-label="Link action" href={`https://${comp.website}`} target="_blank" rel="noopener noreferrer" className="text-[#FDFCF8]/50 hover:text-[#FFEDAB] text-sm font-medium transition-colors flex items-center gap-1.5 mt-1 w-max">
-                          {comp.website} <ExternalLink className="w-3 h-3" />
+                        <a aria-label="Link action" href={comp.website.startsWith('http') ? comp.website : `https://${comp.website}`} target="_blank" rel="noopener noreferrer" className="text-[#FDFCF8]/50 hover:text-[#FFEDAB] text-sm font-medium transition-colors flex flex-wrap items-center gap-1.5 mt-1 max-w-full">
+                          <span className="break-all">{comp.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}</span> <ExternalLink className="w-3 h-3 flex-shrink-0" />
                         </a>
                       )}
                     </div>
-                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 flex-shrink-0 whitespace-nowrap">
-                      <div className="w-2 h-2 rounded-full bg-[#FFEDAB] animate-pulse flex-shrink-0"></div>
-                      <span className="text-[#FFEDAB] text-xs font-bold tracking-widest uppercase truncate">{comp.pricing}</span>
+                    <div className="flex items-start sm:items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-full border border-white/10 min-w-0 shrink w-full sm:w-auto">
+                      <div className="w-2 h-2 rounded-full bg-[#FFEDAB] animate-pulse flex-shrink-0 mt-1 sm:mt-0"></div>
+                      <span className="text-[#FFEDAB] text-[10px] sm:text-xs font-bold tracking-widest uppercase break-words text-left">{comp.pricing}</span>
                     </div>
                   </div>
 
@@ -537,9 +577,9 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                         ))}
                       </ul>
                     </div>
-                    <div className="flex items-center justify-between border-t border-[#E5E7EB] pt-4">
+                    <div className="flex flex-col gap-1 border-t border-[#E5E7EB] pt-4">
                       <p className="text-[#6B7280] font-bold text-[10px] uppercase tracking-widest">Willingness to Pay</p>
-                      <p className="text-[#111827] font-bold">{persona.willingnessToPay}</p>
+                      <p className="text-[#111827] font-bold break-words">{persona.willingnessToPay}</p>
                     </div>
                     <div className="border-t border-[#E5E7EB] pt-4">
                       <p className="text-[#6B7280] font-bold text-[10px] uppercase tracking-widest mb-2">Acquisition Channels</p>
@@ -927,13 +967,13 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {(userTier === "STARTER" ? leads.slice(0, 2) : userTier === "PRO" ? leads.slice(0, 5) : leads).map((lead) => (
-                <div key={lead.id} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow duration-300">
-                  <h3 className="font-bold text-[#111827] text-base truncate">{lead.name}</h3>
-                  <p className="text-sm font-medium text-[#630102] truncate mb-2">{lead.title} @ {lead.company}</p>
+                <div key={lead.id} className="bg-white border border-[#E5E7EB] rounded-xl p-5 hover:shadow-md transition-shadow duration-300 min-w-0">
+                  <h3 className="font-bold text-[#111827] text-base break-words">{lead.name}</h3>
+                  <p className="text-sm font-medium text-[#630102] break-words mb-2">{lead.title} @ {lead.company}</p>
                   <div className="space-y-1.5 mt-4">
-                    {lead.email && <p className="text-xs text-[#6B7280] truncate">Email: <span className="font-semibold text-[#111827]">{lead.email}</span></p>}
-                    {lead.linkedin && <a aria-label="Link action" href={lead.linkedin} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0077b5] hover:underline block truncate">LinkedIn Profile</a>}
-                    {lead.twitter && <a aria-label="Link action" href={lead.twitter} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1DA1F2] hover:underline block truncate">Twitter Profile</a>}
+                    {lead.email && <p className="text-xs text-[#6B7280] break-words">Email: <span className="font-semibold text-[#111827] break-all">{lead.email}</span></p>}
+                    {lead.linkedin && <a aria-label="Link action" href={lead.linkedin} target="_blank" rel="noopener noreferrer" className="text-xs text-[#0077b5] hover:underline block break-all">LinkedIn Profile</a>}
+                    {lead.twitter && <a aria-label="Link action" href={lead.twitter} target="_blank" rel="noopener noreferrer" className="text-xs text-[#1DA1F2] hover:underline block break-all">Twitter Profile</a>}
                   </div>
                 </div>
               ))}
@@ -1097,7 +1137,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                       <ul className="space-y-1.5">
                         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                         {/* @ts-ignore */}
-                        {stage.data[stage.keys[0]].map((c: string) => (
+                        {(stage.data?.[stage.keys[0]] || []).map((c: string) => (
                           <li key={c} className="text-[#111827] text-xs flex items-start gap-1.5 leading-relaxed">
                             <span className="text-[#E5E7EB] font-bold mt-0.5 flex-shrink-0">•</span> 
                             <span className="flex-1 min-w-0 break-words">{c}</span>
@@ -1110,7 +1150,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
                       <ul className="space-y-1.5">
                         {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                         {/* @ts-ignore */}
-                        {stage.data[stage.keys[1]].map((c: string) => (
+                        {(stage.data?.[stage.keys[1]] || []).map((c: string) => (
                           <li key={c} className="text-[#111827] text-xs flex items-start gap-1.5 leading-relaxed">
                             <span className="text-[#E5E7EB] font-bold mt-0.5 flex-shrink-0">•</span> 
                             <span className="flex-1 min-w-0 break-words">{c}</span>
@@ -1154,16 +1194,28 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
         )}
 
         {/* Code Boilerplate */}
-        {codeBoilerplate && userTier !== "STARTER" && userTier !== "FREE" && (
+        {codeBoilerplate && (
           <section id="code-boilerplate" className="glass-card p-4 sm:p-6 overflow-hidden mt-10 animate-fade-in-scale delay-[1300ms] group hover:border-[#111827]/20 transition-all duration-500">
-            <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
-              <div className="w-10 h-10 rounded-xl bg-cherry/5 border border-cherry/10 flex items-center justify-center group-hover:bg-cherry/10 transition-colors">
-                <FileText className="w-5 h-5 text-cherry" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b border-[#E5E7EB]/60 pb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-cherry/5 border border-cherry/10 flex items-center justify-center group-hover:bg-cherry/10 transition-colors shrink-0">
+                  <FileText className="w-5 h-5 text-cherry" />
+                </div>
+                <h2 className="text-2xl font-bold text-[#111827] tracking-tight">MVP Code Boilerplate</h2>
               </div>
-              <h2 className="text-2xl font-bold text-[#111827] tracking-tight">MVP Code Boilerplate</h2>
+              {!isReadOnly && (
+                <button
+                  aria-label="Copy code"
+                  onClick={handleCopyCode}
+                  className="flex items-center justify-center p-2 rounded-md bg-[#111827] text-white hover:bg-cherry transition-colors shrink-0"
+                  title="Copy Code"
+                >
+                  {copiedCode ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                </button>
+              )}
             </div>
             <ExecutionLock isReadOnly={isReadOnly}>
-              <div className="bg-[#111827] text-[#E5E7EB] p-3 sm:p-5 rounded-xl overflow-x-auto w-full text-xs sm:text-sm font-mono whitespace-pre max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
+              <div className="bg-[#111827] text-[#E5E7EB] p-3 sm:p-5 rounded-xl overflow-x-auto max-w-full text-xs sm:text-sm font-mono whitespace-pre max-h-[400px] sm:max-h-[600px] overflow-y-auto custom-scrollbar">
                 {codeBoilerplate}
               </div>
             </ExecutionLock>
@@ -1202,7 +1254,7 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
         )}
 
         {/* Launch Resources */}
-        {userTier !== "STARTER" && userTier !== "FREE" && (
+        {(userTier !== "STARTER" && userTier !== "FREE" || true) && (
           <section id="launch-resources" className="glass-card p-6 sm:p-8 animate-fade-in-scale delay-[1500ms] group hover:border-[#111827]/20 transition-all duration-500 mt-10">
             <div className="flex items-center gap-3 mb-6 border-b border-[#E5E7EB]/60 pb-5">
               <div className="w-10 h-10 rounded-xl bg-[#630102]/5 border border-[#630102]/10 flex items-center justify-center group-hover:bg-[#630102]/10 transition-colors">
@@ -1210,32 +1262,45 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               </div>
               <h2 className="text-2xl font-bold text-[#111827] tracking-tight">Launch Your Idea</h2>
             </div>
+
+            {(userTier === "STARTER" || userTier === "FREE" || report.isLite) && (
+              <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-cherry/10 to-orange-500/10 border border-cherry/20 flex flex-col sm:flex-row items-center gap-4 justify-between">
+                <div>
+                  <h3 className="font-bold text-cherry mb-1">Live Data Landing Page & Copywriting Locked</h3>
+                  <p className="text-sm text-cherry/80">Upgrade to Pro to have our Validation Engine generate your exact Product Hunt, BetaList, and launch copy perfectly tailored to your idea.</p>
+                </div>
+                <Link aria-label="Navigation link" href="/pricing" className="btn-primary text-sm px-4 py-2 whitespace-nowrap shrink-0">
+                  Upgrade to Pro
+                </Link>
+              </div>
+            )}
+
             <p className="text-[#6B7280] text-sm leading-relaxed mb-8 max-w-3xl">
-              Your idea is validated. Now it&apos;s time to launch. We&apos;ve taken your validation data and pre-generated the exact copy you need to submit your startup to the top discovery platforms for free. Just copy, paste, and launch.
+              Your idea is validated. Now it&apos;s time to launch. {(userTier === "STARTER" || userTier === "FREE" || report.isLite) ? "Below are the top platforms to launch your idea. Upgrade to Pro to get custom copy generated for each platform." : "We've taken your validation data and pre-generated the exact copy you need to submit your startup to the top discovery platforms for free. Just copy, paste, and launch."}
             </p>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Product Hunt */}
-              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
                   <div className="flex items-center gap-3">
                     <span className="w-8 h-8 rounded-full bg-[#DA552F] text-white flex items-center justify-center font-bold text-lg shrink-0">P</span>
                     <h3 className="font-bold text-[#111827] text-lg">Product Hunt</h3>
                   </div>
-                  <a aria-label="Link action" href="https://www.producthunt.com/posts/new" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#DA552F] text-white rounded-md hover:bg-[#bf4825] transition-colors text-center whitespace-nowrap">
+                  <a aria-label="Link action" href="https://www.producthunt.com/posts/new" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#DA552F] text-white rounded-md hover:bg-[#bf4825] transition-colors text-center shrink-0">
                     Submit
                   </a>
                 </div>
                 <div className="space-y-4">
                   <div>
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Tagline</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
-                      {landingPage?.headline || `AI-powered ${report.idea?.industry} solution.`}
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium break-words overflow-hidden">
+                      {landingPage?.headline || `Data-driven ${report.idea?.industry} solution.`}
                     </div>
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Description</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium whitespace-pre-wrap">
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium whitespace-pre-wrap break-words overflow-hidden">
                       {landingPage?.valueProp || market.summary || "A revolutionary approach to solving critical pain points in this space."}
                     </div>
                   </div>
@@ -1243,26 +1308,26 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               </div>
 
               {/* BetaList */}
-              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
                   <div className="flex items-center gap-3">
                     <span className="w-8 h-8 rounded-full bg-[#F14B5A] text-white flex items-center justify-center font-bold text-lg shrink-0">B</span>
                     <h3 className="font-bold text-[#111827] text-lg">BetaList</h3>
                   </div>
-                  <a aria-label="Link action" href="https://betalist.com/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#F14B5A] text-white rounded-md hover:bg-[#d6414f] transition-colors text-center whitespace-nowrap">
+                  <a aria-label="Link action" href="https://betalist.com/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#F14B5A] text-white rounded-md hover:bg-[#d6414f] transition-colors text-center shrink-0">
                     Submit
                   </a>
                 </div>
                 <div className="space-y-4">
                   <div>
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Elevator Pitch</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium break-words overflow-hidden">
                       {landingPage?.subheadline || `The new way to build for ${report.idea?.industry}`}
                     </div>
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Target Audience</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium break-words overflow-hidden">
                       {personas[0]?.title || "Professionals"} & {personas[1]?.title || "Businesses"}
                     </div>
                   </div>
@@ -1270,26 +1335,26 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               </div>
 
               {/* SaaSHub */}
-              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
                   <div className="flex items-center gap-3">
                     <span className="w-8 h-8 rounded-full bg-[#515969] text-white flex items-center justify-center font-bold text-lg shrink-0">S</span>
                     <h3 className="font-bold text-[#111827] text-lg">SaaSHub</h3>
                   </div>
-                  <a aria-label="Link action" href="https://www.saashub.com/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#515969] text-white rounded-md hover:bg-[#3d434f] transition-colors text-center whitespace-nowrap">
+                  <a aria-label="Link action" href="https://www.saashub.com/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#515969] text-white rounded-md hover:bg-[#3d434f] transition-colors text-center shrink-0">
                     Submit
                   </a>
                 </div>
                 <div className="space-y-4">
                   <div>
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Alternatives to</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium flex flex-wrap gap-2">
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium flex flex-wrap gap-2 break-words overflow-hidden">
                       {competitors.slice(0, 3).map(c => c.name).join(", ") || "Industry leaders"}
                     </div>
                   </div>
                   <div>
                     <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Pricing Model</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium break-words overflow-hidden">
                       {pricing.strategy || "Subscription Based"}
                     </div>
                   </div>
@@ -1297,27 +1362,27 @@ export function ReportContent({ report, isReadOnly = false, userTier = "STARTER"
               </div>
 
               {/* dang.ai */}
-              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow">
+              <div className="border border-[#E5E7EB] rounded-xl p-6 bg-white hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="flex items-center justify-between mb-4 pb-4 border-b border-[#E5E7EB]">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
                     <span className="w-8 h-8 rounded-full bg-[#000000] text-white flex items-center justify-center font-bold text-lg shrink-0">d</span>
-                    <h3 className="font-bold text-[#111827] text-lg">dang.ai</h3>
+                    <h3 className="font-bold text-[#111827] text-lg truncate">dang.ai</h3>
                   </div>
-                  <a aria-label="Link action" href="https://dang.ai/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#000000] text-white rounded-md hover:bg-[#333333] transition-colors text-center whitespace-nowrap">
+                  <a aria-label="Link action" href="https://dang.ai/submit" target="_blank" rel="noopener noreferrer" className="text-xs font-bold px-3 py-1.5 bg-[#000000] text-white rounded-md hover:bg-[#333333] transition-colors text-center shrink-0">
                     Submit
                   </a>
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">AI Category</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium">
-                      {report.idea?.industry || "Generative AI Solutions"}
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Industry Category</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium break-words overflow-hidden">
+                      {report.idea?.industry || "Software Solutions"}
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Core AI Feature</p>
-                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium line-clamp-3">
-                      {landingPage?.features?.[0]?.description || market.summary || "AI powered automation and analysis"}
+                    <p className="text-xs font-bold text-[#6B7280] uppercase tracking-widest mb-1">Core Feature</p>
+                    <div className="bg-[#F9FAFB] border border-[#E5E7EB] p-3 rounded-md text-[#111827] text-sm font-medium break-words">
+                      {landingPage?.features?.[0]?.description || market.summary || "Data-powered automation and analysis"}
                     </div>
                   </div>
                 </div>

@@ -78,13 +78,19 @@ export async function POST(req: Request) {
         }
       }
 
+      // Calculate Revenue
+      const USD_PRICES = { FREE: 0, STARTER: 19, PRO: 39, TEAM: 89, ENTERPRISE: 249 };
+      const amountSpentUSD = USD_PRICES[tier as keyof typeof USD_PRICES] || 0;
+      const amountSpentINR = Math.round(amountSpentUSD * 83.5);
+
       // Upgrade user in Database
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
           tier: finalTier as any,
+          availableCredits: { increment: Math.max(0, finalCreditsToAdd) },
+          totalSpent: { increment: amountSpentINR },
           lemonSqueezyCustomerId: customerId,
-          availableCredits: { increment: finalCreditsToAdd }
         }
       });
 
@@ -111,6 +117,17 @@ export async function POST(req: Request) {
           console.error("Failed to send upgrade email:", emailErr);
         }
       }
+
+      // Send Notification to Buyer
+      await prisma.notification.create({
+        data: {
+          userId: userId,
+          type: "PLAN_BOUGHT",
+          title: `Upgraded to ${tier}`,
+          description: "Your payment was successful and your plan has been instantly upgraded.",
+          link: "/dashboard/billing",
+        }
+      });
 
       console.log(`[Lemon Squeezy] Successfully upgraded user ${userId} to ${tier}`);
 
@@ -149,15 +166,16 @@ export async function POST(req: Request) {
         console.log(`[Lemon Squeezy] Auto-upgraded Lite idea ${latestLiteIdea.id} for user ${userId}`);
       }
 
-      // Handle Affiliate Commission (20% of final paid amount)
+      // Handle Affiliate Commission (20% of the ORIGINAL non-discounted amount)
       const affiliateCode = customData?.affiliate_code;
       if (affiliateCode) {
         // LS total is in cents (USD). E.g., 4900 = $49.00
-        const totalCentsUSD = payload.data.attributes.total;
-        const totalUSD = totalCentsUSD / 100;
+        const discountedTotalUSD = payload.data.attributes.total / 100;
+        // Calculate the original base price assuming a 10% discount was applied
+        const originalTotalUSD = discountedTotalUSD / 0.9;
         // Convert to INR roughly (83 INR per USD) to keep unified balance
-        const totalINR = Math.round(totalUSD * 83);
-        const commissionINR = Math.round(totalINR * 0.20);
+        const originalTotalINR = Math.round(originalTotalUSD * 83);
+        const commissionINR = Math.round(originalTotalINR * 0.20);
 
         try {
           const affiliateProfile = await prisma.affiliateProfile.findUnique({
@@ -182,6 +200,17 @@ export async function POST(req: Request) {
                 data: {
                   userId: userId,
                   couponCode: affiliateCode
+                }
+              });
+
+              // Notify Affiliate
+              await prisma.notification.create({
+                data: {
+                  userId: affiliateProfile.userId,
+                  type: "AFFILIATE_SALE",
+                  title: "New Affiliate Sale!",
+                  description: `Someone just bought a plan using your code ${affiliateCode}. You earned ₹${commissionINR}.`,
+                  link: "/dashboard/affiliate",
                 }
               });
             }

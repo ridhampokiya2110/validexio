@@ -3,7 +3,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Startup Idea Validation FAQ - India | Validexio",
-  description: "Get answers to the top 100 questions about validating your startup idea in India. Learn about market research, competitor analysis, and checking business viability with AI.",
+  description: "Get answers to the top 100 questions about validating your startup idea in India. Learn about market research, competitor analysis, and checking business viability with live market data.",
   keywords: seoKeywords.join(", "),
   alternates: {
     canonical: "https://validexio.com/startup-validation-faq",
@@ -28,7 +28,7 @@ export default function StartupValidationFaq() {
   return (
     <main className="min-h-screen bg-[#F5F5F7] dark:bg-[#111111] text-slate-900 dark:text-slate-100 py-24 px-6 md:px-12 selection:bg-rose-500/30">
       
-      {/* Inject JSON-LD Schema for Google & AI Bots */}
+      {/* Inject JSON-LD Schema for Google & Search Bots */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

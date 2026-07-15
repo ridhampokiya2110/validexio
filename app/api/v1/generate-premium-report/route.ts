@@ -155,10 +155,12 @@ SCALE: ${scale || "Startup"}
 
 ${geoInstructions}
 
+TOKEN LIMIT RULE (CRITICAL): Your absolute hard limit is 8000 tokens. You MUST provide incredibly rich, premium, and highly detailed data. However, you MUST be completely fluff-free. Do not write repetitive paragraphs or corporate jargon. Provide dense, data-rich insights. The 90-DAY ACTION PLAN must be highly specific and deeply technical. If you write fluff, the JSON will truncate and fail.
+
 Return the data STRICTLY in the JSON format requested. Provide exactly 15 comprehensive narrative sections under business_sections. Write production-ready Next.js code, clean PostgreSQL DDL, and deep AWS architecture specs.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-1.5-flash",
+      model: "gemini-flash-lite-latest",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

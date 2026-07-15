@@ -108,7 +108,7 @@ Revenue Potential: ${JSON.stringify(latestReport.revenuePotential)}
     }
 
     const textModel = genAI.getGenerativeModel({ 
-      model: "gemini-flash-latest",
+      model: "gemini-flash-lite-latest",
       generationConfig: { maxOutputTokens: 200, temperature: 0.7 } 
     });
 
@@ -132,7 +132,7 @@ Revenue Potential: ${JSON.stringify(latestReport.revenuePotential)}
     };
 
     const jsonModel = genAI.getGenerativeModel({ 
-      model: "gemini-flash-latest",
+      model: "gemini-flash-lite-latest",
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,
@@ -192,7 +192,7 @@ EXAMPLE OF A GOOD QUESTION:
       if (cerebrasClient) {
         try {
           const cerebrasResponse = await cerebrasClient.chat.completions.create({
-            model: "gpt-oss-120b",
+            model: "llama3.1-70b",
             messages: [
               { role: "system", content: prompt },
               { role: "user", content: "Generate the next investor question now." }

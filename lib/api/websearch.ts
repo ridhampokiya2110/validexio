@@ -7,7 +7,7 @@ import { extractCompetitorWebsites } from "./tavily";
  * Hybrid Routing Logic:
  * 1. Local Search -> Google Maps API (Verified local businesses)
  * 2. Local Fallback -> Overpass API (Free OpenStreetMap businesses)
- * 3. Global/Digital Search -> SerpAPI (Google Organic Search)
+ * 3. Global/Digital Search -> Google Custom Search API (Official Google Search)
  * 
  * @param idea The startup idea description
  * @param industry The industry of the startup
@@ -39,71 +39,70 @@ export async function fetchRealCompetitors(idea: string, industry: string, locat
       }
     }
 
-    const apiKey = process.env.SERPAPI_API_KEY;
-    if (!apiKey) {
-      console.warn("SERPAPI_API_KEY is not defined. Skipping SerpAPI competitor search.");
-      return localResults ? localResults : "No real-time local competitor data available from SerpAPI.";
+    const tavilyKey = process.env.TAVILY_API_KEY;
+
+    if (!tavilyKey) {
+      console.warn("TAVILY_API_KEY is missing. Skipping Global Search fallback.");
+      return localResults ? localResults : "No real-time global competitor data available due to missing search keys.";
     }
 
-    // 2. Fallback to SerpAPI (Google Search)
+    // 3. Fallback to Tavily Search API
     let query = `top ${industry} competitors companies`;
     if (!isGlobal) {
       query = `${industry} companies businesses in ${location}`;
     }
 
-    // Build SerpAPI URL
-    const url = new URL('https://serpapi.com/search.json');
-    url.searchParams.append('q', query);
-    url.searchParams.append('api_key', apiKey);
-    url.searchParams.append('num', limit.toString()); // respect limit
-    if (!isGlobal) {
-      url.searchParams.append('location', location);
-    }
+    console.log(`Fetching real competitors from Tavily. Query: "${query}" with limit: ${limit}`);
 
-    console.log(`Fetching real competitors from SerpAPI. Query: "${query}" with limit: ${limit}`);
-
-    const response = await fetch(url.toString(), {
-      method: "GET",
+    const response = await fetch("https://api.tavily.com/search", {
+      method: "POST",
       headers: {
-        "Accept": "application/json",
-      }
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        api_key: tavilyKey,
+        query: query,
+        search_depth: "basic",
+        include_images: false,
+        max_results: limit
+      })
     });
 
     if (!response.ok) {
-      console.warn(`SerpAPI request failed with status ${response.status}`);
-      return localResults ? localResults : "No real-time local competitor data available from SerpAPI.";
+      console.warn(`Tavily Search request failed with status ${response.status}`);
+      return localResults ? localResults : "No real-time global competitor data available from Web Search.";
     }
 
     const data = await response.json();
     
-    if (data.organic_results && data.organic_results.length > 0) {
-      const topResults = data.organic_results.slice(0, limit);
+    if (data.results && data.results.length > 0) {
+      const topResults = data.results.slice(0, limit);
       
       // Gather URLs to scrape
       const urlsToScrape: string[] = [];
       topResults.forEach((result: any) => {
-        if (result.link) urlsToScrape.push(result.link);
+        if (result.url) urlsToScrape.push(result.url);
       });
 
       // Scrape them in parallel using Tavily Extract
       const scrapedWebsites = await extractCompetitorWebsites(urlsToScrape);
 
       const competitors = topResults.map((result: any, index: number) => {
-        let details = `Competitor ${index + 1}: ${result.title} | Website: ${result.link} | Description: ${result.snippet}`;
+        let details = `Competitor ${index + 1}: ${result.title} | Website: ${result.url} | Description: ${result.content}`;
         
         // Append scraped website content if available
-        if (result.link && scrapedWebsites.has(result.link)) {
-          details += `\n   -> Scraped Website Content (USE THIS FOR ANALYSIS): ${scrapedWebsites.get(result.link)}`;
+        if (result.url && scrapedWebsites.has(result.url)) {
+          details += `\n   -> Scraped Website Content (USE THIS FOR ANALYSIS): ${scrapedWebsites.get(result.url)}`;
         }
         
         return details;
       });
-      return `Real Competitors found via Google Search in ${location}:\n\n` + competitors.join('\n\n');
+      return `Real Competitors found via Web Search in ${location}:\n\n` + competitors.join('\n\n');
     }
 
     return localResults ? localResults : "No prominent organic competitors found in this specific location.";
   } catch (error) {
-    console.error("Error fetching competitor intel from APIs:", error);
-    return "No real-time local competitor data available.";
+    console.error("Error fetching competitor intel from Web Search API:", error);
+    return "No real-time global competitor data available.";
   }
 }

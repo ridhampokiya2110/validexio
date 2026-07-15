@@ -22,6 +22,16 @@ export async function PATCH(req: Request, context: { params: Promise<{ id: strin
       },
     });
 
+    await prisma.notification.create({
+      data: {
+        userId: updatedTicket.userId,
+        type: "SUPPORT",
+        title: "Support Ticket Resolved",
+        description: `Your ticket regarding "${updatedTicket.subject}" has been marked as resolved by our team.`,
+        link: "/dashboard",
+      }
+    });
+
     return NextResponse.json({ success: true, ticket: updatedTicket });
   } catch (error) {
     console.error("Admin Resolve Ticket Error:", error);

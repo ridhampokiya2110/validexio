@@ -34,6 +34,18 @@ export async function PATCH(
       data: { status }
     });
 
+    if (status === "PAID") {
+      await prisma.notification.create({
+        data: {
+          userId: request.userId,
+          type: "PAYOUT",
+          title: "Payout Successful!",
+          description: `Your payout request for ₹${request.amount} has been processed and paid out.`,
+          link: "/dashboard/affiliate",
+        }
+      });
+    }
+
     return NextResponse.json(updatedRequest);
   } catch (error: any) {
     console.error("Admin payout update error:", error);

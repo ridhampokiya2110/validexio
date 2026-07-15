@@ -25,7 +25,7 @@ async function regenerate() {
 
   console.log("Firing parallel data gathering requests...");
   const tavilyPromise = import("../lib/api/tavily").then(m => m.fetchCompetitorIntel(idea.title, idea.industry));
-  const serpApiPromise = import("../lib/api/serpapi").then(m => m.fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors));
+  const serpApiPromise = import("../lib/api/websearch").then(m => m.fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors));
   const hnPromise = import("../lib/api/hackernews").then(m => m.fetchHNSentiment(idea.title, idea.industry));
   const redditPromise = import("../lib/api/reddit").then(m => m.fetchRedditFrustrations(idea.title, idea.industry));
   const apolloPromise = fetchB2BLeads(idea.industry, idea.location || "global", maxLeads);

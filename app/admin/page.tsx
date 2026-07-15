@@ -3,13 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { Zap, Users, BarChart3, ShieldAlert, CheckCircle, Loader2, MessageSquare, LayoutDashboard, Trash2, Ticket } from "lucide-react";
+import { Zap, Users, BarChart3, ShieldAlert, CheckCircle, Loader2, MessageSquare, LayoutDashboard, Trash2, Ticket, DollarSign, FileText } from "lucide-react";
 import { toast } from "sonner";
 
 interface KPI {
-  totalMRR: number;
+  totalUSD: number;
+  totalINR: number;
+  intlUSD: number;
   totalFounders: number;
-  ideasValidated: number;
+  starterReports: number;
+  proReports: number;
+  teamReports: number;
+  enterpriseReports: number;
+  freeReports: number;
   activeTickets: number;
 }
 
@@ -363,30 +369,67 @@ export default function AdminConsole() {
           <section className="animate-fade-in-scale">
             <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1B1716]">
               <BarChart3 className="w-5 h-5 text-cherry" />
-              Platform Telemetry
+              Platform Stats
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="stat-card">
-                <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Total MRR</p>
-                <p className="text-3xl font-black text-[#1B1716]">${kpis?.totalMRR?.toLocaleString() ?? 0}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <div className="glass-card p-6 flex flex-col justify-center items-center text-center">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="w-5 h-5 text-cherry" />
+                  <h3 className="text-[#1B1716]/60 font-medium">Total USD Earned</h3>
+                </div>
+                <p className="text-3xl font-black text-[#1B1716]">${kpis?.totalUSD?.toLocaleString() ?? 0}</p>
               </div>
-              <div className="stat-card">
-                <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Total Founders</p>
+              
+              <div className="glass-card p-6 flex flex-col justify-center items-center text-center">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="w-5 h-5 text-cherry" />
+                  <h3 className="text-[#1B1716]/60 font-medium">Total INR Earned</h3>
+                </div>
+                <p className="text-3xl font-black text-[#1B1716]">₹{kpis?.totalINR?.toLocaleString() ?? 0}</p>
+              </div>
+
+              <div className="glass-card p-6 flex flex-col justify-center items-center text-center">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-5 h-5 text-cherry" />
+                  <h3 className="text-[#1B1716]/60 font-medium">Total Users</h3>
+                </div>
                 <p className="text-3xl font-black text-[#1B1716]">{kpis?.totalFounders?.toLocaleString() ?? 0}</p>
               </div>
-              <div className="stat-card">
-                <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Ideas Validated</p>
-                <p className="text-3xl font-black text-[#1B1716]">{kpis?.ideasValidated?.toLocaleString() ?? 0}</p>
+
+              <div className="glass-card p-6 flex flex-col justify-center items-center text-center">
+                <div className="flex items-center gap-2 mb-2">
+                  <Ticket className="w-5 h-5 text-cherry" />
+                  <h3 className="text-[#1B1716]/60 font-medium">Live Tickets</h3>
+                </div>
+                <p className="text-3xl font-black text-[#1B1716]">{kpis?.activeTickets?.toLocaleString() ?? 0}</p>
+                <p className="text-xs text-[#1B1716]/40 mt-1">Total Unused Credits</p>
               </div>
-              <div className={`stat-card ${
-                (kpis?.activeTickets || 0) > 0 ? "border-red-200 bg-red-50/50" : ""
-              }`}>
-                <p className="text-sm font-semibold text-[#1B1716]/60 mb-1">Active Tickets</p>
-                <p className={`text-3xl font-black ${
-                  (kpis?.activeTickets || 0) > 0 ? "text-red-600" : "text-[#1B1716]"
-                }`}>
-                  {kpis?.activeTickets?.toLocaleString() ?? 0}
-                </p>
+            </div>
+
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-[#1B1716]">
+              <FileText className="w-5 h-5 text-cherry" />
+              Reports Generated
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div className="glass-card p-4 flex flex-col justify-center items-center text-center">
+                <h3 className="text-[#1B1716]/60 font-medium text-sm mb-1">Free Reports</h3>
+                <p className="text-2xl font-black text-[#1B1716]">{kpis?.freeReports?.toLocaleString() ?? 0}</p>
+              </div>
+              <div className="glass-card p-4 flex flex-col justify-center items-center text-center">
+                <h3 className="text-[#1B1716]/60 font-medium text-sm mb-1">Starter Reports</h3>
+                <p className="text-2xl font-black text-[#1B1716]">{kpis?.starterReports?.toLocaleString() ?? 0}</p>
+              </div>
+              <div className="glass-card p-4 flex flex-col justify-center items-center text-center">
+                <h3 className="text-[#1B1716]/60 font-medium text-sm mb-1">Pro Reports</h3>
+                <p className="text-2xl font-black text-[#1B1716]">{kpis?.proReports?.toLocaleString() ?? 0}</p>
+              </div>
+              <div className="glass-card p-4 flex flex-col justify-center items-center text-center">
+                <h3 className="text-[#1B1716]/60 font-medium text-sm mb-1">Team Reports</h3>
+                <p className="text-2xl font-black text-[#1B1716]">{kpis?.teamReports?.toLocaleString() ?? 0}</p>
+              </div>
+              <div className="glass-card p-4 flex flex-col justify-center items-center text-center">
+                <h3 className="text-[#1B1716]/60 font-medium text-sm mb-1">Enterprise Reports</h3>
+                <p className="text-2xl font-black text-[#1B1716]">{kpis?.enterpriseReports?.toLocaleString() ?? 0}</p>
               </div>
             </div>
           </section>

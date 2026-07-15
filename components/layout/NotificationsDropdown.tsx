@@ -38,6 +38,7 @@ export function NotificationsDropdown() {
       if (res.ok) {
         const data = await res.json();
         setActivities(data.activities || []);
+        setHasUnread(data.activities?.length > 0);
       }
     } catch (error) {
       console.error("Error fetching activities", error);
@@ -46,9 +47,23 @@ export function NotificationsDropdown() {
     }
   };
 
+  const markAsRead = async (id: string) => {
+    try {
+      await fetch("/api/v1/activity", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id })
+      });
+      setActivities(prev => prev.filter(a => a.id !== id));
+      setHasUnread(activities.length > 1);
+    } catch (error) {
+      console.error("Failed to mark read", error);
+    }
+    setIsOpen(false);
+  };
+
   const toggleDropdown = () => {
     if (!isOpen) {
-      setHasUnread(false);
       fetchActivities();
     }
     setIsOpen(!isOpen);
@@ -56,11 +71,13 @@ export function NotificationsDropdown() {
 
   const getIcon = (type: string) => {
     switch (type) {
-      case "login_success": return <LogIn className="w-4 h-4 text-emerald-500" />;
-      case "login_failed": return <AlertTriangle className="w-4 h-4 text-red-500" />;
-      case "report_generated": return <FileText className="w-4 h-4 text-cherry" />;
-      case "audit_log": return <Shield className="w-4 h-4 text-blue-500" />;
-      default: return <CheckCircle className="w-4 h-4 text-[#1B1716]/60" />;
+      case "PLAN_BOUGHT": return <CheckCircle className="w-4 h-4 text-emerald-500" />;
+      case "SECURITY_UPGRADE": return <Shield className="w-4 h-4 text-blue-500" />;
+      case "AFFILIATE_CODE": return <FileText className="w-4 h-4 text-purple-500" />;
+      case "AFFILIATE_SALE": return <LogIn className="w-4 h-4 text-emerald-500" />;
+      case "PAYOUT": return <CheckCircle className="w-4 h-4 text-green-500" />;
+      case "SUPPORT": return <AlertTriangle className="w-4 h-4 text-orange-500" />;
+      default: return <Bell className="w-4 h-4 text-[#1B1716]/60" />;
     }
   };
 
@@ -72,24 +89,33 @@ export function NotificationsDropdown() {
       >
         <Bell className="w-5 h-5" />
         {hasUnread && (
-          <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-cherry rounded-full ring-2 ring-white" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-cherry rounded-full ring-2 ring-white animate-pulse" />
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-xl shadow-xl border border-[#1B1716]/10 z-50 overflow-hidden animate-fade-in-scale">
-          <div className="p-4 border-b border-[#1B1716]/10 bg-gray-50 flex items-center justify-between">
-            <h3 className="font-bold text-[#1B1716]">Recent Activity</h3>
+        <>
+          {/* Mobile Overlay to capture clicks outside */}
+          <div className="fixed inset-0 z-40 sm:hidden" onClick={() => setIsOpen(false)} />
+          <div className="absolute right-[-10px] sm:right-0 top-full mt-2 w-[320px] sm:w-96 bg-white rounded-xl shadow-2xl border border-[#1B1716]/10 z-[100] overflow-hidden animate-fade-in-scale">
+            <div className="p-4 border-b border-[#1B1716]/10 bg-gray-50 flex items-center justify-between">
+              <h3 className="font-bold text-[#1B1716]">Recent Notifications</h3>
+            {activities.length > 0 && (
+              <span className="text-xs bg-cherry/10 text-cherry px-2 py-1 rounded-full font-semibold">
+                {activities.length} New
+              </span>
+            )}
           </div>
           
-          <div className="max-h-[400px] overflow-y-auto">
+          <div className="max-h-[60vh] sm:max-h-[400px] overflow-y-auto">
             {loading ? (
               <div className="flex justify-center items-center p-8">
                 <Loader2 className="w-6 h-6 text-cherry animate-spin" />
               </div>
             ) : activities.length === 0 ? (
-              <div className="p-8 text-center text-[#1B1716]/50 text-sm">
-                No recent activity found.
+              <div className="p-8 text-center text-[#1B1716]/50 text-sm flex flex-col items-center">
+                <Bell className="w-8 h-8 text-[#1B1716]/20 mb-2" />
+                You're all caught up!
               </div>
             ) : (
               <div className="divide-y divide-[#1B1716]/5">
@@ -97,8 +123,8 @@ export function NotificationsDropdown() {
                   <Link aria-label="Navigation link" 
                     key={activity.id} 
                     href={activity.link}
-                    onClick={() => setIsOpen(false)}
-                    className="flex gap-3 p-4 hover:bg-[#1B1716]/5 transition-colors"
+                    onClick={() => markAsRead(activity.id)}
+                    className="flex gap-3 p-4 hover:bg-[#1B1716]/5 transition-colors items-start"
                   >
                     <div className="w-8 h-8 rounded-full bg-[#1B1716]/5 flex items-center justify-center flex-shrink-0 mt-0.5">
                       {getIcon(activity.type)}
@@ -125,10 +151,11 @@ export function NotificationsDropdown() {
               onClick={() => setIsOpen(false)}
               className="text-xs font-semibold text-cherry hover:text-cherry/80 transition-colors"
             >
-              View Full Audit Log
+              Security Settings
             </Link>
           </div>
-        </div>
+          </div>
+        </>
       )}
     </div>
   );

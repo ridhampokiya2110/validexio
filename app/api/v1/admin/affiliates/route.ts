@@ -25,8 +25,8 @@ export async function GET() {
     });
 
     const affiliates = rawAffiliates.filter(aff => {
-      const email = aff.user.email.toLowerCase();
-      const role = aff.user.role as string;
+      const email = aff.user?.email?.toLowerCase() || "";
+      const role = aff.user?.role as string;
       return role !== 'ADMIN' && role !== 'SUPERADMIN' && !adminEmails.includes(email);
     });
 
@@ -40,8 +40,8 @@ export async function GET() {
     });
 
     const payoutRequests = rawPayoutRequests.filter(req => {
-      const email = req.user.email.toLowerCase();
-      const role = req.user.role as string;
+      const email = req.user?.email?.toLowerCase() || "";
+      const role = req.user?.role as string;
       return role !== 'ADMIN' && role !== 'SUPERADMIN' && !adminEmails.includes(email);
     });
 

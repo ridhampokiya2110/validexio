@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireSuperAdmin } from "@/lib/guards/admin.guard";
-import { Redis } from "@upstash/redis";
 
-const redis = process.env.UPSTASH_REDIS_REST_URL 
-  ? new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
-    })
-  : null;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
@@ -17,41 +11,60 @@ export async function GET() {
       return NextResponse.json({ error: "Not Found" }, { status: 404 });
     }
 
-    const cacheKey = "admin_kpis_cache";
-    if (redis) {
-      const cached = await redis.get(cacheKey);
-      if (cached) {
-        return NextResponse.json(cached);
-      }
-    }
-
     const [
       totalFounders,
-      ideasValidated,
+      starterReports,
+      proReports,
+      teamReports,
+      enterpriseReports,
+      freeReports,
       activeTickets,
-      proSubscriptions
+      indianUsersSum,
+      intlUsersSum
     ] = await Promise.all([
       prisma.user.count(),
-      prisma.validationSession.count(),
-      prisma.supportTicket.count({ where: { status: "OPEN" } }),
-      prisma.user.count({ where: { tier: "PRO" } })
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "STARTER" } } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "PRO" } } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "TEAM" } } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "ENTERPRISE" } } }),
+      prisma.idea.count({ where: { isLite: true, status: "COMPLETED" } }),
+      // Sum of all unused credits across all users
+      prisma.user.aggregate({ _sum: { availableCredits: true } }),
+      // Indian Revenue (Razorpay)
+      prisma.user.aggregate({
+        _sum: { totalSpent: true },
+        where: { razorpayCustomerId: { not: null } }
+      }),
+      // International Revenue (LemonSqueezy)
+      prisma.user.aggregate({
+        _sum: { totalSpent: true },
+        where: { razorpayCustomerId: null }
+      })
     ]);
 
-    // Mock MRR calculation based on active Pro subscriptions
-    // Assuming PRO is $29/mo
-    const totalMRR = proSubscriptions * 29;
+    const totalINR = indianUsersSum._sum.totalSpent || 0;
+    const intlINR = intlUsersSum._sum.totalSpent || 0;
+    
+    // We stored LemonSqueezy totalSpent in INR using a rough 83.5 conversion earlier.
+    // Convert back to get the actual USD representation for International.
+    // Total USD should ONLY reflect international payments to prevent double counting visually.
+    const intlUSD = Math.round(intlINR / 83.5);
+    const totalUSD = intlUSD; // Only international USD
+
+    const unusedCredits = activeTickets._sum.availableCredits || 0;
 
     const kpis = {
-      totalMRR,
+      totalUSD, // International USD only
+      totalINR, // Specifically Indian Revenue
+      intlUSD,  
       totalFounders,
-      ideasValidated,
-      activeTickets
+      starterReports,
+      proReports,
+      teamReports,
+      enterpriseReports,
+      freeReports,
+      activeTickets: unusedCredits // Keep the same property name to avoid breaking frontend immediately
     };
-
-    if (redis) {
-      // Cache for 5 minutes (300 seconds)
-      await redis.setex(cacheKey, 300, kpis);
-    }
 
     return NextResponse.json(kpis);
   } catch (error) {

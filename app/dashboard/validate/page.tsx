@@ -20,6 +20,7 @@ import {
   AlertTriangle,
   Paperclip,
 } from "lucide-react";
+import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { INDUSTRIES, PRICING_MODELS, cn } from "@/lib/utils";
 
 const step1Schema = z.object({
@@ -840,55 +841,50 @@ export default function ValidatePage() {
                 <div className="grid sm:grid-cols-3 gap-4">
                   {form.targetScope !== "GLOBAL" && (
                     <div>
-                      <select
+                      <SearchableSelect
+                        options={countriesList.map(c => ({ value: c.isoCode, label: c.name }))}
                         value={selectedCountryCode}
-                        onChange={(e) => {
-                          const code = e.target.value;
+                        onChange={(code) => {
                           const name = countriesList.find(c => c.isoCode === code)?.name || "";
                           setSelectedCountryCode(code);
                           setForm({ ...form, targetCountry: name, targetState: "", targetCity: "" });
                           setSelectedStateCode("");
                         }}
-                        className={cn("input-field", errors.targetCountry ? "border-red-500/50" : "")}
-                      >
-                        <option value="">Select Country</option>
-                        {countriesList.map(c => <option key={c.isoCode} value={c.isoCode}>{c.name}</option>)}
-                      </select>
+                        placeholder="Select Country"
+                        hasError={!!errors.targetCountry}
+                      />
                       {errors.targetCountry && <p className="text-red-600 text-xs mt-1">{errors.targetCountry}</p>}
                     </div>
                   )}
 
                   {(form.targetScope === "STATE" || form.targetScope === "CITY") && (
                     <div>
-                      <select
+                      <SearchableSelect
+                        options={statesList.map(s => ({ value: s.isoCode, label: s.name }))}
                         value={selectedStateCode}
-                        onChange={(e) => {
-                          const code = e.target.value;
+                        onChange={(code) => {
                           const name = statesList.find(s => s.isoCode === code)?.name || "";
                           setSelectedStateCode(code);
                           setForm({ ...form, targetState: name, targetCity: "" });
                         }}
-                        className={cn("input-field", errors.targetState ? "border-red-500/50" : "")}
+                        placeholder="Select State"
                         disabled={!form.targetCountry}
-                      >
-                        <option value="">Select State</option>
-                        {statesList.map(s => <option key={s.isoCode} value={s.isoCode}>{s.name}</option>)}
-                      </select>
+                        hasError={!!errors.targetState}
+                      />
                       {errors.targetState && <p className="text-red-600 text-xs mt-1">{errors.targetState}</p>}
                     </div>
                   )}
 
                   {form.targetScope === "CITY" && (
                     <div>
-                      <select
+                      <SearchableSelect
+                        options={citiesList.map(c => ({ value: c.name, label: c.name }))}
                         value={form.targetCity}
-                        onChange={(e) => setForm({ ...form, targetCity: e.target.value })}
-                        className={cn("input-field", errors.targetCity ? "border-red-500/50" : "")}
+                        onChange={(name) => setForm({ ...form, targetCity: name })}
+                        placeholder="Select City"
                         disabled={!form.targetState}
-                      >
-                        <option value="">Select City</option>
-                        {citiesList.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-                      </select>
+                        hasError={!!errors.targetCity}
+                      />
                       {errors.targetCity && <p className="text-red-600 text-xs mt-1">{errors.targetCity}</p>}
                     </div>
                   )}

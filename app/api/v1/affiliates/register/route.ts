@@ -21,10 +21,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Already registered" }, { status: 400 });
     }
 
-    // Generate unique coupon code
-    const username = session.user.name?.replace(/\s+/g, '').toUpperCase().substring(0, 5) || "VAL";
-    const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const couponCode = `${username}-${randomStr}`;
+    // Generate exactly 6 letter unique hex coupon code
+    const { randomBytes } = require('crypto');
+    const couponCode = randomBytes(3).toString("hex").toUpperCase();
 
     const profile = await prisma.affiliateProfile.create({
       data: {
@@ -32,6 +31,16 @@ export async function POST(req: Request) {
         payoutEmail: paypalEmail || session.user.email,
         trafficSource: websiteUrl || null,
         couponCode,
+      }
+    });
+
+    await prisma.notification.create({
+      data: {
+        userId: session.user.id,
+        type: "AFFILIATE_CODE",
+        title: "Partner Program Joined",
+        description: `Your partner code ${couponCode} is ready! You will now earn 20% on all sales.`,
+        link: "/dashboard/affiliate",
       }
     });
 

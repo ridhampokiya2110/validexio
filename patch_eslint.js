@@ -14,7 +14,7 @@ const files = [
   './lib/api/leads.ts',
   './lib/api/overpass.ts',
   './lib/api/reddit.ts',
-  './lib/api/serpapi.ts',
+  './lib/api/websearch.ts',
   './lib/api/tavily.ts',
   './lib/auth.ts',
   './lib/data/examples.ts',

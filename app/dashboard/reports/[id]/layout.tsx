@@ -39,6 +39,38 @@ export default function ReportLayout({ children }: { children: ReactNode }) {
     }
   }, [activeSection]);
 
+  useEffect(() => {
+    // Setup intersection observer for scroll spy
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Find the first intersecting entry (we only want one active at a time)
+        const visibleEntries = entries.filter(entry => entry.isIntersecting);
+        if (visibleEntries.length > 0) {
+          // If multiple are visible, pick the top one
+          setActiveSection(visibleEntries[0].target.id);
+        }
+      },
+      {
+        root: null, // viewport
+        rootMargin: "-20% 0px -70% 0px", // triggers when element is roughly in the top 30% of screen
+        threshold: 0,
+      }
+    );
+
+    // Wait a brief moment for children to mount and render their DOM nodes
+    const timeoutId = setTimeout(() => {
+      TOC_ITEMS.forEach((item) => {
+        const el = document.getElementById(item.id);
+        if (el) observer.observe(el);
+      });
+    }, 1000);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
   return (
     <div className="flex flex-col md:flex-row h-[100dvh] bg-[#FDFCF8] overflow-hidden">
       {/* Mobile Top Navigation */}
@@ -101,7 +133,7 @@ export default function ReportLayout({ children }: { children: ReactNode }) {
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto relative bg-[#FDFCF8]">
+      <main className="flex-1 overflow-y-auto relative bg-[#FDFCF8] scroll-smooth">
         {children}
       </main>
     </div>

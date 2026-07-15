@@ -21,6 +21,12 @@ async function getCountryCode() {
   // Try Cloudflare header
   const cfCountry = headersList.get("cf-ipcountry");
   if (cfCountry) return cfCountry;
+
+  // If we are running on localhost, default to IN (India) so Razorpay testing works correctly
+  // especially when viewing from a mobile device on the local network.
+  if (process.env.NODE_ENV === "development") {
+    return "IN";
+  }
   
   // Extract client IP
   const forwardedFor = headersList.get("x-forwarded-for");
@@ -32,8 +38,10 @@ async function getCountryCode() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 1500);
     
-    // If local dev, don't pass the local IP so the API uses the machine's public IP
-    const url = (!ip || ip === "::1" || ip === "127.0.0.1") 
+    const isLocalIp = !ip || ip === "::1" || ip === "127.0.0.1" || ip.startsWith("192.168.") || ip.startsWith("10.") || ip.match(/^172\.(1[6-9]|2[0-9]|3[0-1])\./);
+    
+    // If local dev or LAN, don't pass the local IP so the API uses the machine's public IP
+    const url = isLocalIp 
       ? "https://api.country.is/" 
       : `https://api.country.is/${ip}`;
       
@@ -284,13 +292,9 @@ export default async function BillingPage() {
             </ul>
 
             <div className="mt-auto pt-4">
-              {plan.current ? (
+              {plan.name === "Free" ? (
                 <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
-                  Current Plan
-                </button>
-              ) : plan.name === "Free" ? (
-                <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-3 opacity-50 cursor-not-allowed">
-                  Downgrade to Free
+                  {plan.current ? "Current Plan" : "Downgrade to Free"}
                 </button>
               ) : (
                 <div className="flex-1 space-y-4">

@@ -76,7 +76,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
         
         // 1. Fetch SerpApi data (Global or Local depending on what is provided)
         try {
-          const { fetchRealCompetitors } = await import("../api/serpapi");
+          const { fetchRealCompetitors } = await import("../api/websearch");
           serpapiData = await fetchRealCompetitors(idea.title, idea.industry, idea.location || "global", maxCompetitors, tier as string);
         } catch (e) {
           console.warn(`[Job ${jobId}] SerpApi search failed:`, e);
@@ -275,7 +275,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
         // Others
         uiMockupImages: uiMockupImages,
         processingTime,
-        geminiModel: "gemini-flash-latest",
+        geminiModel: "gemini-flash-lite-latest",
         isLite: isLite,
       },
     });
@@ -288,7 +288,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
           name: lead.name,
           title: lead.title,
           company: lead.company,
-          email: lead.email || `${lead.name.split(' ')[0].toLowerCase()}@${lead.company.replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}.com`,
+          email: lead.email || `${(lead.name || "contact").split(' ')[0].toLowerCase()}@${(lead.company || "").replace(/[^a-zA-Z0-9]/g, "").toLowerCase()}.com`,
           linkedin: lead.linkedinUrl,
           relevanceScore: 90 + Math.floor(Math.random() * 10),
           notes: lead.notes || `Found via Free Premium Search Engine for ${idea.industry} in ${idea.location || "global"}`,

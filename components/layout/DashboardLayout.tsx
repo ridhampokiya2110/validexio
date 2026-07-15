@@ -280,7 +280,7 @@ export default function DashboardLayout({
         )}
         
         {/* Top Bar */}
-        <header className="flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#1B1716]/8 glass-dark flex-shrink-0">
+        <header className="relative z-50 flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#1B1716]/8 glass-dark flex-shrink-0">
           <div className="flex items-center gap-3">
             {/* Mobile menu button */}
             <button aria-label="Button action" type="button"
@@ -298,7 +298,7 @@ export default function DashboardLayout({
             {/* Credits Badge */}
             <Link aria-label="Navigation link"
               href="/dashboard/billing"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cherry/10 border border-cherry/20 hover:bg-cherry/20 transition-colors"
+              className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full bg-cherry/10 border border-cherry/20 hover:bg-cherry/20 transition-colors"
             >
               <Zap className="w-3.5 h-3.5 text-cherry" />
               <span className="text-xs font-bold text-cherry">

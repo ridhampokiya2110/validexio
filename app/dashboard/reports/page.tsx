@@ -8,8 +8,7 @@ import { formatRelativeTime, getScoreColor, getScoreLabel } from "@/lib/utils";
 import { DeleteReportButton } from "@/components/dashboard/DeleteReportButton";
 
 export const metadata = { title: "Validation Reports" };
-
-
+export const dynamic = "force-dynamic";
 
 async function getCachedReports(userId: string) {
   const [reports, processingIdeas] = await Promise.all([
@@ -60,7 +59,14 @@ async function ReportsContent({ userId }: { userId: string }) {
             <div key={idea.id} className="glass-card p-5 flex items-center gap-4 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_1.5s_infinite] -translate-x-full" />
               
-              <div className="w-16 h-16 rounded-full border-4 border-[#1B1716]/5 border-t-cherry animate-spin flex-shrink-0" />
+              <div className="relative w-16 h-16 flex-shrink-0 flex items-center justify-center">
+                {/* Outer rotating dashed ring */}
+                <div className="absolute inset-0 rounded-full border border-dashed border-cherry/40 animate-[spin_8s_linear_infinite]" />
+                {/* Inner counter-rotating ring */}
+                <div className="absolute inset-2 rounded-full border-2 border-cherry/20 border-t-cherry animate-[spin_2s_linear_infinite_reverse]" />
+                {/* Core glow */}
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#1B1716] to-[#75070C] animate-pulse shadow-[0_0_15px_rgba(117,7,12,0.5)]" />
+              </div>
               
               <div className="flex-1 min-w-0">
                 <p className="text-[#1B1716] font-semibold truncate">

@@ -340,6 +340,12 @@ a:hover {
   box-shadow: 0 0 0 3px rgba(117, 7, 12, 0.1);
 }
 
+/* Hide Edge/IE native password reveal icon to prevent double icons */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
 /* ============================================
    CARD STYLES
    ============================================ */

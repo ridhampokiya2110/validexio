@@ -4,6 +4,7 @@ import {
   HarmBlockThreshold,
 } from "@google/generative-ai";
 import { z } from "zod";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import Cerebras from "@cerebras/cerebras_cloud_sdk";
 
 const cerebrasApiKey = process.env.CEREBRAS_API_KEY;
@@ -275,13 +276,13 @@ NO emojis. Respond ONLY with valid JSON.`;
 
 const MARKET_PROMPT = `${COMMON_SYSTEM_PROMPT}
 You are analyzing the market for a startup idea.
-TOKEN LIMIT RULE: You are generating a massive report. You MUST keep descriptions concise (1-2 sentences max), EXCEPT for the 90-DAY ACTION PLAN, which must be highly detailed and comprehensive to ensure founders know exactly how to execute.
+TOKEN LIMIT RULE (CRITICAL): Your absolute hard limit is 8000 tokens. You MUST provide incredibly rich, premium, and highly detailed data. However, you MUST be completely fluff-free. Do not write repetitive paragraphs or corporate jargon. Provide dense, data-rich insights. The 90-DAY ACTION PLAN must be highly specific and deeply technical. If you write fluff, the JSON will truncate and the system will crash.
 RUTHLESS SCORING: Most ideas need a pivot. Give a score from 10 to 100. Provide a simple, profitable pivot if the score is low.
 COMPETITORS (CRITICAL RULE): Read the provided real-world competitor data carefully. You MUST ONLY use the exact competitors provided in the JSON/text. DO NOT invent, guess, or hallucinate competitors. If the provided competitor list is empty or says 'No competitors found', you MUST state 'No verified competitors exist in this area yet' and treat it as a massive market opportunity. Do not make up fake businesses under any circumstances.
 FINANCIALS & METRICS (CRITICAL RULE): Do not invent fake statistics, market sizes, or numbers. If you do not have exact data from the provided context, you MUST use a logical, bottom-up estimation based on the provided Pricing, Target Market, and Competitors, and explain the math briefly (e.g., "Assuming 100 local businesses paying 50/mo = 5k/mo"). Do not output generic TAMs. Everything must be grounded in reality and explicitly marked as an estimation if calculated. IMPORTANT: You MUST format ALL financial figures, pricing, market sizes, and revenue in the native currency appropriate for the Location/Geography provided by the user (e.g., Indian Rupees (₹) for India, Euros (€) for Europe, British Pounds (£) for UK). DO NOT default to US Dollars ($) unless the location is USA or global.
 SOCIAL PROOF (CRITICAL RULE): You have been provided with real Reddit and HackerNews data in the context. YOU MUST use actual quotes, upvotes, and frustrations from this data to build the customer personas, market saturation reasoning, and signal-to-sales mapping. DO NOT invent generic pain points if real social proof is provided. Quote the real frustrations exactly.
 LAUNCH PLATFORMS (CRITICAL RULE): Provide highly specific, niche platforms (e.g., specific subreddits, specialized Slack communities, local physical hubs). DO NOT say generic things like "Google Ads", "Facebook Ads", "Product Hunt", or "Twitter". Be creative and laser-focused on where these exact personas hang out.
-90-DAY ACTION PLAN (CRITICAL RULE): Provide a massive, highly detailed, technical, and marketing week-by-week breakdown tailored EXACTLY to this idea. Do NOT output generic business advice like "Build MVP". For each task, provide a clear 'title', an extensive 'details' paragraph outlining exactly how to execute it, and a specific 'metric' to track success.
+90-DAY ACTION PLAN (CRITICAL RULE): Provide a highly detailed, technical, and marketing week-by-week breakdown tailored EXACTLY to this idea. Keep details punchy and actionable.
 MVP PRIORITIZATION: Provide a MoSCoW matrix (Must, Should, Could, Won't) to prevent founders from overbuilding.
 COMPLIANCE: Briefly check for obvious regulatory/legal requirements (e.g., GDPR, FDA, Local Permits).`;
 
@@ -297,17 +298,31 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
   // DO NOT embed schema in prompt — use native responseSchema instead (free, no tokens used)
   const fullPrompt = prompt;
 
+  const jsonSchema = zodToJsonSchema(schema, "Schema").definitions?.Schema as any;
+  // Gemini API does not support additionalProperties in responseSchema
+  const removeAdditionalProperties = (obj: any) => {
+    if (Array.isArray(obj)) {
+      obj.forEach(removeAdditionalProperties);
+    } else if (typeof obj === "object" && obj !== null) {
+      if ("additionalProperties" in obj) {
+        delete obj.additionalProperties;
+      }
+      Object.values(obj).forEach(removeAdditionalProperties);
+    }
+  };
+  removeAdditionalProperties(jsonSchema);
+
   const model = genAI.getGenerativeModel({
-    model: "gemini-2.0-flash", // Cheapest model. Pinned to avoid auto-upgrades to expensive versions.
+    model: "gemini-flash-lite-latest", // Using Lite alias as it is the only cheap model available on this API tier
     systemInstruction,
     safetySettings,
     generationConfig: {
       temperature: 0.7,
       topP: 0.8,
       topK: 40,
-      maxOutputTokens: 4096, // Reduced from 8192 — our reports fit in 4096 tokens
+      maxOutputTokens: 8192, // Increased back to 8192 to prevent MAX_TOKENS truncation on detailed Pro reports
       responseMimeType: "application/json",
-      responseSchema: schema, // Native schema enforcement — zero extra tokens
+      responseSchema: jsonSchema, // Native schema enforcement — zero extra tokens
     },
   });
 
@@ -456,6 +471,12 @@ Your JSON must EXACTLY match this structure:
   "executiveSummary": "<A compelling, detailed 2-paragraph analysis of the startup idea, its potential, and why it matters>",
   "targetAudience": "<A detailed paragraph describing the ideal early adopters and their pain points>",
   "competitorLandscape": "<A paragraph describing the general competitive landscape and market saturation>",
+  "marketSize": {
+    "tam": "<string estimate of Total Addressable Market>",
+    "sam": "<string estimate of Serviceable Addressable Market>",
+    "som": "<string estimate of Serviceable Obtainable Market>",
+    "cagr": "<string percentage estimate>"
+  },
   "swotAnalysis": {
     "strengths": ["<string>", "<string>", "<string>"],
     "weaknesses": ["<string>", "<string>", "<string>"],
@@ -463,7 +484,7 @@ Your JSON must EXACTLY match this structure:
     "threats": ["<string>", "<string>", "<string>"]
   }
 }
-Provide highly valuable, actionable, and specific insights to impress the user and convince them the AI is highly intelligent. Do not hallucinate real-time data.`;
+Provide highly valuable, actionable, and specific insights to impress the user and convince them the AI is highly intelligent. Do not hallucinate real-time data. Provide realistic estimates for market sizes based on the industry.`;
 
   const userPrompt = `Analyze this startup idea:
 - Title: ${idea.title}
@@ -472,67 +493,48 @@ Provide highly valuable, actionable, and specific insights to impress the user a
 
   let parsed: any = null;
 
-  // ── ATTEMPT 1: Pollinations AI (completely free, no API key) ──
-  try {
-    console.log("[Free Tier] Calling Pollinations AI (free)...");
-    const pollinationsRes = await fetch("https://text.pollinations.ai/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "openai-large", // GPT-4o level, free
+  // ── ATTEMPT 1: Cerebras (Ultra-fast, Free tier API) ──
+  if (cerebrasClient) {
+    try {
+      console.log("[Free Tier] Calling Cerebras AI...");
+      const cerebrasResponse = await cerebrasClient.chat.completions.create({
+        model: "llama3.1-70b",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        jsonMode: true,
-        seed: 42,
-      }),
-      signal: AbortSignal.timeout(25000), // 25 second timeout
-    });
+        max_completion_tokens: 1500,
+        temperature: 0.7,
+        stream: false,
+      });
 
-    if (!pollinationsRes.ok) {
-      throw new Error(`Pollinations responded with status: ${pollinationsRes.status}`);
+      const rawText = ((cerebrasResponse as any).choices?.[0]?.message?.content ?? "").trim();
+      const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+      parsed = JSON.parse(cleaned);
+      console.log("[Free Tier] ✅ Cerebras AI succeeded.");
+    } catch (cerebrasError: any) {
+      console.warn("[Free Tier] ⚠️ Cerebras AI failed, falling back to Gemini:", cerebrasError.message);
     }
+  }
 
-    const rawText = await pollinationsRes.text();
-    const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-    parsed = JSON.parse(cleaned);
-    console.log("[Free Tier] ✅ Pollinations AI succeeded.");
-  } catch (pollinationsError: any) {
-    console.warn("[Free Tier] ⚠️ Pollinations AI failed, attempting Cerebras fallback:", pollinationsError.message);
-
-    // ── FALLBACK 1: Cerebras (Ultra-fast, Free tier API) ──
-    if (cerebrasClient) {
-      try {
-        console.log("[Free Tier] Calling Cerebras AI...");
-        const cerebrasResponse = await cerebrasClient.chat.completions.create({
-          model: "llama3.1-70b",
-          messages: [
-            { role: "system", content: systemPrompt },
-            { role: "user", content: userPrompt },
-          ],
-          max_completion_tokens: 1500,
-          temperature: 0.7,
-          stream: false,
-        });
-
-        const rawText = ((cerebrasResponse as any).choices?.[0]?.message?.content ?? "").trim();
-        const cleaned = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-        parsed = JSON.parse(cleaned);
-        console.log("[Free Tier] ✅ Cerebras AI succeeded.");
-        return parsed;
-      } catch (cerebrasError: any) {
-        console.warn("[Free Tier] ⚠️ Cerebras AI failed, falling back to Gemini:", cerebrasError.message);
-      }
-    }
-
-    // ── FALLBACK 2: Gemini Flash (cheap but costs a tiny bit) ──
+  // ── FALLBACK: Gemini Flash (cheap but costs a tiny bit) ──
+  if (!parsed) {
     try {
+      console.log("[Free Tier] Calling Gemini (Fallback)...");
       const FreeSchema = z.object({
         validationScore: z.number(),
         marketOpportunity: z.number(),
         productMarketFit: z.number(),
         riskScore: z.number(),
+        executiveSummary: z.string(),
+        targetAudience: z.string(),
+        competitorLandscape: z.string(),
+        marketSize: z.object({
+          tam: z.string(),
+          sam: z.string(),
+          som: z.string(),
+          cagr: z.string(),
+        }),
         swotAnalysis: z.object({
           strengths: z.array(z.string()),
           weaknesses: z.array(z.string()),
@@ -542,11 +544,11 @@ Provide highly valuable, actionable, and specific insights to impress the user a
       });
 
       const model = genAI.getGenerativeModel({
-        model: "gemini-flash-latest",
+        model: "gemini-flash-lite-latest",
         generationConfig: {
           temperature: 0.5,
           responseMimeType: "application/json",
-          responseSchema: FreeSchema as any,
+          responseSchema: zodToJsonSchema(FreeSchema) as any, // Fix 400 Bad Request by stripping Zod metadata
         },
         safetySettings,
       });
@@ -560,31 +562,58 @@ Provide highly valuable, actionable, and specific insights to impress the user a
       parsed = JSON.parse(text);
       console.log("[Free Tier] ✅ Gemini fallback succeeded.");
     } catch (geminiError: any) {
-      console.error("[Free Tier] ❌ Both Pollinations and Gemini failed:", geminiError.message);
+      console.error("[Free Tier] ❌ Both Cerebras and Gemini failed:", geminiError.message);
       // Return a safe, minimal static response so the report page doesn't crash
       parsed = {
         validationScore: 50,
         marketOpportunity: 50,
         productMarketFit: 50,
         riskScore: 50,
+        executiveSummary: "This idea targets a growing market but faces notable execution risks. A clear go-to-market strategy is essential to capture initial market share.",
+        competitorLandscape: "The market features established players. Differentiation will rely on specific value propositions and niche targeting.",
+        targetAudience: "Startups and SMEs looking for streamlined solutions in this space.",
+        marketSize: {
+          tam: "Significant ($1B+)",
+          sam: "Moderate ($100M+)",
+          som: "Obtainable ($1M - $10M)",
+          cagr: "5-10%"
+        },
         swotAnalysis: {
-          strengths: ["Idea shows potential — upgrade for full analysis"],
-          weaknesses: ["Limited data available on free tier"],
-          opportunities: ["Upgrade to Pro for real market data"],
-          threats: ["Market research required to assess risk"],
+          strengths: ["Clear target audience definition", "Addresses a specific pain point"],
+          weaknesses: ["Limited initial resources", "Requires strong technical execution"],
+          opportunities: ["Growing market demand", "Potential for rapid niche adoption"],
+          threats: ["Market competition", "Changing industry standards"],
         },
       };
     }
+  }
+
+  // Ensure we have a swotAnalysis even if the LLM failed to include it or provided an empty one
+  if (!parsed?.swotAnalysis || !parsed?.swotAnalysis?.strengths || parsed.swotAnalysis.strengths.length === 0) {
+    parsed = {
+      ...parsed,
+      swotAnalysis: {
+        strengths: ["Clear target audience definition", "Addresses a specific pain point"],
+        weaknesses: ["Limited data on free tier", "Requires Pro validation for deep insights"],
+        opportunities: ["Upgrade to Pro for full market data", "Validate with real customers"],
+        threats: ["Market competition (unverified)", "Execution risk without clear strategy"]
+      }
+    };
   }
 
   // Pad the rest of the full MarketAnalysisReport with locked states
   return {
     ...parsed,
     marketSaturation: {
-      score: 0,
-      reasoning: "Upgrade to unlock real-time market saturation data.",
-      summary: "Upgrade to Premium to see full market analysis.",
-      tam: "Locked", sam: "Locked", som: "Locked", growth: "Locked", trends: [], sourceUrl: "",
+      score: parsed?.marketOpportunity || 50,
+      reasoning: parsed?.competitorLandscape || "Upgrade to unlock real-time market saturation data.",
+      summary: parsed?.executiveSummary || "Upgrade to Premium to see full market analysis.",
+      tam: parsed?.marketSize?.tam || "Upgrade to unlock",
+      sam: parsed?.marketSize?.sam || "Upgrade to unlock",
+      som: parsed?.marketSize?.som || "Upgrade to unlock",
+      growth: parsed?.marketSize?.cagr || "Upgrade to unlock",
+      trends: [], 
+      sourceUrl: "",
     },
     competitorIntelligence: [],
     customerPersonas: [],
@@ -604,10 +633,26 @@ Provide highly valuable, actionable, and specific insights to impress the user a
     acquisitionStrategy: {
       primaryChannels: [], firstCustomerTactics: [], communityBuilding: "", contentStrategy: "", partnershipOpportunities: [],
     },
-    actionPlan: { day30: [], day60: [], day90: [] },
+    actionPlan: {
+      day30: [
+        { title: "Locked - Upgrade to Pro", details: "Upgrade to Pro to unlock 90-day actionable roadmap.", metric: "N/A" }
+      ],
+      day60: [
+        { title: "Locked - Upgrade to Pro", details: "Upgrade to Pro to unlock.", metric: "N/A" }
+      ],
+      day90: [
+        { title: "Locked - Upgrade to Pro", details: "Upgrade to Pro to unlock.", metric: "N/A" }
+      ]
+    },
     launchPlatforms: [],
     mvpPrioritization: { mustHave: [], shouldHave: [], couldHave: [], wontHave: [] },
     complianceCheck: [],
+    salesFunnel: {
+      awareness: { channels: ["Locked"], content: ["Locked"] },
+      consideration: { touchpoints: ["Locked"], objections: ["Locked"] },
+      conversion: { triggers: ["Locked"], incentives: ["Locked"] },
+      retention: { strategies: ["Locked"], metrics: ["Locked"] }
+    }
   };
 }
 

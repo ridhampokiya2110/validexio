@@ -45,6 +45,7 @@ model User {
   razorpayCustomerId         String? @unique
   
   availableCredits           Int     @default(0)
+  totalSpent                 Float   @default(0)
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -63,9 +64,25 @@ model User {
   affiliateProfile   AffiliateProfile?
   couponUsages       CouponUsage[]
   payoutRequests     PayoutRequest[]
+  notifications      Notification[]
 
   @@index([email])
   @@map("users")
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   // "PLAN_BOUGHT", "SECURITY_UPGRADE", "AFFILIATE_CODE", "AFFILIATE_SALE", "PAYOUT", "SUPPORT", "SYSTEM"
+  title       String
+  description String
+  link        String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@index([createdAt])
 }
 
 model Account {

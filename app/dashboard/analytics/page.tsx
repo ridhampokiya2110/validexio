@@ -49,30 +49,30 @@ export default async function AnalyticsPage() {
 
   return (
     <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto">
-      <div className="flex items-center justify-between mb-10">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 sm:mb-10 gap-4">
         <div>
-          <h1 className="text-3xl sm:text-4xl font-black text-[#1B1716] tracking-tight mb-2">Performance Analytics</h1>
-          <p className="text-[#1B1716]/50 text-sm font-medium">Quantify your validation hit rate and industry spread</p>
+          <h1 className="text-3xl sm:text-4xl font-black text-[#1B1716] tracking-tight mb-2 break-words">Performance Analytics</h1>
+          <p className="text-[#1B1716]/50 text-sm font-medium break-words">Quantify your validation hit rate and industry spread</p>
         </div>
-        <div className="hidden sm:flex w-12 h-12 rounded-full bg-cherry/10 items-center justify-center border border-cherry/20">
+        <div className="hidden sm:flex w-12 h-12 rounded-full bg-cherry/10 items-center justify-center border border-cherry/20 shrink-0">
           <BarChart2 className="w-6 h-6 text-cherry" />
         </div>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
+      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-10">
         {[
           { label: "Total Concepts", value: totalIdeas, icon: Zap },
           { label: "Reports Generated", value: reports.length, icon: FileText },
           { label: "Average Rigor Score", value: avgScore || "—", icon: TrendingUp },
           { label: "Highest Score", value: bestScore || "—", icon: LineChart },
         ].map((stat) => (
-          <div key={stat.label} className="glass-card p-6 flex flex-col justify-between border-[#1B1716]/10 hover:border-cherry/30 transition-colors">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-[#1B1716]/50 text-xs font-bold uppercase tracking-wider">{stat.label}</p>
-              <stat.icon className="w-4 h-4 text-cherry/60" />
+          <div key={stat.label} className="glass-card p-4 sm:p-6 flex flex-col justify-between border-[#1B1716]/10 hover:border-cherry/30 transition-colors min-w-0">
+            <div className="flex flex-row items-center justify-between mb-4 gap-2">
+              <p className="text-[#1B1716]/50 text-[10px] sm:text-xs font-bold uppercase tracking-wider truncate">{stat.label}</p>
+              <stat.icon className="w-4 h-4 text-cherry/60 shrink-0" />
             </div>
-            <p className="text-4xl font-black text-[#1B1716] tracking-tighter">{stat.value}</p>
+            <p className="text-3xl sm:text-4xl font-black text-[#1B1716] tracking-tighter truncate">{stat.value}</p>
           </div>
         ))}
       </div>
@@ -86,16 +86,23 @@ export default async function AnalyticsPage() {
               <h2 className="text-lg font-bold text-[#1B1716] mb-6">Historical Rigor Analysis</h2>
               <div className="space-y-4">
                 {[...reports].reverse().map((report, i) => (
-                  <div key={`item-${i}`} className="flex items-center gap-2 sm:gap-4 group">
-                    <span className="text-[#1B1716]/40 text-xs w-14 sm:w-20 font-medium flex-shrink-0">
+                  <div key={`item-${i}`} className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 group w-full mb-4 sm:mb-0">
+                    <div className="flex justify-between items-center sm:hidden mb-1">
+                      <span className="text-[#1B1716]/40 text-[10px] font-medium">
+                        {new Date(report.createdAt).toISOString().split('T')[0]}
+                      </span>
+                      <span className="text-[#1B1716] text-xs font-black">{report.validationScore}</span>
+                    </div>
+                    
+                    <span className="hidden sm:block text-[#1B1716]/40 text-xs w-20 font-medium flex-shrink-0">
                       {new Date(report.createdAt).toISOString().split('T')[0]}
                     </span>
                     
-                    <div className="flex-1">
+                    <div className="flex-1 w-full min-w-0">
                       <div className="flex justify-between items-end mb-1">
-                        <span className="text-[#1B1716] text-xs font-bold truncate pr-2">{report.idea.title}</span>
+                        <span className="text-[#1B1716] text-xs sm:text-sm font-bold truncate pr-2 w-full">{report.idea.title}</span>
                       </div>
-                      <div className="h-4 bg-[#1B1716]/5 rounded-full overflow-hidden flex">
+                      <div className="h-3 sm:h-4 bg-[#1B1716]/5 rounded-full overflow-hidden flex w-full">
                         <div
                           className="h-full rounded-full transition-all duration-1000 ease-out"
                           style={{
@@ -106,7 +113,7 @@ export default async function AnalyticsPage() {
                       </div>
                     </div>
                     
-                    <div className="w-12 text-right flex-shrink-0">
+                    <div className="hidden sm:block w-12 text-right flex-shrink-0">
                       <span className="text-[#1B1716] text-sm font-black">{report.validationScore}</span>
                     </div>
                   </div>

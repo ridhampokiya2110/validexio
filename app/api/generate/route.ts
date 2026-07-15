@@ -57,9 +57,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Idea not found" }, { status: 404 });
     }
 
+    if (idea.status === "PROCESSING") {
+      return NextResponse.json({
+        success: true,
+        ideaId: idea.id,
+        status: "QUEUED",
+        jobId: idea.id
+      }, { status: 202 });
+    }
+
     if (idea.status !== "PENDING" && idea.status !== "FAILED") {
       return NextResponse.json(
-        { error: "Idea is already being processed or is completed" },
+        { error: "Idea is already completed" },
         { status: 400 }
       );
     }
@@ -77,15 +86,22 @@ export async function POST(req: NextRequest) {
 
     if (!process.env.REDIS_HOST) {
       console.log("No REDIS_HOST found. Bypassing BullMQ and processing directly in background...");
-      // Fire and forget (it will run in the background)
-      processValidationJob({
-        ideaId: idea.id,
-        userId: userId,
-        industry: idea.industry,
-        businessIdea: idea.title,
-        pricingModel: idea.pricingModel || "",
-        isPriority: !idea.isLite
-      } as any).catch(err => console.error("Background validation error:", err));
+      
+      try {
+        await processValidationJob({
+          ideaId: idea.id,
+          userId: userId,
+          industry: idea.industry,
+          businessIdea: idea.title,
+          pricingModel: idea.pricingModel || "",
+          isPriority: !idea.isLite
+        } as any);
+        
+        return NextResponse.json({ success: true, status: "COMPLETED", ideaId: idea.id });
+      } catch (err) {
+        console.error("Background validation error:", err);
+        return NextResponse.json({ success: false, status: "FAILED", error: "algorithmic analysis failed" }, { status: 500 });
+      }
     } else {
       console.log("Dispatching validation job to BullMQ queue...");
       const { dispatchValidationJob } = await import("@/lib/queue/validation.producer");

@@ -65,6 +65,16 @@ export async function POST(req: Request) {
       },
     });
 
+    await prisma.notification.create({
+      data: {
+        userId: userId,
+        type: "SECURITY_UPGRADE",
+        title: "Two-Factor Authentication Enabled",
+        description: "Your account security has been upgraded. 2FA is now active.",
+        link: "/dashboard/security",
+      }
+    });
+
     return NextResponse.json({
       success: true,
       backupCodes,

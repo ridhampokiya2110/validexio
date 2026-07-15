@@ -17,7 +17,7 @@ const COMPETITORS = [
   { lat: 12.9716, lng: 77.5946, name: "TechBengaluru", location: "Bangalore", avatar: "/competitors/5.png", status: "Analyzed" },
   { lat: -23.5505, lng: -46.6333, name: "Startio", location: "São Paulo", avatar: "/competitors/6.png", status: "Analyzed" },
   { lat: 35.6762, lng: 139.6503, name: "Nippon Innovate", location: "Tokyo", avatar: "/competitors/7.png", status: "Analyzed" },
-  { lat: -33.8688, lng: 151.2093, name: "Aussie AI", location: "Sydney", avatar: "/competitors/8.png", status: "Analyzed" },
+  { lat: -33.8688, lng: 151.2093, name: "Aussie Tech", location: "Sydney", avatar: "/competitors/8.png", status: "Analyzed" },
   { lat: 48.8566, lng: 2.3522, name: "Paris Labs", location: "Paris", avatar: "/competitors/3.png", status: "Analyzed" },
 ];
 

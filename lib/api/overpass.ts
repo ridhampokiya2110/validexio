@@ -62,7 +62,9 @@ export async function fetchOverpassCompetitors(industry: string, location: strin
     const response = await fetch(url, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+        "User-Agent": "Validexio Validation Engine v1.0 (contact@validexio.com)"
       },
       body: "data=" + encodeURIComponent(query)
     });
@@ -135,7 +137,11 @@ export async function fetchLocalLeadsViaOSM(industry: string, location: string, 
     const url = "https://overpass-api.de/api/interpreter";
     const response = await fetch(url, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      headers: { 
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+        "User-Agent": "Validexio Validation Engine v1.0 (contact@validexio.com)"
+      },
       body: "data=" + encodeURIComponent(query)
     });
 

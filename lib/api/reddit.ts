@@ -12,8 +12,9 @@ export async function fetchRedditFrustrations(idea: string, industry: string): P
     const response = await fetch(url, {
       method: "GET",
       headers: {
-        // Reddit requires a unique User-Agent to avoid blocking
-        "User-Agent": "web:com.validexio.execution:v1.0.0 (by /u/validexio)",
+        // Reddit blocks fake browser User-Agents. Use a compliant API format.
+        "User-Agent": "validexio-market-research/1.0.0 (by /u/validexio_dev)",
+        "Accept": "application/json",
       },
     });
 
@@ -35,8 +36,8 @@ export async function fetchRedditFrustrations(idea: string, industry: string): P
       .join("\n");
 
     return insights ? `Real User Frustrations & Discussions from Reddit:\n${insights}` : "No specific Reddit discussions found.";
-  } catch (error) {
-    console.error("Error fetching Reddit intel:", error);
-    return "Failed to fetch Reddit data.";
+  } catch (error: any) {
+    console.log(`[Reddit API] Gracefully failing: ${error.message || "Unknown error"}`);
+    return "Failed to fetch Reddit data. Proceeding without social proof.";
   }
 }

@@ -57,12 +57,18 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Calculate Revenue
+    const INR_PRICES = { FREE: 0, STARTER: 499, PRO: 750, TEAM: 2999, ENTERPRISE: 14999 };
+    const amountSpent = INR_PRICES[tier as keyof typeof INR_PRICES] || 0;
+
     // Upgrade User
     await prisma.user.update({
       where: { id: userId },
       data: {
         tier: finalTier as any,
-        availableCredits: { increment: Math.max(0, finalCreditsToAdd) }
+        availableCredits: { increment: Math.max(0, finalCreditsToAdd) },
+        totalSpent: { increment: amountSpent },
+        razorpayCustomerId: razorpay_payment_id // Mark as Indian user for admin KPIs
       }
     });
 

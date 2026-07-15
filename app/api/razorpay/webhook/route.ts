@@ -118,11 +118,24 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Handle Affiliate Commission (20% of final paid amount)
+        // Send Notification to Buyer
+        await prisma.notification.create({
+          data: {
+            userId: userId,
+            type: "PLAN_BOUGHT",
+            title: `Upgraded to ${tier}`,
+            description: "Your payment was successful and your plan has been instantly upgraded.",
+            link: "/dashboard/billing",
+          }
+        });
+
+        // Handle Affiliate Commission (20% of the ORIGINAL non-discounted amount)
         if (affiliateId && affiliateCode) {
-          // entity.amount is in paisa
-          const finalPriceINR = entity.amount / 100;
-          const commission = Math.round(finalPriceINR * 0.20);
+          // entity.amount is the discounted amount paid (in paisa)
+          const discountedPriceINR = entity.amount / 100;
+          // Calculate the original base price assuming a 10% discount was applied (paid_amount = original * 0.9)
+          const originalPriceINR = discountedPriceINR / 0.9;
+          const commission = Math.round(originalPriceINR * 0.20);
 
           try {
             await prisma.affiliateProfile.update({
@@ -142,6 +155,17 @@ export async function POST(req: NextRequest) {
                 data: {
                   userId: userId,
                   couponCode: affiliateCode
+                }
+              });
+
+              // Notify Affiliate
+              await prisma.notification.create({
+                data: {
+                  userId: affiliateId,
+                  type: "AFFILIATE_SALE",
+                  title: "New Affiliate Sale!",
+                  description: `Someone just bought a plan using your code ${affiliateCode}. You earned ₹${commission}.`,
+                  link: "/dashboard/affiliate",
                 }
               });
             }

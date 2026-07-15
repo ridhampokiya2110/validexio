@@ -10,8 +10,12 @@ export function UserStatusChecker() {
   const pathname = usePathname();
 
   useEffect(() => {
-    // Don't run polling on admin pages
-    if (pathname?.startsWith("/admin")) {
+    // Don't run polling on admin pages or generating pages
+    if (
+      pathname?.startsWith("/admin") || 
+      pathname?.startsWith("/dashboard/reports/generating") ||
+      pathname?.startsWith("/dashboard/reports/processing")
+    ) {
       return;
     }
 

@@ -193,13 +193,8 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
     }
   };
 
-  if (isCurrentPlan) {
-    return (
-      <button aria-label="Button action" type="button" disabled className="btn-secondary w-full justify-center text-sm py-2.5 opacity-50 cursor-not-allowed rounded-xl">
-        Current Plan
-      </button>
-    );
-  }
+  // Removed the disabled 'Current Plan' button block because 
+  // users need to be able to buy credits again even if they are on that tier.
 
   return (
     <div className="w-full space-y-4">
@@ -227,7 +222,7 @@ export function CheckoutButton({ isCurrentPlan, tierName, isFeatured, currencyOv
           <Loader2 className="w-5 h-5 animate-spin" />
         ) : (
           <span className="flex flex-wrap items-center justify-center gap-1.5 text-center px-2">
-            <span>Upgrade to {tierName}</span>
+            <span>{isCurrentPlan ? `Buy ${tierName} Again` : `Upgrade to ${tierName}`}</span>
             {showDiscount && (
               <span className={`whitespace-nowrap font-bold ${isFeatured ? "text-emerald-300" : "text-emerald-600"}`}>
                 (-{discountPercentage}%)
