@@ -32,13 +32,6 @@ export default async function AffiliatePage() {
 
   if (!user) redirect("/login");
 
-  // Geo-Routing
-  const headersList = await headers();
-  const country = headersList.get("x-vercel-ip-country") || "IN"; // Default IN for local testing
-  if (country !== "IN") {
-    redirect("https://validexio.lemonsqueezy.com/affiliates");
-  }
-
   // Calculate Security Score
   const securityScore = [
     user.emailVerified ? 25 : 0,
@@ -89,6 +82,13 @@ export default async function AffiliatePage() {
         </Link>
       </div>
     );
+  }
+
+  // Geo-Routing (International users are redirected to LemonSqueezy AFTER passing security/tier gates)
+  const headersList = await headers();
+  const country = headersList.get("x-vercel-ip-country") || "IN"; // Default IN for local testing
+  if (country !== "IN") {
+    redirect("https://validexio.lemonsqueezy.com/affiliates");
   }
 
   const profile = await prisma.affiliateProfile.findUnique({

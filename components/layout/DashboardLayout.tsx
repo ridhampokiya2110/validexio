@@ -240,9 +240,9 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-[100dvh] bg-white overflow-hidden">
+    <div className="flex min-h-[100dvh] bg-white">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex w-64 flex-col flex-shrink-0 glass-dark border-r border-[#1B1716]/8">
+      <aside className="hidden lg:flex w-64 flex-col glass-dark border-r border-[#1B1716]/8 fixed inset-y-0 left-0 z-40">
         <SidebarContent user={user} />
       </aside>
 
@@ -260,7 +260,7 @@ export default function DashboardLayout({
       )}
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-[100dvh] lg:pl-64 w-full">
         {needsRefresh && (
           <div className="bg-[#1B1716] text-[#FDFCF8] px-4 py-3 flex items-center justify-between text-sm font-semibold z-50 flex-shrink-0">
             <div className="flex items-center gap-2">
@@ -280,7 +280,7 @@ export default function DashboardLayout({
         )}
         
         {/* Top Bar */}
-        <header className="relative z-50 flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#1B1716]/8 glass-dark flex-shrink-0">
+        <header className="sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 py-4 border-b border-[#1B1716]/8 bg-white/95 backdrop-blur flex-shrink-0">
           <div className="flex items-center gap-3">
             {/* Mobile menu button */}
             <button aria-label="Button action" type="button"
@@ -336,7 +336,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 pb-10">
           {children}
         </main>
       </div>
