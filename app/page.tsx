@@ -75,21 +75,17 @@ function HeroSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 text-center">
 
         {/* Main Headline */}
-        <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-[#1B1716] tracking-tight leading-tight mb-6 animate-fade-in delay-100 text-center mx-auto w-full">
+        <h1 className="text-4xl sm:text-5xl md:text-[4.25rem] lg:text-7xl font-black text-[#1B1716] tracking-tight leading-tight mb-6 animate-fade-in delay-100 text-center mx-auto w-full">
           Stop <span className="gradient-text">Guessing</span>.
           <br />
           Start <span className="gradient-text">Executing</span>.
         </h1>
 
         {/* Subheadline */}
-        <div className="flex flex-col items-center justify-center space-y-3 mb-10 animate-fade-in delay-200 text-center px-4 w-full max-w-4xl mx-auto">
-          <p className="text-[1.15rem] sm:text-xl md:text-2xl font-semibold text-[#1B1716]/75 tracking-tight leading-snug max-w-[90%] sm:max-w-none mx-auto text-balance">
-            From Concept to Customer in 60 Seconds.
-          </p>
-          <p className="text-[0.95rem] sm:text-base md:text-lg font-medium text-[#1B1716]/60 max-w-[95%] sm:max-w-2xl mx-auto text-balance">
-            Data-backed validation for your startup idea without writing a single line of code.
-            <br className="hidden sm:block" />
-            Get brutal reality checks, target personas, and GTM strategies instantly.
+        <div className="flex flex-col items-center justify-center mb-10 animate-fade-in delay-200 text-center px-4 w-full max-w-3xl mx-auto">
+          <p className="text-[1rem] sm:text-lg md:text-xl font-medium text-[#1B1716]/70 mx-auto text-balance leading-relaxed">
+            <span className="font-semibold text-[#1B1716]/90 block mb-3 sm:mb-4">From Concept to Customer in 60 Seconds.</span> 
+            Data-backed validation for your startup idea without writing a single line of code. Get brutal reality checks, target personas, and GTM strategies instantly.
           </p>
         </div>
 

@@ -57,15 +57,12 @@
 }
 
 html {
-  /* overflow-x: hidden on html breaks iOS Safari address bar collapse and sticky headers */
+  /* Prevent iOS/Android elastic rubber-banding bounce for a native app feel */
+  overscroll-behavior-y: none;
 }
 
 body {
   background-color: #FDFCF8;
-  background-image: 
-    radial-gradient(circle at 0% 0%, rgba(117, 7, 12, 0.03) 0%, transparent 50%),
-    radial-gradient(circle at 100% 100%, rgba(255, 237, 171, 0.15) 0%, transparent 50%);
-  background-attachment: fixed;
   color: #1B1716;
   font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
   line-height: 1.6;
@@ -74,6 +71,22 @@ body {
   scrollbar-width: thin;
   scrollbar-color: rgba(27, 23, 22, 0.15) #FDFCF8;
   -ms-overflow-style: -ms-autohiding-scrollbar;
+  /* Guarantee hardware-accelerated momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* HIGH PERFORMANCE BACKGROUND: 
+   Using a fixed pseudo-element instead of 'background-attachment: fixed' 
+   prevents massive repaints on mobile and guarantees buttery 60fps scrolling */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: 
+    radial-gradient(circle at 0% 0%, rgba(117, 7, 12, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(255, 237, 171, 0.15) 0%, transparent 50%);
 }
 
 /* Scrollbar Styling */
