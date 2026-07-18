@@ -57,8 +57,7 @@
 }
 
 html {
-  overflow-x: hidden;
-  max-width: 100vw;
+  /* overflow-x: hidden on html breaks iOS Safari address bar collapse and sticky headers */
 }
 
 body {
@@ -70,8 +69,6 @@ body {
   color: #1B1716;
   font-family: 'Inter', 'Plus Jakarta Sans', system-ui, sans-serif;
   line-height: 1.6;
-  overflow-x: hidden;
-  max-width: 100vw;
   min-height: 100dvh;
   /* Firefox and IE scrollbar fallbacks */
   scrollbar-width: thin;
