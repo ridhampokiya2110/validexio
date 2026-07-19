@@ -1375,6 +1375,28 @@ function ListedOnSection() {
             <span className="text-xl font-black text-[#111827] tracking-tight">SaaSHub</span>
           </a>
 
+          {/* Smolhunt */}
+          <a 
+            href="https://smolhunt.com" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center gap-1.5 hover:scale-105 transition-transform duration-300"
+          >
+            <img src="/logos/smolhunt.svg" alt="Smolhunt" className="h-6 w-6" />
+            <span className="text-xl font-bold text-[#111827] tracking-tight">Smol Hunt</span>
+          </a>
+
+          {/* Peerpush */}
+          <a 
+            href="https://peerpush.com" 
+            target="_blank" 
+            rel="dofollow noopener" 
+            className="flex items-center gap-1.5 hover:scale-105 transition-transform duration-300"
+          >
+            <img src="/logos/peerpush.svg" alt="PeerPush" className="h-6 w-6" />
+            <span className="text-xl font-bold text-[#111827] tracking-tight">PeerPush</span>
+          </a>
+
         </div>
       </div>
     </section>

@@ -54,7 +54,7 @@ export default function StartupGallery() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8] text-[#1B1716] font-sans selection:bg-cherry/40 selection:text-[#1B1716]">
+    <div className="min-h-screen bg-[#FDFCF8] text-[#1B1716] font-sans selection:bg-cherry/40 selection:text-[#1B1716] overflow-x-hidden">
       {/* 1. TOP NAVIGATION */}
       <Navbar />
 

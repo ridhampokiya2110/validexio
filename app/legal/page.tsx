@@ -10,7 +10,7 @@ export default function LegalPage() {
   const [activeTab, setActiveTab] = useState<"terms" | "privacy" | "refund">("terms");
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8] font-sans text-[#1B1716] flex flex-col selection:bg-cherry/20 selection:text-cherry">
+    <div className="min-h-screen bg-[#FDFCF8] font-sans text-[#1B1716] flex flex-col selection:bg-cherry/20 selection:text-cherry overflow-x-hidden">
       
       {/* Global Navigation */}
       <Navbar />

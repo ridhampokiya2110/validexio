@@ -28,6 +28,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   width: "device-width",
   viewportFit: "cover",
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export const metadata: Metadata = {
@@ -367,7 +369,7 @@ export default function RootLayout({
         />
                 <GlobalSEO />
       </head>
-      <body className={inter.variable + " " + outfit.variable + " font-sans bg-[#FDFCF8] text-[#1B1716] antialiased selection:bg-cherry/20 selection:text-cherry"} suppressHydrationWarning>
+      <body className={inter.variable + " " + outfit.variable + " font-sans bg-[#FDFCF8] text-[#1B1716] antialiased selection:bg-cherry/20 selection:text-cherry overflow-x-hidden"} suppressHydrationWarning>
         <Providers>
           <PwaRegistry />
           <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />

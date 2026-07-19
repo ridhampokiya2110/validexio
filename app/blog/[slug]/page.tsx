@@ -71,7 +71,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFCF8] dark:bg-[#0A0A0A] text-[#1B1716] dark:text-[#E5E7EB] font-sans selection:bg-cherry/40 selection:text-[#1B1716] dark:selection:text-[#FDFCF8] flex flex-col transition-colors duration-300">
+    <div className="min-h-screen bg-[#FDFCF8] dark:bg-[#0A0A0A] text-[#1B1716] dark:text-[#E5E7EB] font-sans selection:bg-cherry/40 selection:text-[#1B1716] dark:selection:text-[#FDFCF8] flex flex-col transition-colors duration-300 overflow-x-hidden">
       {/* Inject JSON-LD Schema for SEO / AEO / GEO */}
       <script
         type="application/ld+json"
