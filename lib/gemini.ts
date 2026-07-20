@@ -313,7 +313,7 @@ async function callGemini(prompt: string, systemInstruction: string, schema: any
   removeAdditionalProperties(jsonSchema);
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-flash-lite-latest", // Using Lite alias as it is the only cheap model available on this API tier
+    model: "gemini-3.5-flash", // Using 3.5-flash for paid tier
     systemInstruction,
     safetySettings,
     generationConfig: {
@@ -544,7 +544,7 @@ Provide highly valuable, actionable, and specific insights to impress the user a
       });
 
       const model = genAI.getGenerativeModel({
-        model: "gemini-flash-lite-latest",
+        model: "gemini-1.5-flash",
         generationConfig: {
           temperature: 0.5,
           responseMimeType: "application/json",
