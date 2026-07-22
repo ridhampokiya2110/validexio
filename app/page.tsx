@@ -66,7 +66,7 @@ function HeroSection() {
       {/* Background Effects */}
       <div className="absolute inset-0 bg-grid opacity-[0.03] pointer-events-none" />
       <div className="hero-orb-1 top-1/4 -left-32 opacity-40 mix-blend-multiply" />
-      <div className="hero-orb-2 bottom-1/4 -right-16 opacity-30 mix-blend-multiply" />
+      <div className="hero-orb-2 bottom-1/4 right-0 opacity-20 mix-blend-multiply" />
       <div className="hero-orb-1 top-0 right-1/4 opacity-20 mix-blend-multiply" style={{ width: 400, height: 400 }} />
 
       {/* Animated border gradient lines */}
