@@ -264,6 +264,15 @@ export async function GET(
 
   } catch (error: any) {
     console.error("[Export PDF API] Error:", error);
-    return NextResponse.json({ error: "Internal Server Error", details: error?.message || String(error), stack: error?.stack }, { status: 500 });
+    return NextResponse.json(
+      { 
+        error: "Internal Server Error", 
+        ...(process.env.NODE_ENV === "development" && {
+          details: error?.message || String(error), 
+          stack: error?.stack 
+        })
+      }, 
+      { status: 500 }
+    );
   }
 }
