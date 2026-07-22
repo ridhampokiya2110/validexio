@@ -5,7 +5,7 @@ export function RuthlessStats() {
   return (
     <section className="w-full py-24 bg-transparent relative">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 relative">
-        <div className="glass-card p-5 sm:p-8 md:p-12 shadow-2xl relative overflow-hidden border-[#1B1716]/10 mx-auto w-full">
+        <div className="bg-white border border-[#1B1716]/10 rounded-3xl sm:rounded-[2.5rem] p-5 sm:p-8 md:p-12 shadow-2xl relative overflow-hidden mx-auto w-full">
           {/* Subtle Glow Effect */}
           <div className="absolute -top-24 -right-24 w-64 h-64 bg-cherry/10 rounded-full blur-3xl pointer-events-none" />
 

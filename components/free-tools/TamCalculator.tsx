@@ -139,10 +139,7 @@ export function TamCalculator() {
       </div>
 
       {/* Live Preview Strip — mobile only */}
-      <div
-        className="md:hidden mb-4 grid grid-cols-3 gap-2 cursor-pointer"
-        onClick={() => setActiveTab("results")}
-      >
+      <div className="md:hidden mb-4 grid grid-cols-3 gap-2">
         {[
           { label: "TAM", value: fmtCompact(tam), color: "text-[#1B1716]" },
           { label: "SAM", value: fmtCompact(sam), color: "text-[#1B1716]" },
@@ -268,7 +265,7 @@ export function TamCalculator() {
                   abbr: "SOM",
                   value: som,
                   desc: "Your realistic revenue target",
-                  color: "text-cherry",
+                  color: "text-white",
                   size: "text-3xl sm:text-4xl",
                   highlight: true,
                 },

@@ -174,7 +174,7 @@ export default function TamCalculatorPage() {
               href="/"
               className="inline-flex items-center gap-2 bg-cherry text-white font-black text-sm px-8 py-4 rounded-xl shadow-lg shadow-cherry/30 hover:bg-[#810100] transition-colors"
             >
-              Validate My Idea — $39
+              Validate My Idea Now
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
