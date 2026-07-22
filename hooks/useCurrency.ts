@@ -11,7 +11,30 @@ export function useCurrency() {
 
   useEffect(() => {
     const fetchCurrency = async () => {
-      // 1. Try api.country.is
+      const applyCountry = (countryCode: string) => {
+        if (countryCode === 'IN') {
+          setCurrency("INR");
+        } else if (['AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES'].includes(countryCode)) {
+          setCurrency("EUR");
+        }
+        setIsLoaded(true);
+      };
+
+      // 1. Try ipapi.co (reliable HTTPS)
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.country_code) {
+            applyCountry(data.country_code);
+            return;
+          }
+        }
+      } catch (err) {
+        // Ignore and try fallback
+      }
+
+      // 2. Try api.country.is
       try {
         const res = await fetch('https://api.country.is/');
         if (res.ok) {
@@ -25,7 +48,7 @@ export function useCurrency() {
         // Ignore and try fallback
       }
 
-      // 2. Try ipwho.is
+      // 3. Try ipwho.is
       try {
         const res = await fetch('https://ipwho.is/');
         if (res.ok) {
@@ -39,12 +62,13 @@ export function useCurrency() {
         // Ignore and try fallback
       }
 
-      // 3. Bulletproof fallback using Timezone
+      // 4. Bulletproof fallback using Timezone & Currency formatting
       try {
         const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        if (tz === 'Asia/Kolkata' || tz === 'Asia/Calcutta') {
+        const localeCurrency = new Intl.NumberFormat().resolvedOptions().currency;
+        if (tz === 'Asia/Kolkata' || tz === 'Asia/Calcutta' || localeCurrency === 'INR') {
           setCurrency("INR");
-        } else if (tz.startsWith('Europe/')) {
+        } else if (tz.startsWith('Europe/') || localeCurrency === 'EUR') {
           setCurrency("EUR");
         }
       } catch (err) {
@@ -52,16 +76,6 @@ export function useCurrency() {
       } finally {
         setIsLoaded(true);
       }
-    };
-
-    const applyCountry = (countryCode: string) => {
-      if (countryCode === 'IN') {
-        setCurrency("INR");
-      } else if (['AT', 'BE', 'CY', 'EE', 'FI', 'FR', 'DE', 'GR', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PT', 'SK', 'SI', 'ES'].includes(countryCode)) {
-        setCurrency("EUR");
-      }
-      // If it's another country, it stays USD
-      setIsLoaded(true);
     };
 
     fetchCurrency();

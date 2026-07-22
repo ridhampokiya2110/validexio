@@ -369,26 +369,28 @@ export default function RootLayout({
         />
                 <GlobalSEO />
       </head>
-      <body className={inter.variable + " " + outfit.variable + " font-sans bg-[#FDFCF8] text-[#1B1716] antialiased selection:bg-cherry/20 selection:text-cherry overflow-x-hidden"} suppressHydrationWarning>
-        <Providers>
-          <PwaRegistry />
-          <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />
-          <Script src="https://app.lemonsqueezy.com/js/lemon.js" strategy="lazyOnload" />
-          <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
-          {children}
-          <Toaster
-            theme="dark"
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: "rgba(27, 23, 22, 0.95)",
-                border: "1px solid rgba(27, 23, 22, 0.1)",
-                color: "#EDEBDE",
-                backdropFilter: "blur(20px)",
-              },
-            }}
-          />
-        </Providers>
+      <body className={inter.variable + " " + outfit.variable + " font-sans bg-[#FDFCF8] text-[#1B1716] antialiased selection:bg-cherry/20 selection:text-cherry"} suppressHydrationWarning>
+        <div className="w-full overflow-hidden flex flex-col min-h-screen">
+          <Providers>
+            <PwaRegistry />
+            <NextTopLoader color="#E44234" showSpinner={false} height={3} shadow="0 0 10px #E44234,0 0 5px #E44234" />
+            <Script src="https://app.lemonsqueezy.com/js/lemon.js" strategy="lazyOnload" />
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+            {children}
+            <Toaster
+              theme="dark"
+              position="bottom-right"
+              toastOptions={{
+                style: {
+                  background: "rgba(27, 23, 22, 0.95)",
+                  border: "1px solid rgba(27, 23, 22, 0.1)",
+                  color: "#EDEBDE",
+                  backdropFilter: "blur(20px)",
+                },
+              }}
+            />
+          </Providers>
+        </div>
       </body>
     </html>
   );

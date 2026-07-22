@@ -23,15 +23,23 @@ export function TamCalculator() {
   const [grossMargin, setGrossMargin] = useState<number | string>(80);
   const [activeTab, setActiveTab] = useState<"inputs" | "results">("inputs");
 
-  const tam = Number(totalMarket) * Number(arpu);
-  const sam = tam * (Number(targetSegment) / 100);
-  const som = sam * (Number(marketShare) / 100);
-  const customersNeeded = Math.ceil(som / Number(arpu));
+  const safeTotalMarket = Number(totalMarket) || 0;
+  const safeArpu = Number(arpu) || 0;
+  const safeTargetSegment = Number(targetSegment) || 0;
+  const safeMarketShare = Number(marketShare) || 0;
+  const safeCac = Number(cac) || 0;
+  const safeGrossMargin = Number(grossMargin) || 0;
+
+  const tam = safeTotalMarket * safeArpu;
+  const sam = tam * (safeTargetSegment / 100);
+  const som = sam * (safeMarketShare / 100);
+  const customersNeeded = safeArpu > 0 ? Math.ceil(som / safeArpu) : 0;
   const mrr = som / 12;
-  const ltv = Number(arpu) * 3;
-  const ltvCacRatio = (ltv * (Number(grossMargin) / 100)) / Number(cac);
-  const paybackMonths = Number(cac) / ((Number(arpu) / 12) * (Number(grossMargin) / 100));
-  const grossMrr = mrr * (Number(grossMargin) / 100);
+  const ltv = safeArpu * 3; // Standard 3-year assumption
+  const ltvCacRatio = safeCac > 0 ? (ltv * (safeGrossMargin / 100)) / safeCac : 0;
+  const monthlyGrossProfit = (safeArpu / 12) * (safeGrossMargin / 100);
+  const paybackMonths = monthlyGrossProfit > 0 ? safeCac / monthlyGrossProfit : 0;
+  const grossMrr = mrr * (safeGrossMargin / 100);
 
   const fmt = (val: number) =>
     new Intl.NumberFormat("en-US", {
@@ -152,7 +160,8 @@ export function TamCalculator() {
         ].map((item) => (
           <div
             key={item.label}
-            className={`${item.highlight ? "bg-cherry/10 border-cherry/20" : "bg-white border-[#1B1716]/10"} border rounded-xl p-2.5 text-center`}
+            onClick={() => setActiveTab("results")}
+            className={`${item.highlight ? "bg-cherry/10 border-cherry/20" : "bg-white border-[#1B1716]/10"} border rounded-xl p-2.5 text-center cursor-pointer transition-colors active:scale-[0.98]`}
           >
             <p className="text-[9px] font-bold uppercase tracking-widest text-[#1B1716]/40 mb-0.5">
               {item.label}
@@ -275,7 +284,7 @@ export function TamCalculator() {
                   className={`${item.highlight ? "bg-cherry/20 border border-cherry/30 rounded-2xl p-4" : "border-b border-white/5 pb-4"}`}
                 >
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">
+                    <span className={`text-[9px] font-black uppercase tracking-[0.2em] ${item.highlight ? "text-white/80" : "text-white/40"}`}>
                       {item.label}
                     </span>
                     <span
@@ -289,7 +298,7 @@ export function TamCalculator() {
                   >
                     {fmtCompact(item.value)}
                   </p>
-                  <p className="text-[10px] text-white/30 mt-1">{item.desc}</p>
+                  <p className={`text-[10px] mt-1 ${item.highlight ? "text-white/70" : "text-white/30"}`}>{item.desc}</p>
                 </div>
               ))}
             </div>
