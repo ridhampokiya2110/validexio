@@ -1171,7 +1171,7 @@ function ValueAnchoringSection() {
           </div>
 
           {/* Right Column: The Validexio Way (Bright & Premium) */}
-          <div className="group flex flex-col bg-white rounded-[2rem] p-5 sm:p-8 md:p-10 border-2 border-cherry shadow-2xl shadow-cherry/10 relative overflow-hidden transform md:-translate-y-2 hover:-translate-y-4 transition-all duration-500 w-full">
+          <div className="group flex flex-col bg-white rounded-[2rem] pt-14 pb-5 px-5 sm:pt-16 sm:pb-8 sm:px-8 md:pt-16 md:pb-10 md:px-10 border-2 border-cherry shadow-2xl shadow-cherry/10 relative overflow-hidden transform md:-translate-y-2 hover:-translate-y-4 transition-all duration-500 w-full">
             {/* Premium Glow Effects */}
             <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-cherry/10 to-transparent rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none transition-transform duration-700 group-hover:scale-110" />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-cherry/[0.02] pointer-events-none" />
@@ -1180,7 +1180,7 @@ function ValueAnchoringSection() {
               The Smart Choice
             </div>
 
-            <div className="flex items-center gap-3 mb-8 relative z-10 mt-2">
+            <div className="flex items-center gap-3 mb-8 relative z-10">
               <div>
                 <h3 className="text-xl sm:text-2xl font-black text-[#1B1716] tracking-tight">
                   The Validexio Engine
