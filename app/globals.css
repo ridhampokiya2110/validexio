@@ -506,6 +506,13 @@ input[type="password"]::-ms-clear {
   border-radius: 50%;
   filter: blur(40px);
   pointer-events: none;
+  /*
+   * iOS Safari fix: filter:blur() breaks overflow:hidden clipping in WebKit.
+   * transform:translateZ(0) forces a GPU compositing layer which
+   * restores correct overflow clip behaviour on iOS Safari.
+   */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .hero-orb-2 {
@@ -516,6 +523,23 @@ input[type="password"]::-ms-clear {
   border-radius: 50%;
   filter: blur(60px);
   pointer-events: none;
+  /* Same iOS Safari fix as hero-orb-1 */
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* On mobile, shrink orbs so they cannot extend past viewport even if clipping fails */
+@media (max-width: 768px) {
+  .hero-orb-1 {
+    width: 280px;
+    height: 280px;
+    filter: blur(30px);
+  }
+  .hero-orb-2 {
+    width: 200px;
+    height: 200px;
+    filter: blur(40px);
+  }
 }
 
 /* ============================================
