@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { SearchableSelect } from "@/components/ui/SearchableSelect";
 import { INDUSTRIES, PRICING_MODELS, cn } from "@/lib/utils";
+import { useCookieConsent, CookieConsentModal } from "@/components/CookieConsent";
 
 const step1Schema = z.object({
   industry: z.string().min(1, "Please select an industry"),
@@ -108,6 +109,17 @@ const DOCUMENT_TYPE_ICONS: Record<string, string> = {
 
 export default function ValidatePage() {
   const router = useRouter();
+  const { consent } = useCookieConsent();
+  const [showCookieModal, setShowCookieModal] = useState(false);
+
+  useEffect(() => {
+    if (consent === "declined" || consent === "undecided") {
+      setShowCookieModal(true);
+    } else {
+      setShowCookieModal(false);
+    }
+  }, [consent]);
+
   const [step, setStep] = useState(1);
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -399,6 +411,12 @@ export default function ValidatePage() {
   };
 
   const handleSubmit = async () => {
+    if (consent !== "accepted") {
+      setShowCookieModal(true);
+      toast.error("Please accept cookies to validate your idea.");
+      return;
+    }
+
     if (!validateStep(3)) return;
 
     const isUnlimited = userTier === "TEAM" || userTier === "ENTERPRISE";
@@ -1066,6 +1084,10 @@ export default function ValidatePage() {
           </button>
         )}
       </div>
+      <CookieConsentModal 
+        isOpen={showCookieModal} 
+        onClose={() => router.push("/dashboard")} 
+      />
     </div>
   );
 }

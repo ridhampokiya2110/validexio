@@ -1,11 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Code, Zap, ArrowRight, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useCookieConsent, CookieConsentModal } from "@/components/CookieConsent";
 
 export default function FreeCodeGenerator() {
+  const router = useRouter();
+  const { consent } = useCookieConsent();
+  const [showCookieModal, setShowCookieModal] = useState(false);
+
   const [idea, setIdea] = useState("");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
@@ -21,6 +28,11 @@ export default function FreeCodeGenerator() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (consent !== "accepted") {
+      setShowCookieModal(true);
+      toast.error("Please accept cookies to generate your code.");
+      return;
+    }
     if (!idea || !email) return;
 
     setStatus("loading");
@@ -193,6 +205,10 @@ export default function FreeCodeGenerator() {
           </AnimatePresence>
         </div>
       </div>
+      <CookieConsentModal 
+        isOpen={showCookieModal} 
+        onClose={() => setShowCookieModal(false)} 
+      />
     </main>
   );
 }
