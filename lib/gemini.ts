@@ -498,7 +498,7 @@ Provide highly valuable, actionable, and specific insights to impress the user a
     try {
       console.log("[Free Tier] Calling Cerebras AI...");
       const cerebrasResponse = await cerebrasClient.chat.completions.create({
-        model: "llama3.1-70b",
+        model: "zai-glm-4.7",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
@@ -544,7 +544,7 @@ Provide highly valuable, actionable, and specific insights to impress the user a
       });
 
       const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash",
+        model: "gemini-flash-latest",
         generationConfig: {
           temperature: 0.5,
           responseMimeType: "application/json",

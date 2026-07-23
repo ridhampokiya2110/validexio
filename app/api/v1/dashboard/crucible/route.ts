@@ -192,7 +192,7 @@ EXAMPLE OF A GOOD QUESTION:
       if (cerebrasClient) {
         try {
           const cerebrasResponse = await cerebrasClient.chat.completions.create({
-            model: "llama3.1-70b",
+            model: "zai-glm-4.7",
             messages: [
               { role: "system", content: prompt },
               { role: "user", content: "Generate the next investor question now." }

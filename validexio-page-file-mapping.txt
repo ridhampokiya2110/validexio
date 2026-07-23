@@ -1,0 +1,117 @@
+================================================================================
+                    VALIDEXIO SYSTEM ARCHITECTURE & FILE MAP
+================================================================================
+This index maps out all pages of the Validexio application to their page files,
+associated components, helpers, and backend API routes. Use this to quickly
+locate files for debugging or logic review.
+
+────────────────────────────────────────────────────────────────────────────────
+1. MAIN LANDING PAGE (/)
+────────────────────────────────────────────────────────────────────────────────
+* Main Page File:
+  - app/page.tsx
+* Client components used:
+  - components/RuthlessStats.tsx (Reject vs green light statistical card)
+  - components/CompetitorComparison.tsx (Feature comparison grid)
+  - components/SecureCheckoutBadge.tsx (SSL and secure payment badge)
+  - components/marketing/GlobalCompetitorsGlobe.tsx (Interactive globe widget)
+  - components/layout/Navbar.tsx (Navigation bar and mobile drawer)
+* Custom Hooks & Data:
+  - hooks/useCurrency.ts (Dynamic geolocation-based INR/USD pricing switcher)
+  - lib/blog-data.ts (Holds static text and static mock blog article inputs)
+
+────────────────────────────────────────────────────────────────────────────────
+2. DASHBOARD SHELL & HOME (/dashboard)
+────────────────────────────────────────────────────────────────────────────────
+* Main Page File:
+  - app/dashboard/page.tsx (Calculates user stats, validation reports lists)
+* Client components used:
+  - components/layout/Navbar.tsx (Shared header)
+  - NextJS TopLoader progress bars
+* Layout & Middleware Guards:
+  - app/dashboard/layout.tsx (Implements authentication gate checks)
+  - lib/guards/ (Helper guards for active user status validation)
+
+────────────────────────────────────────────────────────────────────────────────
+3. VALIDATION FORM / STARTUP IDEAS GENERATOR (/dashboard/validate)
+────────────────────────────────────────────────────────────────────────────────
+* Main Page File:
+  - app/dashboard/validate/page.tsx (Multi-step validation wizard form)
+* Loading State Page:
+  - app/dashboard/validate/loading.tsx
+* Components & Inputs:
+  - components/ui/SearchableSelect.tsx (Custom selector component with filters)
+  - components/CookieConsent.tsx (CookieConsentModal to intercept and block clicks)
+* Core Logic & API Routes:
+  - app/api/validate/route.ts (Accepts form post, executes Prisma db atomic transaction)
+  - app/api/generate/route.ts (Background job dispatcher - handles BullMQ queue)
+  - lib/queue/processJob.ts (Background worker main thread. Coordinates APIs:
+    Tavily, SerpApi, HackerNews, Reddit, Wikipedia, Mockups, and Gemini)
+  - lib/gemini.ts (Handles GoogleGenAI gemini-3.5-flash and fallback model schemas)
+
+────────────────────────────────────────────────────────────────────────────────
+4. VALIDATION REPORTS VIEW & SUB-SECTIONS
+────────────────────────────────────────────────────────────────────────────────
+* Crucible (Investor Simulator):
+  - Page: app/dashboard/crucible/page.tsx (Technical and VC chat interrogator)
+  - API Route: app/api/v1/dashboard/crucible/route.ts (Cerebras zai-glm-4.7 worker)
+* B2B Leads Page:
+  - Page: app/dashboard/leads/page.tsx (Fetches lead data collected via prisma)
+  - Helper API: lib/api/leads.ts (Cleans Apollo/Tavily lead data enrichment)
+* Target Personas Page:
+  - Page: app/dashboard/personas/page.tsx
+* Competitors Matrix Page:
+  - Page: app/dashboard/competitors/page.tsx
+  - Helper API: lib/api/websearch.ts (SerpApi wrapper)
+  - Helper API: lib/api/tavily.ts (Tavily competitor intel parser)
+* Tech Stack & Code Export Page:
+  - Page: app/dashboard/boilerplate/page.tsx
+  - Zip Generation API: app/api/v1/projects/[sessionId]/export/code/route.ts
+* PDF Report Generation:
+  - API Route: app/api/v1/projects/[sessionId]/export/pdf/route.ts (uses pdfkit)
+
+────────────────────────────────────────────────────────────────────────────────
+5. FREE TOOLS
+────────────────────────────────────────────────────────────────────────────────
+* TAM, SAM, SOM Calculator (/free-tools/tam-calculator):
+  - Page File: app/free-tools/tam-calculator/page.tsx
+  - Calculation component: components/free-tools/TamCalculator.tsx
+* Next.js Landing Code Generator (/free-tools/code-generator):
+  - Page File: app/free-tools/code-generator/page.tsx
+  - API Route: app/api/generate-free-asset/route.ts (GoogleGenerativeAI waitlist generator)
+
+────────────────────────────────────────────────────────────────────────────────
+6. AUTHENTICATION & PROFILE (/login, /register, /onboarding)
+────────────────────────────────────────────────────────────────────────────────
+* Page Files:
+  - app/login/page.tsx
+  - app/register/page.tsx
+  - app/forgot-password/page.tsx
+  - app/verify-email/page.tsx
+  - app/onboarding/page.tsx
+* Authentication Engines:
+  - lib/auth.ts (Auth.js main setup handler)
+  - lib/auth.config.ts (NextAuth config options)
+  - app/api/auth/[...nextauth]/route.ts (Authentication routing wrapper)
+  - app/api/auth/register/route.ts (New user DB insertion API)
+
+────────────────────────────────────────────────────────────────────────────────
+7. LEGAL & PRIVACY (/legal)
+────────────────────────────────────────────────────────────────────────────────
+* Page File:
+  - app/legal/page.tsx (Contains Terms of Service, Privacy Policy, and Refunds)
+
+────────────────────────────────────────────────────────────────────────────────
+8. CORE CONFIGURATION & DATABASE FILES
+────────────────────────────────────────────────────────────────────────────────
+* Database client instantiation:
+  - lib/db.ts
+* Prisma database models schema:
+  - prisma/schema.prisma
+* Supabase helper configurations:
+  - lib/supabase.ts
+* Global telemetry / styles / errors:
+  - app/globals.css (Main theme variables, utility classes, custom animation keys)
+  - app/layout.tsx (Includes Providers, Cookie Banner, Global SEO configuration)
+  - app/error.tsx (Conditional production/development global error pages)
+================================================================================
