@@ -92,6 +92,13 @@ function RegisterPageContent() {
       if (!res.ok) {
         if (data.error === "EMAIL_EXISTS") {
           setErrors({ email: "An account with this email already exists" });
+        } else if (data.details && Array.isArray(data.details)) {
+          const fieldErrors: Record<string, string> = {};
+          data.details.forEach((issue: any) => {
+            const field = issue.path[0] === "profession" ? "role" : issue.path[0];
+            fieldErrors[field] = issue.message;
+          });
+          setErrors(fieldErrors);
         } else {
           setErrors({ general: data.error || "Registration failed" });
         }

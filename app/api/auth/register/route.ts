@@ -16,17 +16,17 @@ if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
 }
 
 const registerSchema = z.object({
-  name: z.string().min(2).max(100),
-  email: z.string().email().max(255),
+  name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  email: z.string().email("Invalid email address").max(255),
   password: z
     .string()
-    .min(8)
+    .min(8, "Password must be at least 8 characters")
     .max(128)
-    .regex(/[A-Z]/)
-    .regex(/[0-9]/)
-    .regex(/[^A-Za-z0-9]/),
+    .regex(/[A-Z]/, "Password must contain an uppercase letter")
+    .regex(/[0-9]/, "Password must contain a number")
+    .regex(/[^A-Za-z0-9]/, "Password must contain a special character"),
   phone: z.string().optional(),
-  profession: z.string().min(1),
+  profession: z.string().min(1, "Please select your role"),
 });
 
 export async function POST(req: NextRequest) {
