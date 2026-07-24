@@ -214,6 +214,7 @@ model Idea {
   stage        IdeaStage  @default(IDEA)
   status       IdeaStatus @default(PENDING)
   isLite       Boolean    @default(false)
+  tierAtCreation UserTier @default(FREE)
 
   documentContext Json?
 

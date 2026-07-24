@@ -141,6 +141,7 @@ export async function POST(req: NextRequest) {
           pricingModel: pricingDetails,
           status: "PENDING",
           isLite: isLiteRequest,
+          tierAtCreation: user.tier,
           // Store document context if provided
           ...(documentContext ? { documentContext: documentContext as any } : {}),
         },

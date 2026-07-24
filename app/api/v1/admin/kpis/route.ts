@@ -23,10 +23,10 @@ export async function GET() {
       intlUsersSum
     ] = await Promise.all([
       prisma.user.count(),
-      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "STARTER" } } }),
-      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "PRO" } } }),
-      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "TEAM" } } }),
-      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", user: { tier: "ENTERPRISE" } } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", tierAtCreation: "STARTER" } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", tierAtCreation: "PRO" } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", tierAtCreation: "TEAM" } }),
+      prisma.idea.count({ where: { isLite: false, status: "COMPLETED", tierAtCreation: "ENTERPRISE" } }),
       prisma.idea.count({ where: { isLite: true, status: "COMPLETED" } }),
       // Sum of all unused credits across all users
       prisma.user.aggregate({ _sum: { availableCredits: true } }),
