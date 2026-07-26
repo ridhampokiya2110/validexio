@@ -66,6 +66,11 @@ const nextAuthResult = NextAuth({
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) return null;
 
+        // Block login if email is not verified
+        if (!user.emailVerified) {
+          throw new Error("EmailNotVerified");
+        }
+
         // 2FA Validation
         if (user.twoFactorEnabled) {
           if (!code) {
@@ -153,8 +158,7 @@ const nextAuthResult = NextAuth({
           where: { email: user.email },
         });
         if (!dbUser?.emailVerified) {
-          // Allow for now - in production, enforce email verification
-          return true;
+          return `/login?error=EmailNotVerified&email=${encodeURIComponent(user.email)}`;
         }
       }
 

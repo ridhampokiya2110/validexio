@@ -97,6 +97,18 @@ function AuthPageContent() {
             }
           } else if (res.error.includes("Invalid2FACode")) {
             setErrors({ general: "Invalid 2FA code. Please try again." });
+          } else if (res.error.includes("EmailNotVerified")) {
+            // Send verification email
+            try {
+              await fetch("/api/auth/verify-email/send", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: form.email }),
+              });
+              setErrors({ general: "Please verify your email first. A verification link has been sent to your email." });
+            } catch (err) {
+              setErrors({ general: "Please verify your email. Failed to resend link." });
+            }
           } else {
             setErrors({ general: "Invalid credentials or login failed." });
           }
@@ -143,6 +155,16 @@ function AuthPageContent() {
           toast.success("Account created successfully! Welcome to Validexio.");
           window.location.href = "/dashboard";
           return; // Exit early to keep loading state true during navigation
+        } else if (signInRes?.error?.includes("EmailNotVerified")) {
+          toast.success("Account created! Please check your email to verify it.");
+          setActiveTab("signin");
+          setLoading(false);
+          // Send verification email
+          await fetch("/api/auth/verify-email/send", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: form.email }),
+          });
         } else {
           toast.success("Account created! Please sign in.");
           setActiveTab("signin");

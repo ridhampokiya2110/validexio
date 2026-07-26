@@ -3,24 +3,53 @@ import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { Resend } from "resend";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+let ratelimit: Ratelimit | null = null;
+if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
+  ratelimit = new Ratelimit({
+    redis: Redis.fromEnv(),
+    limiter: Ratelimit.slidingWindow(3, "1 h"),
+    analytics: true,
+  });
+}
 
 export async function POST(req: Request) {
   try {
     const session = await auth();
-    if (!session?.user?.id || !session?.user?.email) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    let email = session?.user?.email;
+
+    if (!email) {
+      // Allow unauthenticated requests if they provide an email in the body
+      const body = await req.json().catch(() => ({}));
+      if (body.email) {
+        email = body.email;
+      } else {
+        return NextResponse.json({ error: "Unauthorized or missing email" }, { status: 401 });
+      }
     }
 
-    const userId = session.user.id;
-    const email = session.user.email;
+    if (ratelimit) {
+      const ip = req.headers.get("x-forwarded-for") ?? "127.0.0.1";
+      const { success } = await ratelimit.limit(`verify_email_send_${ip}`);
+      if (!success) {
+        return NextResponse.json({ error: "Too many verification requests. Please try again later." }, { status: 429 });
+      }
+    }
 
-    // Check if already verified
+    // Check if user exists and if already verified
     const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { emailVerified: true },
+      where: { email },
+      select: { id: true, emailVerified: true },
     });
+
+    if (!user) {
+      // Silently return success to prevent email enumeration
+      return NextResponse.json({ success: true });
+    }
 
     if (user?.emailVerified) {
       return NextResponse.json({ error: "Email already verified" }, { status: 400 });

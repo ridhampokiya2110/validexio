@@ -12,6 +12,7 @@ interface UserProfile {
   email: string;
   availableCredits: number;
   tier: string;
+  provider: string;
 }
 
 export default function SettingsPage() {
@@ -22,6 +23,11 @@ export default function SettingsPage() {
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+
+  // Email Change State
+  const [newEmail, setNewEmail] = useState("");
+  const [emailChangeCode, setEmailChangeCode] = useState("");
+  const [showEmailCodeInput, setShowEmailCodeInput] = useState(false);
 
   useEffect(() => {
     fetchProfile();
@@ -69,6 +75,61 @@ export default function SettingsPage() {
     }
   };
 
+  const handleEmailChangeSend = async () => {
+    if (!newEmail || !/^\S+@\S+\.\S+$/.test(newEmail)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+    if (newEmail.toLowerCase() === profile?.email.toLowerCase()) {
+      toast.error("New email must be different from the current one.");
+      return;
+    }
+    setActionLoading("email-send");
+    try {
+      const res = await fetch("/api/v1/settings/change-email/send", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to send code");
+      
+      toast.success("Verification code sent to " + newEmail);
+      setShowEmailCodeInput(true);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleEmailChangeVerify = async () => {
+    if (!emailChangeCode || emailChangeCode.length !== 6) {
+      toast.error("Please enter the 6-digit code.");
+      return;
+    }
+    setActionLoading("email-verify");
+    try {
+      const res = await fetch("/api/v1/settings/change-email/verify", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ newEmail, code: emailChangeCode }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to verify code");
+      
+      toast.success("Email updated successfully.");
+      setProfile(prev => prev ? { ...prev, email: newEmail } : null);
+      setNewEmail("");
+      setEmailChangeCode("");
+      setShowEmailCodeInput(false);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== "DELETE") {
       toast.error("Please type DELETE to confirm.");
@@ -103,6 +164,7 @@ export default function SettingsPage() {
   const tabs = [
     { id: "profile", label: "Profile Details", icon: User },
     { id: "billing", label: "Billing & Credits", icon: CreditCard },
+    { id: "security", label: "Security & Access", icon: Shield },
     { id: "danger", label: "Danger Zone", icon: AlertOctagon },
   ] as const;
 
@@ -233,7 +295,101 @@ export default function SettingsPage() {
               </div>
             )}
 
-            {/* SECTION C: SECURITY (REMOVED) */}
+            {/* SECTION C: SECURITY */}
+            {activeTab === "security" && profile && (
+              <div className="animate-fade-in-scale">
+                <div className="glass-card p-8 mb-6">
+                  <div className="flex items-center gap-3 mb-6">
+                    <Shield className="w-6 h-6 text-cherry" />
+                    <h2 className="text-xl font-bold text-[#1B1716]">Security & Access</h2>
+                  </div>
+                  
+                  {profile.provider === "google" || profile.provider === "github" ? (
+                    <div className="bg-gray-50 border border-gray-100 rounded-xl p-6">
+                      <p className="text-[#1B1716]/80 text-sm">
+                        You are signed in using <strong>{profile.provider.charAt(0).toUpperCase() + profile.provider.slice(1)}</strong>. 
+                        To change your email or password, please update your account settings directly with {profile.provider.charAt(0).toUpperCase() + profile.provider.slice(1)}.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-10">
+                      {/* Change Email */}
+                      <div>
+                        <h3 className="text-sm font-bold text-[#1B1716] mb-4">Change Email Address</h3>
+                        {!showEmailCodeInput ? (
+                          <div className="space-y-4">
+                            <input
+                              type="email"
+                              placeholder="New Email Address"
+                              value={newEmail}
+                              onChange={(e) => setNewEmail(e.target.value)}
+                              className="input-field max-w-sm block"
+                            />
+                            <button aria-label="Button action" type="button"
+                              onClick={handleEmailChangeSend}
+                              disabled={actionLoading === "email-send"}
+                              className="px-6 py-2.5 bg-cherry text-white rounded-lg font-semibold text-sm hover:bg-cherry/90 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[140px]"
+                            >
+                              {actionLoading === "email-send" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Verification Code"}
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="space-y-4 bg-gray-50 p-6 rounded-xl border border-gray-100">
+                            <p className="text-sm text-[#1B1716]/80 mb-2">
+                              We sent a 6-digit code to <strong>{newEmail}</strong>.
+                            </p>
+                            <input
+                              type="text"
+                              placeholder="000000"
+                              maxLength={6}
+                              value={emailChangeCode}
+                              onChange={(e) => setEmailChangeCode(e.target.value.replace(/[^0-9]/g, ''))}
+                              className="input-field max-w-xs block font-mono text-lg tracking-widest text-center"
+                            />
+                            <div className="flex gap-3">
+                              <button aria-label="Button action" type="button"
+                                onClick={handleEmailChangeVerify}
+                                disabled={actionLoading === "email-verify" || emailChangeCode.length !== 6}
+                                className="px-6 py-2.5 bg-cherry text-white rounded-lg font-semibold text-sm hover:bg-cherry/90 transition-colors disabled:opacity-50 flex items-center justify-center"
+                              >
+                                {actionLoading === "email-verify" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify & Update"}
+                              </button>
+                              <button aria-label="Button action" type="button"
+                                onClick={() => {
+                                  setShowEmailCodeInput(false);
+                                  setEmailChangeCode("");
+                                }}
+                                disabled={actionLoading === "email-verify"}
+                                className="px-6 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-lg font-semibold text-sm hover:bg-gray-50 transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="h-px bg-gray-100 w-full" />
+
+                      {/* Change Password */}
+                      <div>
+                        <h3 className="text-sm font-bold text-[#1B1716] mb-4">Password</h3>
+                        <p className="text-sm text-[#1B1716]/60 mb-4">
+                          We will send a secure link to <strong>{profile.email}</strong> to reset your password.
+                        </p>
+                        <button aria-label="Button action" type="button"
+                          onClick={handlePasswordReset}
+                          disabled={actionLoading === "reset"}
+                          className="px-6 py-2.5 bg-[#1B1716] text-white rounded-lg font-semibold text-sm hover:bg-[#1B1716]/90 transition-colors disabled:opacity-50 flex items-center justify-center min-w-[140px]"
+                        >
+                          {actionLoading === "reset" ? <Loader2 className="w-4 h-4 animate-spin" /> : "Change Password"}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* SECTION D: DANGER ZONE */}
             {activeTab === "danger" && (
