@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { randomBytes } from "crypto";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import { Resend } from "resend";
 
 let ratelimit: Ratelimit | null = null;
 if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
@@ -53,10 +54,29 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // In a real app, send email with Resend/SendGrid
-    // const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
-    // await sendEmail(email, "Reset Password", `Click here: ${resetUrl}`);
-    console.log(`[EMAIL MOCK] Password reset for ${email}: Token ${token}`);
+    // Send email with Resend
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+    
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    
+    await resend.emails.send({
+      from: "Validexio Security <support@validexio.com>",
+      to: email,
+      subject: "Reset your password - Validexio",
+      html: `
+        <div style="font-family: sans-serif; max-w-md: 600px; margin: 0 auto; padding: 20px;">
+          <h1 style="color: #75070C; text-align: center; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase;">Validexio</h1>
+          <h2 style="color: #1B1716;">Password Reset Request</h2>
+          <p style="color: #1B1716; opacity: 0.8;">You requested a password reset. Click the button below to reset your password.</p>
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetUrl}" style="background-color: #75070C; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Reset Password</a>
+          </div>
+          <p style="color: #1B1716; opacity: 0.6; font-size: 12px;">If you didn't request this, you can safely ignore this email.</p>
+        </div>
+      `,
+    });
+    
+    console.log(`[EMAIL SENT] Password reset for ${email}: Token ${token}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {

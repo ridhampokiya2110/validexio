@@ -66,10 +66,10 @@ const nextAuthResult = NextAuth({
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) return null;
 
-        // Block login if email is not verified
-        if (!user.emailVerified) {
-          throw new Error("EmailNotVerified");
-        }
+        // Block login if email is not verified (DISABLED TEMPORARILY)
+        // if (!user.emailVerified) {
+        //   throw new Error("EmailNotVerified");
+        // }
 
         // 2FA Validation
         if (user.twoFactorEnabled) {
@@ -152,15 +152,15 @@ const nextAuthResult = NextAuth({
         }
       }
 
-      // Block sign-in if email not verified for credentials provider
-      if (account?.provider === "credentials") {
-        const dbUser = await prisma.user.findUnique({
-          where: { email: user.email },
-        });
-        if (!dbUser?.emailVerified) {
-          return `/login?error=EmailNotVerified&email=${encodeURIComponent(user.email)}`;
-        }
-      }
+      // Block sign-in if email not verified for credentials provider (DISABLED TEMPORARILY)
+      // if (account?.provider === "credentials") {
+      //   const dbUser = await prisma.user.findUnique({
+      //     where: { email: user.email },
+      //   });
+      //   if (!dbUser?.emailVerified) {
+      //     return `/login?error=EmailNotVerified&email=${encodeURIComponent(user.email)}`;
+      //   }
+      // }
 
       return true;
     },
