@@ -16,6 +16,20 @@ const loginSchema = z.object({
   code: z.string().optional(),
 });
 
+import { CredentialsSignin } from "next-auth";
+
+class Requires2FAError extends CredentialsSignin {
+  code = "Requires2FA";
+}
+
+class Invalid2FACodeError extends CredentialsSignin {
+  code = "Invalid2FACode";
+}
+
+class EmailNotVerifiedError extends CredentialsSignin {
+  code = "EmailNotVerified";
+}
+
 const hasDB = !!process.env.DATABASE_URL;
 
 const nextAuthResult = NextAuth({
@@ -74,7 +88,7 @@ const nextAuthResult = NextAuth({
         // 2FA Validation
         if (user.twoFactorEnabled) {
           if (!code) {
-            throw new Error("Requires2FA");
+            throw new Requires2FAError();
           }
 
           // Verify email OTP code
@@ -114,7 +128,7 @@ const nextAuthResult = NextAuth({
           }
 
           if (!isValid) {
-            throw new Error("Invalid2FACode");
+            throw new Invalid2FACodeError();
           }
         }
 
