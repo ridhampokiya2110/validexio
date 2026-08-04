@@ -275,7 +275,7 @@ export async function processValidationJob(data: GenerateJobPayload, jobId: stri
         // Others
         uiMockupImages: uiMockupImages,
         processingTime,
-        geminiModel: isLite ? "gemini-flash-latest" : "gemini-3.5-flash",
+        geminiModel: isLite ? "gemini-flash-latest" : "gemini-1.5-flash",
         isLite: isLite,
       },
     });

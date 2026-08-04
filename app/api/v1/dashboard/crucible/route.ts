@@ -108,7 +108,7 @@ Revenue Potential: ${JSON.stringify(latestReport.revenuePotential)}
     }
 
     const textModel = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
+      model: "gemini-1.5-flash",
       generationConfig: { maxOutputTokens: 200, temperature: 0.7 } 
     });
 
@@ -132,7 +132,7 @@ Revenue Potential: ${JSON.stringify(latestReport.revenuePotential)}
     };
 
     const jsonModel = genAI.getGenerativeModel({ 
-      model: "gemini-3.5-flash",
+      model: "gemini-1.5-flash",
       safetySettings: [
         {
           category: HarmCategory.HARM_CATEGORY_HARASSMENT,
