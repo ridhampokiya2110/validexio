@@ -162,7 +162,7 @@ const nextAuthResult = NextAuth({
 
         if (!dbUser) {
           // Instead of creating the user, redirect them to sign up form with prefilled data
-          return `/login?tab=signup&email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name || "")}`;
+          return `/login?tab=signup&email=${encodeURIComponent(user.email)}&name=${encodeURIComponent(user.name || "")}&provider=google`;
         }
       }
 

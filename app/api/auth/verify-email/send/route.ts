@@ -74,11 +74,14 @@ export async function POST(req: Request) {
     });
 
     // Send email via Resend
-    const confirmLink = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/verify-email?token=${token}`;
+    const host = req.headers.get("host") || "validexio.com";
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
+    const confirmLink = `${appUrl}/verify-email?token=${token}`;
 
     if (resend) {
       resend.emails.send({
-        from: "Validexio Security <support@validexio.com>",
+        from: process.env.RESEND_FROM_EMAIL || "Validexio Security <support@validexio.com>",
         to: email,
         subject: "Verify your email address - Validexio",
         html: `

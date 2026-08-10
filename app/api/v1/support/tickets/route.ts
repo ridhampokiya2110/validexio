@@ -51,7 +51,7 @@ export async function POST(req: Request) {
       
       // We process this asynchronously but log the actual error object
       resend.emails.send({
-        from: "Validexio Support <support@validexio.com>",
+        from: process.env.RESEND_FROM_EMAIL || "Validexio Support <support@validexio.com>",
         to: "support@validexio.com",
         subject: `New Support Ticket: ${category} - ${sanitizedSubject}`,
         html: `

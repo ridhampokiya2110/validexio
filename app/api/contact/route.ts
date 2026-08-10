@@ -25,7 +25,7 @@ export async function POST(req: Request) {
 
     if (resend) {
       await resend.emails.send({
-        from: "Validexio Contact <support@validexio.com>",
+        from: process.env.RESEND_FROM_EMAIL || "Validexio Contact <support@validexio.com>",
         to: "support@validexio.com",
         replyTo: email,
         subject: `Validexio Inquiry: ${firstName} ${lastName}`,

@@ -23,7 +23,7 @@ const rateLimit = new Ratelimit({
   analytics: true,
 });
 
-export async function POST() {
+export async function POST(req: Request) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -54,9 +54,24 @@ export async function POST() {
       }, { status: 400 });
     }
 
+    // Generate token
+    const { randomBytes } = await import("crypto");
+    const token = randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 1000 * 60 * 60); // 1 hour
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: user.email,
+        token,
+        expires,
+      },
+    });
+
     // Determine the base URL for the reset link
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-    const resetUrl = `${baseUrl}/reset-password?token=secure-token-placeholder`;
+    const host = req.headers.get("host") || "validexio.com";
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
+    const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
     // Only send the email if the Resend API key is configured
     if (resend) {

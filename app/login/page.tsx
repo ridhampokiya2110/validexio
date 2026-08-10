@@ -42,13 +42,22 @@ function AuthPageContent() {
     const tab = searchParams.get("tab");
     const email = searchParams.get("email");
     const name = searchParams.get("name");
+    const provider = searchParams.get("provider");
 
     if (tab === "signup") setActiveTab("signup");
+    
+    let generatedPassword = "";
+    if (provider === "google") {
+      generatedPassword = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("") + "A1!";
+    }
     
     setForm(prev => ({
       ...prev,
       email: email || prev.email,
       name: name || prev.name,
+      ...(generatedPassword ? { password: generatedPassword } : {})
     }));
   }, [searchParams]);
 
@@ -301,14 +310,15 @@ function AuthPageContent() {
 
               <div>
                 <label className="block text-xs font-bold text-[#1B1716]/60 uppercase tracking-wider mb-1.5">
-                  Email Address
+                  Email Address {searchParams.get("provider") === "google" && "(Google Account)"}
                 </label>
                 <input
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.email ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium`}
+                  className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.email ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium ${searchParams.get("provider") === "google" ? "opacity-60 cursor-not-allowed" : ""}`}
                   placeholder="founder@startup.com"
+                  readOnly={searchParams.get("provider") === "google"}
                 />
                 {errors.email && <p className="text-red-500 text-xs mt-1.5 font-medium">{errors.email}</p>}
               </div>
@@ -316,7 +326,7 @@ function AuthPageContent() {
               <div>
                 <div className="flex justify-between items-center mb-1.5">
                   <label className="block text-xs font-bold text-[#1B1716]/60 uppercase tracking-wider">
-                    Password
+                    Password {searchParams.get("provider") === "google" && activeTab === "signup" && "(Secured & Locked)"}
                   </label>
                   {activeTab === "signin" && (
                     <Link aria-label="Navigation link" href="/forgot-password" className="text-xs text-[#75070C]/80 hover:text-[#75070C] font-semibold transition-colors">
@@ -326,19 +336,26 @@ function AuthPageContent() {
                 </div>
                 <div className="relative">
                   <input
-                    type={showPassword ? "text" : "password"}
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                    className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.password ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium pr-10`}
+                    type={searchParams.get("provider") === "google" && activeTab === "signup" ? "password" : (showPassword ? "text" : "password")}
+                    value={searchParams.get("provider") === "google" && activeTab === "signup" ? "••••••••••••••••" : form.password}
+                    onChange={(e) => {
+                      if (!(searchParams.get("provider") === "google" && activeTab === "signup")) {
+                        setForm({ ...form, password: e.target.value })
+                      }
+                    }}
+                    className={`w-full px-4 py-3 bg-[#FDFCF8] text-[#1B1716] border ${errors.password ? "border-red-500/60 focus:border-red-500 focus:ring-red-500/20" : "border-[#1B1716]/10 focus:border-[#75070C] focus:ring-[#75070C]/20"} rounded-lg focus:outline-none focus:ring-2 transition-all font-medium pr-10 ${searchParams.get("provider") === "google" && activeTab === "signup" ? "opacity-60 cursor-not-allowed tracking-widest text-lg" : ""}`}
                     placeholder="••••••••"
+                    readOnly={searchParams.get("provider") === "google" && activeTab === "signup"}
                   />
-                  <button aria-label="Button action"
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#1B1716]/40 hover:text-[#1B1716]/70 transition-colors"
-                  >
-                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                  </button>
+                  {!(searchParams.get("provider") === "google" && activeTab === "signup") && (
+                    <button aria-label="Button action"
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#1B1716]/40 hover:text-[#1B1716]/70 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  )}
                 </div>
                 {errors.password && <p className="text-red-500 text-xs mt-1.5 font-medium">{errors.password}</p>}
               </div>

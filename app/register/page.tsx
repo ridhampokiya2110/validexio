@@ -43,11 +43,20 @@ function RegisterPageContent() {
   useEffect(() => {
     const email = searchParams.get("email");
     const name = searchParams.get("name");
+    const provider = searchParams.get("provider");
+
+    let generatedPassword = "";
+    if (provider === "google") {
+      generatedPassword = Array.from(crypto.getRandomValues(new Uint8Array(16)))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("") + "A1!";
+    }
 
     setForm(prev => ({
       ...prev,
       email: email || prev.email,
       name: name || prev.name,
+      ...(generatedPassword ? { password: generatedPassword, confirmPassword: generatedPassword } : {})
     }));
   }, [searchParams]);
 
@@ -279,7 +288,7 @@ function RegisterPageContent() {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
-                Email Address
+                Email Address {searchParams.get("provider") === "google" && "(Google Account)"}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
@@ -288,9 +297,10 @@ function RegisterPageContent() {
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  className={`input-field !pl-10 ${errors.email ? "border-red-500/50" : ""}`}
+                  className={`input-field !pl-10 ${errors.email ? "border-red-500/50" : ""} ${searchParams.get("provider") === "google" ? "opacity-60 cursor-not-allowed bg-gray-100" : ""}`}
                   placeholder="you@company.com"
                   autoComplete="email"
+                  readOnly={searchParams.get("provider") === "google"}
                 />
               </div>
               {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email}</p>}
@@ -299,29 +309,36 @@ function RegisterPageContent() {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
-                Password
+                Password {searchParams.get("provider") === "google" && "(Secured & Locked)"}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
                 <input
                   id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className={`input-field !pl-10 !pr-10 ${errors.password ? "border-red-500/50" : ""}`}
+                  type={searchParams.get("provider") === "google" ? "password" : (showPassword ? "text" : "password")}
+                  value={searchParams.get("provider") === "google" ? "••••••••••••••••" : form.password}
+                  onChange={(e) => {
+                    if (searchParams.get("provider") !== "google") {
+                      setForm({ ...form, password: e.target.value })
+                    }
+                  }}
+                  className={`input-field !pl-10 !pr-10 ${errors.password ? "border-red-500/50" : ""} ${searchParams.get("provider") === "google" ? "opacity-60 cursor-not-allowed bg-gray-100 tracking-widest text-lg" : ""}`}
                   placeholder="••••••••"
                   autoComplete="new-password"
+                  readOnly={searchParams.get("provider") === "google"}
                 />
-                <button aria-label="Button action"
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1B1716]/35 hover:text-[#1B1716]/70"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+                {searchParams.get("provider") !== "google" && (
+                  <button aria-label="Button action"
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1B1716]/35 hover:text-[#1B1716]/70"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                )}
               </div>
               {/* Password strength meter */}
-              {form.password && (
+              {form.password && searchParams.get("provider") !== "google" && (
                 <div className="mt-2">
                   <div className="flex gap-1 mb-1">
                     {[...Array(6)].map((_, i) => (
@@ -342,26 +359,28 @@ function RegisterPageContent() {
             </div>
 
             {/* Confirm Password */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
-                Confirm Password
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
-                <input
-                  id="confirmPassword"
-                  type={showPassword ? "text" : "password"}
-                  value={form.confirmPassword}
-                  onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                  className={`input-field !pl-10 ${errors.confirmPassword ? "border-red-500/50" : ""}`}
-                  placeholder="••••••••"
-                  autoComplete="new-password"
-                />
+            {searchParams.get("provider") !== "google" && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-xs font-semibold text-[#1B1716]/60 uppercase tracking-wider mb-2">
+                  Confirm Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#1B1716]/30" />
+                  <input
+                    id="confirmPassword"
+                    type={showPassword ? "text" : "password"}
+                    value={form.confirmPassword}
+                    onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                    className={`input-field !pl-10 ${errors.confirmPassword ? "border-red-500/50" : ""}`}
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                  />
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-red-600 text-xs mt-1">{errors.confirmPassword}</p>
+                )}
               </div>
-              {errors.confirmPassword && (
-                <p className="text-red-600 text-xs mt-1">{errors.confirmPassword}</p>
-              )}
-            </div>
+            )}
 
             <p className="text-xs text-[#1B1716]/35">
               By creating an account, you agree to our{" "}

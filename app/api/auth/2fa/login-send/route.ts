@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     // Send email via Resend
     if (resend) {
       resend.emails.send({
-        from: "Validexio Security <support@validexio.com>",
+        from: process.env.RESEND_FROM_EMAIL || "Validexio Security <support@validexio.com>",
         to: email,
         subject: "Your Login Security Code",
         html: `

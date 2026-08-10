@@ -55,12 +55,16 @@ export async function POST(req: NextRequest) {
     });
 
     // Send email with Resend
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${token}`;
+    // Determine the base URL for the reset link
+    const host = req.headers.get("host") || "validexio.com";
+    const protocol = req.headers.get("x-forwarded-proto") || "https";
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || `${protocol}://${host}`;
+    const resetUrl = `${appUrl}/reset-password?token=${token}`;
     
     const resend = new Resend(process.env.RESEND_API_KEY);
     
     await resend.emails.send({
-      from: "Validexio Security <support@validexio.com>",
+      from: process.env.RESEND_FROM_EMAIL || "Validexio Security <support@validexio.com>",
       to: email,
       subject: "Reset your password - Validexio",
       html: `
