@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: validexio-worker
+    env: node
+    buildCommand: npm install && npm run db:generate
+    startCommand: npm run start:worker
+    envVars:
+      # Database connection (Use Supabase connection pooling string here)
+      - key: DATABASE_URL
+        sync: false
+      
+      # Redis Connection (If using Upstash, enter its standard Redis credentials here, not the REST API)
+      # Or create a Render Redis instance and map the internal host/port here.
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        sync: false
+      - key: REDIS_PASSWORD
+        sync: false
+      
+      # Required AI Keys for the worker to process tasks
+      - key: GOOGLE_GEMINI_API_KEY
+        sync: false
+      
+      # Add any other APIs that your worker needs (like Tavily, etc)
+      # If you use Tavily in your background jobs, add TAVILY_API_KEY here

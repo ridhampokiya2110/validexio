@@ -1,10 +1,22 @@
 import { Worker } from 'bullmq';
 import { processValidationJob } from '../lib/queue/processJob';
 import * as dotenv from 'dotenv';
+import * as http from 'http';
 
 // Load environment variables for local testing (Railway loads them automatically)
 dotenv.config({ path: '.env.local' });
 dotenv.config();
+
+// Create a dummy HTTP server so Render allows this to run as a free Web Service
+const PORT = process.env.PORT || 10000;
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('Worker is running and healthy!\n');
+});
+
+server.listen(PORT, () => {
+  console.log(`🌐 Dummy Web Server listening on port ${PORT} to satisfy Render Free Tier`);
+});
 
 const connection = {
   host: process.env.REDIS_HOST || 'localhost',
